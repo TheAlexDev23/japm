@@ -1,0 +1,1 @@
+add_library(install_package install.c install.h)

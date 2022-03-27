@@ -1,44 +1,80 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 
-//#include "errors.h"
+#define ACCEPTED_ARGS_LENGTH 4
 
-#define ACCEPTED_ARGS_LENGTH 5
+char* accepted_args[ACCEPTED_ARGS_LENGTH] = {"install", "remove", "update", "search"};
 
-char* accepted_args[ACCEPTED_ARGS_LENGTH] = {"install", "remove", "update", "upgrade", "search"};
+/* USAGE CHECKING */
 
 void 
 usage(char*program_name) 
 {
-    printf("Usage:\n");
-    printf("    %s [OPTIONS]\n", program_name);
+    printf ("\033[0mUsage:\n");
+    printf ("    %s [OPTIONS]\n", program_name);
+    printf ("       install     -> Install package\n");
+    printf ("       remove      -> Remove package\n");
+    printf ("       update      -> Update package/all packages\n");
+    printf ("       search      -> Search a package\n");
 }
 
 void 
 bad_usage(char*arg, char*program_name) 
 {
-    printf("Wrong Argument %s\n\n", arg);
-    usage(program_name);
+    printf ("\033[31mWrong Argument \"%s\"\n\n", arg);
+    usage (program_name);
 }
 
-void 
+int 
 check_usage(int argc, char**argv) 
 {
     if (argc == 1) {
         usage(argv[0]);
-        return;
+        return 1;
     }
 
     for (int i = 1; i < argc; i++) {
         for (int j = 0; j < ACCEPTED_ARGS_LENGTH; j++) {
             if (strcmp(argv[i], accepted_args[j]) == 0) {
-                goto exit_loop;
+                return 0;
             }
         }
 
         bad_usage(argv[i], argv[0]);
-        return;
-
-        exit_loop:
+        return 1;
     }
+
+    return 0;
+}
+
+void 
+install_usage(char*program_name) 
+{
+    printf("\033[0mUsage:\n");
+    printf("    %s install [package]\n", program_name);
+}
+
+int 
+check_install_usage(int argc, char**argv) 
+{
+    if (argc < 3) {
+        printf ("\033[31mBad Usage\n\n");
+        install_usage(argv[0]);
+        return 1;
+    }
+
+    return 0;
+}
+
+/* SUDO AND ROOT PREVILIGIES CHECKING */
+
+int 
+check_root() {
+    if (geteuid() != 0) {
+        printf("\033[31mProgram needs to be run with root previliegies\n");
+        return 1;
+    }
+
+    return 0;
 }
