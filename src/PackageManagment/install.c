@@ -1,18 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <json-c/json.h>
 
 #include "../Errors/errors.h"
+#include "HTTP/http.h"
 
 #define MAX_PACKAGE_FILE_SIZE 2048
 
 int _install_package(char*package_name);
-
-struct package {
-    char* name;
-    char** dependencies;
-    char* installation;
-};
 
 int
 install_package(int argc, char**argv) 
@@ -28,9 +24,35 @@ install_package(int argc, char**argv)
 int
 _install_package(char*package_name) 
 {
-    char*f_package_name = malloc(sizeof("../src/PackageManagment/") + sizeof(package_name) + sizeof(".json"));
-    sprintf(f_package_name, "../src/PackageManagment/%s.json", package_name);
+    /* 
+    * Downloads package from internet 
+    */
+    char *url = malloc(sizeof("https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/packages//package.json" + sizeof(package_name))); 
+    sprintf(url, "https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/packages/%s/package.json", package_name);
+
+    int http_res = http_req(url);
+
+    if (http_res == 404) 
+    {
+        printf("Package \"%s\" not found \n", package_name);
+        return 5;
+    } else if (http_res != 200) {
+        printf("Something Went Wrong\n...");
+        return 10;
+    }
+
+    download_package(url, package_name);
+
+    free(url);
+
+    /*
+    * Parses package information 
+    */
+
+    char*f_package_name = malloc(sizeof("/var/cache/japm/") + sizeof(package_name));
+    sprintf(f_package_name, "/var/cache/japm/%s", package_name);
     FILE *package_json_file = fopen(f_package_name, "r");
+    free(f_package_name);
 
     if (package_json_file == NULL) 
     {
@@ -56,9 +78,13 @@ _install_package(char*package_name)
 
     if (name == NULL || dependencies == NULL || installation == NULL)
     {
-        printf("Package Corrupted Aborting...\n");
+        printf("Package Corrupted, Aborting...\n");
         return 6;
     }
+
+    /*
+    * Installing Package and dependencies 
+    */
 
     printf("Package To Install: %s\n", json_object_get_string(name));
 

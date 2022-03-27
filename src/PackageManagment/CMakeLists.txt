@@ -1,2 +1,3 @@
 add_library(install_package install.c install.h)
-target_link_libraries(install_package -ljson-c)
+target_link_libraries(install_package -ljson-c HTTP)
+add_subdirectory(HTTP)
