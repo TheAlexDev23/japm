@@ -1,0 +1,1 @@
+add_library(errors errors.c errors.h)
