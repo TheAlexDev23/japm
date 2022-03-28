@@ -30,5 +30,5 @@ jobs:
       run: cmake -B ${{github.workspace}}/build  -S ${{github.workspace}}/src
 
     - name: Build Project
-      run: make -C ${{github.workspace}}/build
+      run: cd ${{github.workspace}}/build && make
       
