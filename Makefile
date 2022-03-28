@@ -1,3 +1,5 @@
 install:
+	mkdir build
 	cmake -S src -B build
-	make -C build
+	cd build
+	make
