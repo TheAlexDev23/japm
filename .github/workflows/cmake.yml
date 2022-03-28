@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: install lilbjson-c
-      run: sudo apt update && sudo apt install libjson-c
+      run: sudo apt install libjson-c-dev
     - name: create build dir
       run: mkdir -p ${{github.workspace}}/build
     - name: Configure CMake
