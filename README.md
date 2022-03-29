@@ -11,7 +11,7 @@ For now it's not finished and doesn't fully work. I'm only using GitHub to host 
 libjson-c
 ```
 
-## Building from source
+# Bulding from source
 
 ### Debian or Debian based
 
