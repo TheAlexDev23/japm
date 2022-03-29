@@ -10,3 +10,11 @@ int check_install_usage(int argc, char**argv);
 /* sudo and root previliegies */
 
 int check_root();
+
+enum error_codes {
+    wrong_usage_error = 1,
+    package_not_found_error = 2,
+    package_corrupted_error = 3,
+    package_already_installed_error = 4,
+    unkown_error = 10
+};

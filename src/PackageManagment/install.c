@@ -8,10 +8,19 @@
 
 #define MAX_PACKAGE_FILE_SIZE 10240
 
-int install_single_package(char*package_name);
+int install_single_package(char *package_name);
+struct package_information parse_package_information(char *package_name);
+void install_package_to_system(struct package_information package_info);
 
-int
-install_package(int argc, char**argv) 
+struct package_information
+{
+    json_object *name;
+    json_object *dependencies;
+    json_object *installation;
+};
+
+int 
+install_package(int argc, char **argv)
 {
     if (check_install_usage(argc, argv))
     {
@@ -21,50 +30,72 @@ install_package(int argc, char**argv)
     return install_single_package(argv[2]);
 }
 
-int
-install_single_package(char*package_name) 
+int 
+install_single_package(char *package_name)
 {
-    /* 
-    * Downloads package from internet 
-    */
+    // TODO: Add a way of checking if the package is already installed
 
-    //The package metadata and install instructions would be downloaded only from one repo by now, the official one, on my profile.
-    //I might add downloading packages from multiple repos in the future
-    char *url = malloc(sizeof("https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/packages//package.json" + sizeof(package_name))); 
-    sprintf(url, "https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/packages/%s/package.json", package_name);
+    //The package metadata would be located in https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/package_name/package.json
+    //We need to create a url string according the the package name and then call the http_req function to get the response code
+    //If the response code is 200 then we need to download the package file and then install it to the system
+    //If the response code is 404 then we need to print an error message and exit with the package_not_found_error code
+    //If the response code is anything else then we need to print an error message and exit with the unkown_error code
+    char* url = malloc(sizeof(char) * (strlen("https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/") + strlen(package_name) + strlen("/package.json") + 1));
+    strcpy(url, "https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/");
+    strcat(url, package_name);
+    strcat(url, "/package.json");
 
-    //We check the response code. To check if it gives us a not found error or other server errors
-    //By this we can know if the package is not found on any repo
     int http_res = http_req(url);
 
     if (http_res == 404)
     {
-        //Package is not found on the repo
+        // Package is not found on the repo
         printf("Package \"%s\" not found \n", package_name);
-        return 5;
-    } else if (http_res != 200) {
-        //Some unkown or server error happened
+        exit(package_not_found_error);
+    }
+    else if (http_res != 200)
+    {
+        // Some unkown or server error happened
         printf("Something Went Wrong\n...");
-        return 10;
+        exit(unkown_error);
     }
 
+    //Download the package file from the repo
     download_package(url, package_name);
 
-    free(url);
+    // Parse the package.json file downloaded from the repo
+    struct package_information pkg_info = parse_package_information(package_name);
 
-    /*
-    * Parses package information 
-    */
+    // We install the package to the system using the pkg_info struct
+    install_package_to_system(pkg_info);
+}
 
-    char*f_package_name = malloc(sizeof("/var/cache/japm/") + sizeof(package_name));
-    sprintf(f_package_name, "/var/cache/japm/%s", package_name);
-    FILE *package_json_file = fopen(f_package_name, "r");
-    free(f_package_name);
+struct package_information
+parse_package_information(char* package_name) 
+{
+    //The package json file would be saved under /var/cache/japm/package_name
+    //We would use the json-c library to parse information from it
+    
+    //The json file would be like this:
+    //{
+    //    "name": "package_name",  // The name of the package
+    //    "dependencies": [        // Array of dependencies
+    //        "package_name",
+    //        "package_name",
+    //        "package_name"
+    //    ],
+    //    "install": "installation_command" // String of installation commands
+    //}
 
-    if (package_json_file == NULL) 
+    char* file_package_name = malloc(sizeof("/var/cache/japm/") + sizeof(package_name));
+    strcpy(file_package_name, "/var/cache/japm/");
+    strcat(file_package_name, package_name);
+
+    FILE* package_json_file = fopen(file_package_name, "r");
+    if (package_json_file == NULL)
     {
         printf("Package \"%s\" not found\n", package_name);
-        return 5;
+        exit(package_not_found_error);
     }
 
     char buffer[MAX_PACKAGE_FILE_SIZE];
@@ -72,54 +103,67 @@ install_single_package(char*package_name)
     fread(buffer, MAX_PACKAGE_FILE_SIZE, 1, package_json_file);
     fclose(package_json_file);
 
-    json_object *parsed_json; //The json object extracted from the package file
-    json_object *name; //The name of the package
-    json_object *dependencies; //Array of dependencies
-    json_object *installation; //String of installation commands
+    json_object *parsed_json;  // The json object extracted from the package file
+    json_object *name;         // The name of the package
+    json_object *dependencies; // Array of dependencies
+    json_object *installation; // String of installation commands
 
     parsed_json = json_tokener_parse(buffer);
 
-    //Gets the child objects from the main json object
+    // Gets the child objects from the main json object
     json_object_object_get_ex(parsed_json, "name", &name);
     json_object_object_get_ex(parsed_json, "dependencies", &dependencies);
     json_object_object_get_ex(parsed_json, "install", &installation);
 
-    //If the package is in a wrong format. (it doesnt have a name or a installation instruction or dependencies object) the we inform the user about it
+    // If the package is in a wrong format. (it doesnt have a name or a installation instruction or dependencies object) the we inform the user about it
     if (name == NULL || dependencies == NULL || installation == NULL)
     {
         printf("Package Corrupted, Aborting...\n");
-        return 6;
+        exit(package_corrupted_error);
     }
 
-    char* package_json_name = json_object_get_string(name); //This name might be different from the package name we search in the repo
+    // We create a package_information struct to store the information we got from the json file
+    struct package_information package_information;
+    package_information.name = name;
+    package_information.dependencies = dependencies;
+    package_information.installation = installation;
 
-    /*
-    * Installing Package and dependencies 
-    */
+    // We return the package_information struct
+    return package_information;
+}
 
-    printf("Package To Install: %s\n", package_json_name);
+void 
+install_package_to_system(struct package_information package_info)
+{
+    // This function would install the package and it's dependencies to the system
+    // We install all the dependencies recursevly using the install_single_package function
 
-    size_t dependencies_length;
+    // We get the number of dependencies
+    int dependencies_number = json_object_array_length(package_info.dependencies);
 
-    dependencies_length = json_object_array_length(dependencies);
+    // We print out the dependencies to the user
+    printf("Dependencies of %s:\n", json_object_get_string(package_info.name));
 
-    //First we print the dependencies
-    printf("Dependencies: \n");
-    for (size_t i = 0; i < dependencies_length; i++) 
+    // We iterate over the dependencies array
+    for (int i = 0; i < dependencies_number; i++)
     {
-        json_object *new_package = json_object_array_get_idx(dependencies, i);
-        printf("    %s\n", (json_object_get_string(new_package)));
+        // We get the current dependency
+        json_object *dependency = json_object_array_get_idx(package_info.dependencies, i);
+
+        // We print the dependency to the user
+        printf("    %s\n", json_object_get_string(dependency));
     }
 
-    //Then we install every single dependency with their own dependencies recursevely
-    printf("Installing Dependencies...\n");
-    for (size_t i = 0; i < dependencies_length; i++) 
+    // We iterate over all the dependencies and install them
+    for (int i = 0; i < dependencies_number; i++)
     {
-        json_object *new_package = json_object_array_get_idx(dependencies, i);
-        install_single_package(json_object_get_string(new_package));
+        // We get the name of the dependency
+        json_object *dependency_name = json_object_array_get_idx(package_info.dependencies, i);
+        // We install the dependency
+        install_single_package(json_object_get_string(dependency_name));
     }
 
-    //Then we install the main package
-    printf("Installing Package: %s\n", package_json_name);
-    system(json_object_get_string(installation));
+    // It would then execute the installation commands from the package_information struct
+    char *commands = json_object_get_string(package_info.installation);
+    system(commands); // We execute the installation commands
 }
