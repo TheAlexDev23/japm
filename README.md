@@ -1,5 +1,6 @@
 # JPAM: Just-Another-Package-Manager 
-[![CodeFactor](https://www.codefactor.io/repository/github/thealexdev23/japm/badge)](https://www.codefactor.io/repository/github/thealexdev23/japm)
+[![CodeFactor](https://www.codefactor.io/repository/github/thealexdev23/japm/badge)](https://www.codefactor.io/repository/github/thealexdev23/japm) 
+![](https://tokei.rs/b1/github/thealexdev23/japm)
 
 I've seen many people trying to build their own package manager recently, so I also decided to try it out.
 
