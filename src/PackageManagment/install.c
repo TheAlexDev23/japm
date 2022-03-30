@@ -6,8 +6,10 @@
 #include "../Errors/errors.h"
 #include "HTTP/http.h"
 
+// Some hardcoded values that are used in the program
 #define MAX_PACKAGE_FILE_SIZE 10240
 #define MAX_INSTALLED_PACKAGES_FILE_SIZE 131072
+#define MAX_COMMANDS_NUMBER 1000
 
 int install_single_package(char *package_name);
 struct package_information parse_package_information(char *package_name);
@@ -77,6 +79,7 @@ install_single_package(char *package_name)
     install_package_to_system(pkg_info);
 
     add_package_to_installed_packages(package_name);
+    printf("Package \"%s\" installed successfully\n", package_name);
 }
 
 struct package_information
@@ -93,7 +96,11 @@ parse_package_information(char* package_name)
     //        "package_name",
     //        "package_name"
     //    ],
-    //    "install": "installation_command" // String of installation commands
+    //    "install": [             // Array of commands to be executed to install the package
+    //    "installation_command",
+    //    "installation_command",
+    //    "installation_command"
+    //    ]
     //}
 
     char* file_package_name = malloc(sizeof("/var/cache/japm/") + sizeof(package_name));
@@ -172,9 +179,19 @@ install_package_to_system(struct package_information package_info)
         install_single_package(json_object_get_string(dependency_name));
     }
 
-    // It would then execute the installation commands from the package_information struct
-    char *commands = json_object_get_string(package_info.installation);
-    system(commands); // We execute the installation commands
+    //We need to execute the commands array in the package.json file
+    //We get the number of commands
+    int commands_number = json_object_array_length(package_info.installation);
+    //We iterate over the commands array
+    for (int i = 0; i < commands_number; i++)
+    {
+        //We get the current command
+        json_object *command = json_object_array_get_idx(package_info.installation, i);
+        
+        //TODO: Find a way of suppressing the output of the command 
+        // We execute the command
+        system(json_object_get_string(command));
+    }
 }
 
 void
