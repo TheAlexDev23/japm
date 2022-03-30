@@ -207,7 +207,7 @@ add_package_to_installed_packages(char* package_name)
 int
 check_if_package_installed(char* package_name)
 {
-    start_again:
+    start_again: ;
     // This function would check if the package is already installed
     // We check if the package name is in the /var/japm/installed_packages file
     // If it is then we return 1
