@@ -1,4 +1,4 @@
-# JPAM: Just-Another-Package-Manager 
+# JAPM: Just-Another-Package-Manager 
 [![CodeFactor](https://www.codefactor.io/repository/github/thealexdev23/japm/badge)](https://www.codefactor.io/repository/github/thealexdev23/japm) 
 ![](https://tokei.rs/b1/github/thealexdev23/japm)
 
