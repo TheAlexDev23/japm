@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "Errors/errors.h"
-#include "PackageManagment/install.h"
+#include "errors.h"
+#include "install.h"
 #include "main.h"
 
 int 
