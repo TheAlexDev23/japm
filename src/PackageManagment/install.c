@@ -29,7 +29,7 @@ install_package(int argc, char **argv)
 {
     if (check_install_usage(argc, argv))
     {
-        return 4;
+        exit(wrong_usage_error);
     }
 
     return install_single_package(argv[2]);
@@ -97,9 +97,9 @@ parse_package_information(char* package_name)
     //        "package_name"
     //    ],
     //    "install": [             // Array of commands to be executed to install the package
-    //    "installation_command",
-    //    "installation_command",
-    //    "installation_command"
+    //      "installation_command",
+    //      "installation_command",
+    //      "installation_command"
     //    ]
     //}
 
