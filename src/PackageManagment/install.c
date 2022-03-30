@@ -7,10 +7,13 @@
 #include "HTTP/http.h"
 
 #define MAX_PACKAGE_FILE_SIZE 10240
+#define MAX_INSTALLED_PACKAGES_FILE_SIZE 131072
 
 int install_single_package(char *package_name);
 struct package_information parse_package_information(char *package_name);
 void install_package_to_system(struct package_information package_info);
+int check_if_package_installed(char *package_name);
+void add_package_to_installed_packages(char *package_name);
 
 struct package_information
 {
@@ -33,7 +36,11 @@ install_package(int argc, char **argv)
 int 
 install_single_package(char *package_name)
 {
-    // TODO: Add a way of checking if the package is already installed
+    if (check_if_package_installed(package_name))
+    {
+        printf("Package \"%s\" is already installed\n", package_name);
+        return 0;
+    }
 
     //The package metadata would be located in https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/package_name/package.json
     //We need to create a url string according the the package name and then call the http_req function to get the response code
@@ -68,6 +75,8 @@ install_single_package(char *package_name)
 
     // We install the package to the system using the pkg_info struct
     install_package_to_system(pkg_info);
+
+    add_package_to_installed_packages(package_name);
 }
 
 struct package_information
@@ -142,7 +151,7 @@ install_package_to_system(struct package_information package_info)
     int dependencies_number = json_object_array_length(package_info.dependencies);
 
     // We print out the dependencies to the user
-    printf("Dependencies of %s:\n", json_object_get_string(package_info.name));
+    if (dependencies_number != 0) printf("Dependencies of %s:\n", json_object_get_string(package_info.name));
 
     // We iterate over the dependencies array
     for (int i = 0; i < dependencies_number; i++)
@@ -166,4 +175,48 @@ install_package_to_system(struct package_information package_info)
     // It would then execute the installation commands from the package_information struct
     char *commands = json_object_get_string(package_info.installation);
     system(commands); // We execute the installation commands
+}
+
+void
+add_package_to_installed_packages(char* package_name)
+{
+    // This would add package_name to the installed_packages file on /var/japm/installed_packages
+    // We open the installed_packages file and append the package_name to it
+    FILE* installed_packages_file = fopen("/var/japm/installed_packages", "a");
+    fprintf(installed_packages_file, "%s\n", package_name);
+    fclose(installed_packages_file);
+}
+
+int
+check_if_package_installed(char* package_name)
+{
+    start_again:
+    // This function would check if the package is already installed
+    // We check if the package name is in the /var/japm/installed_packages file
+    // If it is then we return 1
+    // If it is not then we return 0
+    FILE* installed_packages_file = fopen("/var/japm/installed_packages", "r");
+    if (installed_packages_file == NULL)
+    {
+        system("mkdir -p /var/japm");
+        system("touch /var/japm/installed_packages");
+        goto start_again;
+    }
+
+    char buffer[MAX_INSTALLED_PACKAGES_FILE_SIZE];
+    // We read the installed_packages file to end of file
+    fread(buffer, MAX_INSTALLED_PACKAGES_FILE_SIZE, 1, installed_packages_file);
+    fclose(installed_packages_file);
+
+    // We check if the package_name is in the installed_packages file
+    if (strstr(buffer, package_name) != NULL)
+    {
+        // The package is already installed
+        return 1;
+    }
+    else
+    {
+        // The package is not installed
+        return 0;
+    }
 }
