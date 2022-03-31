@@ -19,20 +19,20 @@ libjson-c
 
 - Installing dependencies:
 
-```
+```bash
 sudo apt instal libjson-c-dev cmake
 ```
 
 - Building:
 
-```
+```bash
 git clone https://github.com/TheAlexDev23/japm.git
 cd japm
 make install
 ```
 #### OR
 
-```
+```bash
 git clone https://github.com/TheAlexDev23/japm.git
 cd japm
 mkdir build
@@ -40,6 +40,33 @@ cmake -S src -B build
 cd build
 make
 ```
-Documentation:
+
+### Arch or Arch Base
+
+- Installing dependencies:
+
+```bash
+sudo pacman -S lib32-json-c cmake
+```
+
+- Building:
+
+```bash
+git clone https://github.com/TheAlexDev23/japm.git
+cd japm
+make install
+```
+#### OR
+
+```bash
+git clone https://github.com/TheAlexDev23/japm.git
+cd japm
+mkdir build
+cmake -S src -B build
+cd build
+make
+```
+
+- Documentation:
 
 - Coming soon
