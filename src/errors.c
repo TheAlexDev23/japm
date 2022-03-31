@@ -67,6 +67,38 @@ check_install_usage(int argc, char**argv)
     return 0;
 }
 
+
+void remove_usage(char*program_name) 
+{
+    printf("\033[0mUsage:\n");
+    printf("    %s remove [options] [package]\n", program_name);
+    printf("              r    -> Remove package and the package that depend on it\n");
+
+}
+
+int check_remove_usage(int argc, char**argv) 
+{
+    // Return 0 if removing a single package
+    // Return 1 if bad usage
+    // Return 2 if removing all packages that depend on the package alongside with the package itself
+
+    if (argc < 3) {
+        printf ("\033[31mBad Usage\n\n");
+        remove_usage(argv[0]);
+        return 1;
+    } else if (argc == 4) {
+        if (strcmp(argv[2], "r") != 0) {
+            bad_usage(argv[2], argv[0]);
+            remove_usage(argv[0]);
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+    
+    return 0;
+}
+
 /* SUDO AND ROOT PREVILIGIES CHECKING */
 
 int 

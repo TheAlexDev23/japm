@@ -4,6 +4,9 @@
 #include <json-c/json.h>
 
 #include "errors.h"
+#include "IO/json.h"
+#include "package.h"
+#include "internet.h"
 
 // Some hardcoded values that are used in the program
 #define MAX_PACKAGE_FILE_SIZE 10240
@@ -11,19 +14,8 @@
 #define MAX_COMMANDS_NUMBER 1000
 
 int install_single_package(char *package_name);
-struct package_information parse_package_information(char *package_name);
-void install_package_to_system(struct package_information package_info);
-int check_if_package_installed(char *package_name);
-void add_package_to_installed_packages(char *package_name);
-int http_req(char *url);
-void download_package(char *url, char *package_name);
-
-struct package_information
-{
-    json_object *name;
-    json_object *dependencies;
-    json_object *installation;
-};
+void install_package_to_system(package package_info);
+void update_local_repository(package pkg);
 
 int 
 install_package(int argc, char **argv)
@@ -39,7 +31,7 @@ install_package(int argc, char **argv)
 int 
 install_single_package(char *package_name)
 {
-    if (check_if_package_installed(package_name))
+    if (check_if_package_is_installed(package_name))
     {
         printf("Package \"%s\" is already installed\n", package_name);
         return 0;
@@ -54,6 +46,8 @@ install_single_package(char *package_name)
     strcpy(url, "https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/");
     strcat(url, package_name);
     strcat(url, "/package.json");
+
+    printf("Downloading the package metadata...\n");
 
     int http_res = http_req(url);
 
@@ -74,83 +68,35 @@ install_single_package(char *package_name)
     download_package(url, package_name);
 
     // Parse the package.json file downloaded from the repo
-    struct package_information pkg_info = parse_package_information(package_name);
+    char* json_file_location = malloc(sizeof(char) * (strlen("/var/cache/japm/") + strlen(package_name) + 1));
+    strcpy(json_file_location, "/var/cache/japm/");
+    strcat(json_file_location, package_name);
+    FILE *json_file = fopen(json_file_location, "r");
 
+    printf("Parsing the package metadata...\n");
+
+    if (json_file == NULL)
+    {
+        printf("Couldn't open the package.json file\n");
+        exit(unkown_error);
+    }
+
+    package pkg_info = parse_package_information(json_file);
+
+    printf("Installing the package...\n");
     // We install the package to the system using the pkg_info struct
     install_package_to_system(pkg_info);
+
+    // We update the local repository with the package info
+    printf("Updating the local repository...\n");
+    update_local_repository(pkg_info);
 
     add_package_to_installed_packages(package_name);
     printf("Package \"%s\" installed successfully\n", package_name);
 }
 
-struct package_information
-parse_package_information(char* package_name) 
-{
-    //The package json file would be saved under /var/cache/japm/package_name
-    //We would use the json-c library to parse information from it
-    
-    //The json file would be like this:
-    //{
-    //    "name": "package_name",  // The name of the package
-    //    "dependencies": [        // Array of dependencies
-    //        "package_name",
-    //        "package_name",
-    //        "package_name"
-    //    ],
-    //    "install": [             // Array of commands to be executed to install the package
-    //      "installation_command",
-    //      "installation_command",
-    //      "installation_command"
-    //    ]
-    //}
-
-    char* file_package_name = malloc(sizeof("/var/cache/japm/") + sizeof(package_name));
-    strcpy(file_package_name, "/var/cache/japm/");
-    strcat(file_package_name, package_name);
-
-    FILE* package_json_file = fopen(file_package_name, "r");
-    if (package_json_file == NULL)
-    {
-        printf("Package \"%s\" not found\n", package_name);
-        exit(package_not_found_error);
-    }
-
-    char buffer[MAX_PACKAGE_FILE_SIZE];
-
-    fread(buffer, MAX_PACKAGE_FILE_SIZE, 1, package_json_file);
-    fclose(package_json_file);
-
-    json_object *parsed_json;  // The json object extracted from the package file
-    json_object *name;         // The name of the package
-    json_object *dependencies; // Array of dependencies
-    json_object *installation; // String of installation commands
-
-    parsed_json = json_tokener_parse(buffer);
-
-    // Gets the child objects from the main json object
-    json_object_object_get_ex(parsed_json, "name", &name);
-    json_object_object_get_ex(parsed_json, "dependencies", &dependencies);
-    json_object_object_get_ex(parsed_json, "install", &installation);
-
-    // If the package is in a wrong format. (it doesnt have a name or a installation instruction or dependencies object) the we inform the user about it
-    if (name == NULL || dependencies == NULL || installation == NULL)
-    {
-        printf("Package Corrupted, Aborting...\n");
-        exit(package_corrupted_error);
-    }
-
-    // We create a package_information struct to store the information we got from the json file
-    struct package_information package_information;
-    package_information.name = name;
-    package_information.dependencies = dependencies;
-    package_information.installation = installation;
-
-    // We return the package_information struct
-    return package_information;
-}
-
 void 
-install_package_to_system(struct package_information package_info)
+install_package_to_system(package package_info)
 {
     // This function would install the package and it's dependencies to the system
     // We install all the dependencies recursevly using the install_single_package function
@@ -178,16 +124,28 @@ install_package_to_system(struct package_information package_info)
         json_object *dependency_name = json_object_array_get_idx(package_info.dependencies, i);
         // We install the dependency
         install_single_package(json_object_get_string(dependency_name));
+
+        // We would also need to append in the dependencies directory used_by file the name of the package being installed
+        char *dependency_name_str = json_object_get_string(dependency_name);
+        char *dependency_folder_dir = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(dependency_name_str) + 1));
+        strcpy(dependency_folder_dir, "/var/japm/packages/");
+        strcat(dependency_folder_dir, dependency_name_str);
+
+        // We open the used_by file of the dependency
+        FILE *used_by_file = fopen(strcat(dependency_folder_dir, "/used_by"), "a");
+        
+        // We append the name of the package being installed to the used_by file
+        fprintf(used_by_file, "%s\n", json_object_get_string(package_info.name));
     }
 
     //We need to execute the commands array in the package.json file
     //We get the number of commands
-    int commands_number = json_object_array_length(package_info.installation);
+    int commands_number = json_object_array_length(package_info.install);
     //We iterate over the commands array
     for (int i = 0; i < commands_number; i++)
     {
         //We get the current command
-        json_object *command = json_object_array_get_idx(package_info.installation, i);
+        json_object *command = json_object_array_get_idx(package_info.install, i);
         
         //TODO: Find a way of suppressing the output of the command 
         // We execute the command
@@ -195,93 +153,38 @@ install_package_to_system(struct package_information package_info)
     }
 }
 
-void
-add_package_to_installed_packages(char* package_name)
+void 
+update_local_repository(package pkg)
 {
-    // This would add package_name to the installed_packages file on /var/japm/installed_packages
-    // We open the installed_packages file and append the package_name to it
-    FILE* installed_packages_file = fopen("/var/japm/installed_packages", "a");
-    fprintf(installed_packages_file, "%s\n", package_name);
-    fclose(installed_packages_file);
-}
-
-int
-check_if_package_installed(char* package_name)
-{
+    int add_coma = 1;
     start_again: ;
-    // This function would check if the package is already installed
-    // We check if the package name is in the /var/japm/installed_packages file
-    // If it is then we return 1
-    // If it is not then we return 0
-    FILE* installed_packages_file = fopen("/var/japm/installed_packages", "r");
-    if (installed_packages_file == NULL)
+    //This function would update the local repository of installed packages
+    //This is done by appending the name,version,description,update and removal instructions of the package to the /var/japm/repos/local.json file in a json format
+    //We need to open the local.json file
+    FILE *local_repo_file = fopen("/var/japm/repos/local.json", "a");
+
+    if (local_repo_file == NULL)
     {
-        system("mkdir -p /var/japm");
-        system("touch /var/japm/installed_packages");
+        //We create the local.json file
+        system("mkdir -p /var/japm/repos");
+        system("touch /var/japm/repos/local.json");
+        add_coma = 0;
         goto start_again;
     }
 
-    char buffer[MAX_INSTALLED_PACKAGES_FILE_SIZE];
-    // We read the installed_packages file to end of file
-    fread(buffer, MAX_INSTALLED_PACKAGES_FILE_SIZE, 1, installed_packages_file);
-    fclose(installed_packages_file);
+    //We need to get the package name, version, description, update and removal instructions from the package.json file
+    //We get the name of the package
+    char *package_name = json_object_get_string(pkg.name);
+    //We get the version of the package
+    char *package_version = json_object_get_string(pkg.version);
+    //We get the description of the package
+    char *package_description = json_object_get_string(pkg.description);
+    //We get the update instructions of the package
+    char *package_update = json_object_get_string(pkg.update);
+    //We get the removal instructions of the package
+    char *package_removal = json_object_get_string(pkg.remove);
 
-    // We check if the package_name is in the installed_packages file
-    if (strstr(buffer, package_name) != NULL)
-    {
-        // The package is already installed
-        return 1;
-    }
-    else
-    {
-        // The package is not installed
-        return 0;
-    }
+    //We append the name, version, description, update and removal instructions of the package to the local.json file in a json format
+    if (!add_coma) fprintf(local_repo_file, ",\n{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", package_name, package_version, package_description, package_update, package_removal);
+    else fprintf(local_repo_file, "{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", package_name, package_version, package_description, package_update, package_removal);
 }
-
-int http_req(char*url) 
-{
-    /* Create a HTTP request to the provided argument url and return the response code */
-    /* To do the request I will call curl command using the system function */
-    /* The response code would be saved in a temporary file that would then be read */
-    /* The response code would be returned */
-    char *command = malloc(sizeof(char) * (strlen("curl -s -o /dev/null -w %{http_code} ") + strlen(url) + strlen(" > /tmp/reponse_code.txt") + 1));
-    strcpy(command, "curl -s -o /dev/null -w %{http_code} ");
-    strcat(command, url);
-    strcat(command, " > /tmp/response_code.txt");
-    system(command);
-
-    FILE *fp = fopen("/tmp/response_code.txt", "r");
-    if (fp == NULL)
-    {
-        printf("Something went wrong. Check your internet connection\n");
-        exit(unkown_error);
-    }
-
-    // Read the response code from the file
-    char response_code[4];
-    fscanf(fp, "%s", response_code);
-    fclose(fp);
-    free(command);
-
-    //Convert the reponse code to integer and return it
-    return atoi(response_code);
-}
-
-void 
-download_package(char*url, char*package_name)
-{
-    // Download the package file from the provided url
-    // The file would be saved in /var/cache/japm/package_name
-    
-    system("mkdir -p /var/cache/japm"); // The cache directory for japm might not exist so we need to first create it using the mkdir command
-
-    char *command = malloc(sizeof(char) * (strlen(url) + strlen("curl -s -o /var/cache/japm/") + strlen(package_name) + 1));
-    strcpy(command, "curl -s -o /var/cache/japm/");
-    strcat(command, package_name);
-    strcat(command, " ");
-    strcat(command, url);
-    system(command);
-    free(command);
-}
-
