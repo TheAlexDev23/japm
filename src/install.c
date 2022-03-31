@@ -184,7 +184,31 @@ update_local_repository(package pkg)
     //We get the removal instructions of the package
     char *package_removal = json_object_get_string(pkg.remove);
 
-    //We append the name, version, description, update and removal instructions of the package to the local.json file in a json format
-    if (!add_coma) fprintf(local_repo_file, ",\n{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", package_name, package_version, package_description, package_update, package_removal);
-    else fprintf(local_repo_file, "{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", package_name, package_version, package_description, package_update, package_removal);
+    //We append the package name, version, description, update and removal instructions to the local.json file
+    if (!add_coma)
+    {
+        // We truncate the last 2 ]} characters of the file
+        fseek(local_repo_file, -2, SEEK_END);
+        fprintf(local_repo_file, ",\n");
+
+        // We append the package name, version, description, update and removal instructions to the file
+        fprintf(local_repo_file, 
+                "{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", 
+                package_name, package_version, package_description, package_update, package_removal);
+        
+        //We add the last ]} characters to the file
+        fprintf(local_repo_file, "]}");
+    }
+    else
+    {
+        fprintf(local_repo_file, "{\"packages\":[\n");
+
+        // We append the package name, version, description, update and removal instructions to the file
+        fprintf(local_repo_file, 
+                "{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", 
+                package_name, package_version, package_description, package_update, package_removal);
+        
+        //We add the last ]} characters to the file
+        fprintf(local_repo_file, "]}");
+    }
 }
