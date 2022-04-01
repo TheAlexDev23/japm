@@ -4,7 +4,8 @@
 #include <json-c/json.h>
 
 #include "errors.h"
-#include "IO/json.h"
+//#include "IO/json.h"
+#include "IO/local-repo.h"
 #include "package.h"
 #include "internet.h"
 
@@ -15,7 +16,6 @@
 
 int install_single_package(char *package_name);
 void install_package_to_system(package package_info);
-void update_local_repository(package pkg);
 
 int 
 install_package(int argc, char **argv)
@@ -83,13 +83,12 @@ install_single_package(char *package_name)
 
     package pkg_info = parse_package_information(json_file);
 
-    printf("Installing the package...\n");
     // We install the package to the system using the pkg_info struct
+    printf("Installing the package...\n");
     install_package_to_system(pkg_info);
 
-    // We update the local repository with the package info
-    printf("Updating the local repository...\n");
-    update_local_repository(pkg_info);
+    printf("Updating local repo...\n");
+    add_package_to_local_repo(pkg_info);
 
     add_package_to_installed_packages(package_name);
     printf("Package \"%s\" installed successfully\n", package_name);
@@ -150,65 +149,5 @@ install_package_to_system(package package_info)
         //TODO: Find a way of suppressing the output of the command 
         // We execute the command
         system(json_object_get_string(command));
-    }
-}
-
-void 
-update_local_repository(package pkg)
-{
-    int add_coma = 1;
-    start_again: ;
-    //This function would update the local repository of installed packages
-    //This is done by appending the name,version,description,update and removal instructions of the package to the /var/japm/repos/local.json file in a json format
-    //We need to open the local.json file
-    FILE *local_repo_file = fopen("/var/japm/repos/local.json", "a");
-
-    if (local_repo_file == NULL)
-    {
-        //We create the local.json file
-        system("mkdir -p /var/japm/repos");
-        system("touch /var/japm/repos/local.json");
-        add_coma = 0;
-        goto start_again;
-    }
-
-    //We need to get the package name, version, description, update and removal instructions from the package.json file
-    //We get the name of the package
-    char *package_name = json_object_get_string(pkg.name);
-    //We get the version of the package
-    char *package_version = json_object_get_string(pkg.version);
-    //We get the description of the package
-    char *package_description = json_object_get_string(pkg.description);
-    //We get the update instructions of the package
-    char *package_update = json_object_get_string(pkg.update);
-    //We get the removal instructions of the package
-    char *package_removal = json_object_get_string(pkg.remove);
-
-    //We append the package name, version, description, update and removal instructions to the local.json file
-    if (!add_coma)
-    {
-        // We truncate the last 2 ]} characters of the file
-        fseek(local_repo_file, -2, SEEK_END);
-        fprintf(local_repo_file, ",\n");
-
-        // We append the package name, version, description, update and removal instructions to the file
-        fprintf(local_repo_file, 
-                "{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", 
-                package_name, package_version, package_description, package_update, package_removal);
-        
-        //We add the last ]} characters to the file
-        fprintf(local_repo_file, "]}");
-    }
-    else
-    {
-        fprintf(local_repo_file, "{\"packages\":[\n");
-
-        // We append the package name, version, description, update and removal instructions to the file
-        fprintf(local_repo_file, 
-                "{\"name\":\"%s\",\"version\":\"%s\",\"description\":\"%s\",\"update\":\"%s\",\"remove\":\"%s\"}", 
-                package_name, package_version, package_description, package_update, package_removal);
-        
-        //We add the last ]} characters to the file
-        fprintf(local_repo_file, "]}");
     }
 }

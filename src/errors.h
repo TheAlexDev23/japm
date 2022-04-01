@@ -20,5 +20,6 @@ enum error_codes {
     package_not_found_error = 2,
     package_corrupted_error = 3,
     package_already_installed_error = 4,
+    dependency_break_error = 5,
     unkown_error = 10
 };

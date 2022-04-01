@@ -5,7 +5,8 @@
 
 typedef struct package package;
 
-struct package{
+struct package 
+{
     json_object *json_obj;
     
     json_object *name;

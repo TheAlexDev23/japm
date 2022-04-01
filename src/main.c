@@ -4,6 +4,7 @@
 #include "errors.h"
 #include "install.h"
 #include "main.h"
+#include "remove.h"
 
 int 
 main (int argc, char**argv) 
@@ -19,6 +20,8 @@ main (int argc, char**argv)
         case 1:
             install_package(argc, argv);
             break;
+        case 2:
+            remove_package(argv[2]);
         default:
             break;
     }
