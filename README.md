@@ -9,7 +9,7 @@ For now it's not finished and doesn't fully work. I'm only using GitHub to host 
 ## Dependencies:
 
 ```
-libjson-c
+libjson-c sqlite3
 ```
 
 # Bulding from source
@@ -20,7 +20,7 @@ libjson-c
 - Installing dependencies:
 
 ```bash
-sudo apt instal libjson-c-dev cmake
+sudo apt instal libjson-c-dev sqlite3 cmake
 ```
 
 - Building:
@@ -46,7 +46,7 @@ make
 - Installing dependencies:
 
 ```bash
-sudo pacman -S lib32-json-c cmake
+sudo pacman -S lib32-json-c sqlite3 cmake
 ```
 
 - Building:
