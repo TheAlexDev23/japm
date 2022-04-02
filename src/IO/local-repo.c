@@ -85,6 +85,12 @@ add_package_to_local_repo(package pkg)
     const char *package_version = json_object_get_string(pkg.version);
     const char *package_description = json_object_get_string(pkg.description);
 
+    /* 
+    * Dependencies, removal and update instructions (which are all arrays) would be saved differently in the database 
+    * Because they are arrays we would separate their values between semicolons
+    * In this way dependencies would be easily read and commands can also be executed 
+    */
+
     char *package_dependencies = calloc(strlen(json_object_get_string(pkg.dependencies)), sizeof(char));
     for (int i = 0; i < json_object_array_length(pkg.dependencies); i++)
     {
@@ -159,26 +165,58 @@ package return_pkg;
 int 
 callback(void *ptr, int column_num, char **values, char **rows)
 {
-    system("touch /tmp/japm_database_read_package_info");
-
-    FILE *f = fopen("/tmp/japm_database_read_package_info", "w");
-
-    if (f == NULL)
-    {
-        exit(unkown_error);
-    }
-
-    fprintf(f, "%s %s %s %s", values[0]);
-
     json_object_set_string(return_pkg.name, values[0]);
     json_object_set_string(return_pkg.version, values[1]);
     json_object_set_string(return_pkg.description, values[2]);
     
-    //TODO: Separate instructions between commas 
-    json_object_set_string(return_pkg.dependencies, values[3]);
-    json_object_set_string(return_pkg.remove, values[4]);
-    json_object_set_string(return_pkg.update, values[5]);
+    // We read in the values[3] array and every time we find a semicolon we add a new element to the dependencies array
 
+    char *dependencies = calloc(strlen(values[3]), sizeof(char));
+    
+    for (char *ptr = values[3]; *ptr != '\0'; ptr++)
+    {
+        if (*ptr == ';')
+        {
+            json_object_array_add(return_pkg.dependencies, json_object_new_string(dependencies));
+            dependencies = calloc(strlen(values[3]), sizeof(char));
+        }
+        else
+        {
+            strncat(dependencies, ptr, 1);
+        }
+    }
+
+    // We repeat the same proccess fro the other arrays
+
+    char *remove = calloc(strlen(values[4]), sizeof(char));
+
+    for (char *ptr = values[4]; *ptr != '\0'; ptr++)
+    {
+        if (*ptr == ';')
+        {
+            json_object_array_add(return_pkg.remove, json_object_new_string(remove));
+            remove = calloc(strlen(values[4]), sizeof(char));
+        }
+        else
+        {
+            strncat(remove, ptr, 1);
+        }
+    }
+
+    char *update = calloc(strlen(values[5]), sizeof(char));
+
+    for (char *ptr = values[5]; *ptr != '\0'; ptr++)
+    {
+        if (*ptr == ';')
+        {
+            json_object_array_add(return_pkg.update, json_object_new_string(update));
+            update = calloc(strlen(values[5]), sizeof(char));
+        }
+        else
+        {
+            strncat(update, ptr, 1);
+        }
+    }
     return 0;
 }
 
@@ -211,6 +249,13 @@ get_package_from_local_repo(char* package_name)
     strcat(sql, ";");
 
     rc = sqlite3_exec(db, sql, callback, NULL, &zErrMsg);
+
+    if (rc)
+    {
+        //Print in red the error message
+        printf("\033[0;31mSomething went wrong (SQL error: %s)\033[0m\n", zErrMsg);
+        exit(unkown_error);
+    }
 
     free(sql);
 
