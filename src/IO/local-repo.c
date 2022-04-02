@@ -85,21 +85,21 @@ add_package_to_local_repo(package pkg)
     const char *package_version = json_object_get_string(pkg.version);
     const char *package_description = json_object_get_string(pkg.description);
 
-    char package_dependencies[strlen(json_object_get_string(pkg.dependencies))];
+    char *package_dependencies = calloc(strlen(json_object_get_string(pkg.dependencies)), sizeof(char));
     for (int i = 0; i < json_object_array_length(pkg.dependencies); i++)
     {
         strcat(package_dependencies, json_object_get_string(json_object_array_get_idx(pkg.dependencies, i)));
         strcat(package_dependencies, ";");
     }
     
-    char package_remove[strlen(json_object_get_string(pkg.remove))];
+    char *package_remove = calloc(strlen(json_object_get_string(pkg.remove)), sizeof(char));
     for (int i = 0; i < json_object_array_length(pkg.remove); i++)
     {
         strcat(package_remove, json_object_get_string(json_object_array_get_idx(pkg.remove, i)));
         strcat(package_remove, ";");
     }
 
-    char package_update[strlen(json_object_get_string(pkg.update))];
+    char *package_update = calloc(strlen(json_object_get_string(pkg.update)), sizeof(char));
     for (int i = 0; i < json_object_array_length(pkg.update); i++)
     {
         strcat(package_update, json_object_get_string(json_object_array_get_idx(pkg.update, i)));
@@ -141,7 +141,7 @@ add_package_to_local_repo(package pkg)
     strcat(sql, package_update);
     strcat(sql, "');");
 
-    printf("%s\n", sql);
+    printf("\n\n%s\n\n", sql);
 
     rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
 
