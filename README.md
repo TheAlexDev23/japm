@@ -6,13 +6,21 @@ I've seen many people trying to build their own package manager recently, so I a
 
 For now it's not finished and doesn't fully work. I'm only using GitHub to host the code.
 
+# Milestones
+
+- [x] Package Installation
+- [ ] Package Removal -> Working On
+- [ ] Package Update
+- [ ] Package Search
+
+# Bulding from source
+
 ## Dependencies:
 
 ```
 libjson-c sqlite3
 ```
 
-# Bulding from source
 
 ### Debian or Debian based
 
