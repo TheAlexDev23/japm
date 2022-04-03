@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#include "IO/json.h"
 #include "IO/local-repo.h"
 #include "package.h"
 #include "errors.h"
@@ -15,18 +14,18 @@ void
 remove_package(char *package_name)
 {
     // We get the package from the local repository
-    printf("Preparing to remove the package...\n");
+    printf("==> Preparing to remove the package...\n");
     package pkg = get_package_from_local_repo(package_name);
 
     // We check if removing the package might break any depenencies
     check_if_remove_breaks_dependency(package_name);
 
     // We remove the package from the system
-    printf("Removing the package...\n");
+    printf("==> Removing the package...\n");
     remove_package_from_system(pkg);
 
     // We remove the package from the local repository
-    printf("Updating the local repository...\n");
+    printf("==> Updating the local repository...\n");
     remove_package_from_local_repository(json_object_get_string(pkg.name));
 }
 
@@ -58,7 +57,7 @@ void check_if_remove_breaks_dependency(char *package_name)
         {
             line_buffer[count] = '\0';
 
-            printf("Removing the package breaks the dependency of %s\n", line_buffer);
+            printf("\033[31mRemoving the package breaks the dependency of %s\n", line_buffer);
 
             free(used_by);
             fclose(used_by_file);
@@ -79,9 +78,14 @@ void check_if_remove_breaks_dependency(char *package_name)
 void
 remove_package_from_system(package pkg)
 {
-    // We get the package removal instructions
-    char *package_removal = json_object_get_string(pkg.remove);
-
     // We remove the package from the system
-    system(package_removal);
+    char *remove_instructions = json_object_get_string(pkg.remove);
+    printf("%s\n", remove_instructions);
+    system(remove_instructions);
+
+    char *package_folder = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(json_object_get_string(pkg.name)) + 1));
+
+    strcpy(package_folder, "/var/japm/packages/");
+
+    system(strcat("rm -rf ", package_folder));
 }

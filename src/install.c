@@ -8,6 +8,7 @@
 #include "IO/local-repo.h"
 #include "package.h"
 #include "internet.h"
+#include "term.h"
 
 // Some hardcoded values that are used in the program
 #define MAX_PACKAGE_FILE_SIZE 10240
@@ -33,7 +34,7 @@ install_single_package(char *package_name)
 {
     if (check_if_package_is_installed(package_name))
     {
-        printf("Package \"%s\" is already installed\n", package_name);
+        printf("==> Package '%s' is already installed\n", package_name);
         return 0;
     }
 
@@ -47,20 +48,21 @@ install_single_package(char *package_name)
     strcat(url, package_name);
     strcat(url, "/package.json");
 
-    printf("Downloading the package metadata...\n");
+    printf("==> Downloading the package metadata...\n");
 
     int http_res = http_req(url);
 
     if (http_res == 404)
     {
         // Package is not found on the repo
-        printf("Package \"%s\" not found \n", package_name);
+        printf("==> Package \"%s\" not found \n", package_name);
         exit(package_not_found_error);
     }
     else if (http_res != 200)
     {
         // Some unkown or server error happened
-        printf("Something Went Wrong\n...");
+
+        printf("\033[31m==> Something Went Wrong...\033[0m\n");
         exit(unkown_error);
     }
 
@@ -73,25 +75,25 @@ install_single_package(char *package_name)
     strcat(json_file_location, package_name);
     FILE *json_file = fopen(json_file_location, "r");
 
-    printf("Parsing the package metadata...\n");
+    printf("==> Parsing the package metadata...\n");
 
     if (json_file == NULL)
     {
-        printf("Couldn't open the package.json file\n");
+        printf("\033[31m==> Couldn't open the package.json file\033[0m\n");
         exit(unkown_error);
     }
 
     package pkg_info = parse_package_information(json_file);
 
     // We install the package to the system using the pkg_info struct
-    printf("Installing the package...\n");
+    printf("==> Installing the package...\n");
     install_package_to_system(pkg_info);
 
-    printf("Updating local repo...\n");
-    add_package_to_local_repo(pkg_info);
+    printf("==> Updating local repo...\n");
+    add_package_to_local_repo(pkg_info, package_name);
 
     add_package_to_installed_packages(package_name);
-    printf("Package \"%s\" installed successfully\n", package_name);
+    printf("==> Package \"%s\" installed successfully\n", package_name);
 }
 
 void 
@@ -104,7 +106,7 @@ install_package_to_system(package package_info)
     int dependencies_number = json_object_array_length(package_info.dependencies);
 
     // We print out the dependencies to the user
-    if (dependencies_number != 0) printf("Dependencies of %s:\n", json_object_get_string(package_info.name));
+    if (dependencies_number != 0) printf("==> Dependencies of %s:\n", json_object_get_string(package_info.name));
 
     // We iterate over the dependencies array
     for (int i = 0; i < dependencies_number; i++)
@@ -113,7 +115,7 @@ install_package_to_system(package package_info)
         json_object *dependency = json_object_array_get_idx(package_info.dependencies, i);
 
         // We print the dependency to the user
-        printf("    %s\n", json_object_get_string(dependency));
+        printf("    - %s\n", json_object_get_string(dependency));
     }
 
     // We iterate over all the dependencies and install them
