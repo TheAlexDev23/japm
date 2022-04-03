@@ -10,8 +10,7 @@
 void remove_package_from_system(package pkg);
 void check_if_remove_breaks_dependency(char *package_name);
 
-void 
-remove_package(char *package_name)
+void remove_package(char *package_name)
 {
     // We get the package from the local repository
     printf("==> Preparing to remove the package...\n");
@@ -61,7 +60,7 @@ void check_if_remove_breaks_dependency(char *package_name)
 
             free(used_by);
             fclose(used_by_file);
-            
+
             exit(dependency_break_error);
         }
         else
@@ -70,13 +69,12 @@ void check_if_remove_breaks_dependency(char *package_name)
             count++;
         }
     }
-    
+
     free(used_by);
     fclose(used_by_file);
 }
 
-void
-remove_package_from_system(package pkg)
+void remove_package_from_system(package pkg)
 {
     // We remove the package from the system
     char *remove_instructions = json_object_get_string(pkg.remove);

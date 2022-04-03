@@ -8,7 +8,6 @@
 #include "IO/local-repo.h"
 #include "package.h"
 #include "internet.h"
-#include "term.h"
 
 // Some hardcoded values that are used in the program
 #define MAX_PACKAGE_FILE_SIZE 10240
@@ -18,8 +17,7 @@
 int install_single_package(char *package_name);
 void install_package_to_system(package package_info);
 
-int 
-install_package(int argc, char **argv)
+int install_package(int argc, char **argv)
 {
     if (check_install_usage(argc, argv))
     {
@@ -29,8 +27,7 @@ install_package(int argc, char **argv)
     return install_single_package(argv[2]);
 }
 
-int 
-install_single_package(char *package_name)
+int install_single_package(char *package_name)
 {
     if (check_if_package_is_installed(package_name))
     {
@@ -38,12 +35,12 @@ install_single_package(char *package_name)
         return 0;
     }
 
-    //The package metadata would be located in https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/package_name/package.json
-    //We need to create a url string according the the package name and then call the http_req function to get the response code
-    //If the response code is 200 then we need to download the package file and then install it to the system
-    //If the response code is 404 then we need to print an error message and exit with the package_not_found_error code
-    //If the response code is anything else then we need to print an error message and exit with the unkown_error code
-    char* url = malloc(sizeof(char) * (strlen("https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/") + strlen(package_name) + strlen("/package.json") + 1));
+    // The package metadata would be located in https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/package_name/package.json
+    // We need to create a url string according the the package name and then call the http_req function to get the response code
+    // If the response code is 200 then we need to download the package file and then install it to the system
+    // If the response code is 404 then we need to print an error message and exit with the package_not_found_error code
+    // If the response code is anything else then we need to print an error message and exit with the unkown_error code
+    char *url = malloc(sizeof(char) * (strlen("https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/") + strlen(package_name) + strlen("/package.json") + 1));
     strcpy(url, "https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/");
     strcat(url, package_name);
     strcat(url, "/package.json");
@@ -66,11 +63,11 @@ install_single_package(char *package_name)
         exit(unkown_error);
     }
 
-    //Download the package file from the repo
+    // Download the package file from the repo
     download_package(url, package_name);
 
     // Parse the package.json file downloaded from the repo
-    char* json_file_location = malloc(sizeof(char) * (strlen("/var/cache/japm/") + strlen(package_name) + 1));
+    char *json_file_location = malloc(sizeof(char) * (strlen("/var/cache/japm/") + strlen(package_name) + 1));
     strcpy(json_file_location, "/var/cache/japm/");
     strcat(json_file_location, package_name);
     FILE *json_file = fopen(json_file_location, "r");
@@ -96,8 +93,7 @@ install_single_package(char *package_name)
     printf("==> Package \"%s\" installed successfully\n", package_name);
 }
 
-void 
-install_package_to_system(package package_info)
+void install_package_to_system(package package_info)
 {
     // This function would install the package and it's dependencies to the system
     // We install all the dependencies recursevly using the install_single_package function
@@ -106,7 +102,8 @@ install_package_to_system(package package_info)
     int dependencies_number = json_object_array_length(package_info.dependencies);
 
     // We print out the dependencies to the user
-    if (dependencies_number != 0) printf("==> Dependencies of %s:\n", json_object_get_string(package_info.name));
+    if (dependencies_number != 0)
+        printf("==> Dependencies of %s:\n", json_object_get_string(package_info.name));
 
     // We iterate over the dependencies array
     for (int i = 0; i < dependencies_number; i++)
@@ -134,22 +131,22 @@ install_package_to_system(package package_info)
 
         // We open the used_by file of the dependency
         FILE *used_by_file = fopen(strcat(dependency_folder_dir, "/used_by"), "a");
-        
+
         // We append the name of the package being installed to the used_by file
         fprintf(used_by_file, "%s\n", json_object_get_string(package_info.name));
     }
 
-    //We need to execute the commands array in the package.json file
-    //We get the number of commands
+    // We need to execute the commands array in the package.json file
+    // We get the number of commands
     int commands_number = json_object_array_length(package_info.install);
-    //We iterate over the commands array
+    // We iterate over the commands array
     for (int i = 0; i < commands_number; i++)
     {
-        //We get the current command
+        // We get the current command
         json_object *command = json_object_array_get_idx(package_info.install, i);
-        
-        //TODO: Find a way of suppressing the output of the command 
-        // We execute the command
+
+        // TODO: Find a way of suppressing the output of the command
+        //  We execute the command
         system(json_object_get_string(command));
     }
 }

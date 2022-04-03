@@ -8,7 +8,7 @@ package parse_package_information(FILE *file)
     fread(buffer, sizeof(char), MAX_PACKAGE_METADATA_FILE_SIZE, file);
     fclose(file);
 
-    json_object *parsed_json;  // The json object extracted from the package file
+    json_object *parsed_json; // The json object extracted from the package file
 
     json_object *name;
     json_object *version;
@@ -19,7 +19,6 @@ package parse_package_information(FILE *file)
     json_object *install;
     json_object *remove;
     json_object *update;
-
 
     parsed_json = json_tokener_parse(buffer);
 
@@ -36,7 +35,7 @@ package parse_package_information(FILE *file)
 
     // Create a package struct
     package pkg;
-    
+
     pkg.json_obj = parsed_json;
 
     pkg.name = name;

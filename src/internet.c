@@ -4,7 +4,7 @@
 
 #include "errors.h"
 
-int http_req(char*url) 
+int http_req(char *url)
 {
     /* Create a HTTP request to the provided argument url and return the response code */
     /* To do the request I will call curl command using the system function */
@@ -29,16 +29,15 @@ int http_req(char*url)
     fclose(fp);
     free(command);
 
-    //Convert the reponse code to integer and return it
+    // Convert the reponse code to integer and return it
     return atoi(response_code);
 }
 
-void 
-download_package(char*url, char*package_name)
+void download_package(char *url, char *package_name)
 {
     // Download the package file from the provided url
     // The file would be saved in /var/cache/japm/package_name
-    
+
     system("mkdir -p /var/cache/japm"); // The cache directory for japm might not exist so we need to first create it using the mkdir command
 
     char *command = malloc(sizeof(char) * (strlen(url) + strlen("curl -s -o /var/cache/japm/") + strlen(package_name) + 1));
