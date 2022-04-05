@@ -115,8 +115,13 @@ start_again:;
     }
 
     char *sql = malloc(sizeof(char) *
-                           (strlen("INSERT INTO packages (name, version, description, dependencies, remove_instructions, update_instructions) VALUES (") + strlen(package_name) + strlen("'', ") + strlen(package_version) + strlen("'', ") + strlen(package_description) + strlen("'', ") + strlen(package_dependencies) + strlen("'', ") + strlen(package_remove) + strlen("'', ") + strlen(package_update) + strlen("'');")) +
-                       1);
+                           (strlen("INSERT INTO packages (name, version, description, dependencies, remove_instructions, update_instructions) VALUES (") + 
+                           strlen(package_name) + strlen("'', ") + 
+                           strlen(package_version) + strlen("'', ") + 
+                           strlen(package_description) + strlen("'', ") + 
+                           strlen(package_dependencies) + strlen("'', ") + 
+                           strlen(package_remove) + strlen("'', ") 
+                           + strlen(package_update) + strlen("'');")) + 1);
 
     strcpy(sql, "INSERT INTO packages (name, version, description, dependencies, remove_instructions, update_instructions) VALUES (");
 
@@ -164,13 +169,14 @@ int callback(void *ptr, int column_num, char **values, char **rows)
 
     char *temp_file = "/tmp/japm_sql_callback_temp_file";
     // We empty the file
-    system("echo '' > /tmp/japm_sql_callback_temp_file");
+    system("touch /tmp/japm_sql_callback_temp_file");
+    system("truncate -s 0 /tmp/japm_sql_callback_temp_file");
 
     FILE *fp = fopen(temp_file, "a");
 
     if (fp == NULL)
     {
-        printf("Unable to open file\n");
+        printf("Unable to open temp file\n");
         exit(unkown_error);
     }
 
@@ -211,8 +217,6 @@ start_again:;
     strcat(sql, package_name);
     strcat(sql, "';");
 
-    printf("\n\n%s\n\n", sql);
-
     rc = sqlite3_exec(db, sql, callback, NULL, &zErrMsg);
 
     if (rc)
@@ -233,12 +237,13 @@ start_again:;
     }
 
     package return_package;
-    return_package.name = json_object_new_object();
-    return_package.version = json_object_new_object();
-    return_package.description = json_object_new_object();
-    return_package.dependencies = json_object_new_object();
-    return_package.remove = json_object_new_object();
-    return_package.update = json_object_new_object();
+
+    return_package.name = json_object_new_string("");
+    return_package.version = json_object_new_string("");
+    return_package.description = json_object_new_string("");
+    return_package.dependencies = json_object_new_string("");
+    return_package.remove = json_object_new_string("");
+    return_package.update = json_object_new_string("");
 
     json_object *json_fields_to_be_read[6] = {
         return_package.name,
@@ -246,26 +251,40 @@ start_again:;
         return_package.description,
         return_package.dependencies,
         return_package.remove,
-        return_package.update};
+        return_package.update
+    };
 
-    for (int i = 0; i < 6; i++)
+    int i = 0;
+    char line[5000];
+
+    while(fgets(line, sizeof(line), fp) != NULL && i <= 6)
     {
-        char *line = malloc(sizeof(fp)); // Not the most efficient thing but it does the job
-        fscanf(fp, "%s", line);
-        printf("%s\n", line);
+        line[strlen(line) - 1] = '\0';
         json_object_set_string(json_fields_to_be_read[i], line);
-        free(line);
+        i++;
     }
 
-    return return_package;
+    // If the file has 0 lines then the package doesn't exist in the local repo
+    if (i == 0)
+    {
+        printf("\033[31mPackage not found in local repo\n");
+        exit(package_not_found_error);
+    }
+
+    //Clear the file so we cannot use it again after the package is deleted
+    system("truncate -s 0 /tmp/japm_sql_callback_temp_file");
+
+    fclose(fp);
 
     free(sql);
+
+    return return_package;
 }
 
 void update_package_in_local_repository(package pkg)
 {
-// We open the /var/japm/repos/local.db file and update the package using sqlite3
-start_again:;
+    // We open the /var/japm/repos/local.db file and update the package using sqlite3
+    start_again:;
 
     sqlite3 *db;
     char *zErrMsg = 0;

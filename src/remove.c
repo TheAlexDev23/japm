@@ -2,17 +2,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 
 #include "IO/local-repo.h"
 #include "package.h"
 #include "errors.h"
 
-void remove_package_from_system(package pkg);
+void remove_package_from_system(package pkg, char *package_name);
 void check_if_remove_breaks_dependency(char *package_name);
+void post_install(const char *package_name);
 
 void remove_package(char *package_name)
 {
     // We get the package from the local repository
+    // ! It's important to know that even though the package's dependency, removal and update instructions in the json object are usually arrays in this case they are strings
     printf("==> Preparing to remove the package...\n");
     package pkg = get_package_from_local_repo(package_name);
 
@@ -21,14 +24,93 @@ void remove_package(char *package_name)
 
     // We remove the package from the system
     printf("==> Removing the package...\n");
-    remove_package_from_system(pkg);
+    remove_package_from_system(pkg, package_name);
+
+    printf("==> Refreshing packages...\n");
+    post_install(json_object_get_string(pkg.name));
 
     // We remove the package from the local repository
     printf("==> Updating the local repository...\n");
-    remove_package_from_local_repository(json_object_get_string(pkg.name));
+    remove_package_from_local_repository(package_name);
 }
 
-void check_if_remove_breaks_dependency(char *package_name)
+void post_install(const char *package_name)
+{
+    // We would iterate through all package's used_by file and remove the package_name from the used_by file
+    // We iterate for each folder under /var/japm/packages/
+
+    // We open the /var/japm/packages/ folder
+    DIR *dir = opendir("/var/japm/packages/");
+
+    if (dir == NULL)
+    {
+        printf("\033[31m==> Something went wrong...\n");
+        exit(unkown_error);
+    }
+
+    struct dirent *de = readdir(dir);
+    
+    while (de != NULL && strcmp(de->d_name, ".") != 0)
+    {
+        printf("    ==> Updating %s...\n", de->d_name);
+        // We open the package's used_by file
+        char *used_by_file_dir = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(de->d_name) + strlen("/used_by") + 1));
+        strcpy(used_by_file_dir, "/var/japm/packages/");
+        strcat(used_by_file_dir, de->d_name);
+        strcat(used_by_file_dir, "/used_by");
+
+        FILE *used_by_file = fopen(used_by_file_dir, "r");
+
+        if (used_by_file == NULL)
+        {
+            printf("\n\033[31m==> Something went wrong...\n");
+            exit(unkown_error);
+        }
+
+        // We read line by line the used_by file and write it to a temporary file
+        // Unless the line we are reading is the package_name we want to remove, then we would just skip it
+        char *temp_file_dir = malloc(sizeof(char) * (strlen(used_by_file_dir) + strlen("_temp") + 1));
+        strcpy(temp_file_dir, used_by_file_dir);
+        strcat(temp_file_dir, "_temp");
+
+        FILE *temp_file = fopen(temp_file_dir, "w");
+
+        if (temp_file == NULL)
+        {
+            printf("\n\033[31m==> Something went wrong...\n");
+            exit(unkown_error);
+        }
+
+        char line[5000];
+
+        while (fgets(line, sizeof(line), used_by_file) != NULL)
+        {
+            line[strlen(line) - 1] = '\0';
+
+            if (strcmp(line, package_name) != 0)
+            {
+                fprintf(temp_file, "%s\n", line);
+            }
+        }
+
+        // We replace the used_by file with the temporary file
+        fclose(used_by_file);
+        fclose(temp_file);
+
+        char *command = malloc(sizeof(char) * (strlen("mv ") + strlen(temp_file_dir) + strlen(" ") + strlen(used_by_file_dir) + 1));
+        strcpy(command, "mv ");
+        strcat(command, temp_file_dir);
+        strcat(command, " ");
+        strcat(command, used_by_file_dir);
+
+        system(command);
+
+        de = readdir(dir);
+    }
+}
+
+void 
+check_if_remove_breaks_dependency(char *package_name)
 {
     // We get the used_by file from the package we want to remove (/var/japm/packages/<package_name>/used_by)
     char *used_by = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(package_name) + strlen("/used_by") + 1));
@@ -74,16 +156,16 @@ void check_if_remove_breaks_dependency(char *package_name)
     fclose(used_by_file);
 }
 
-void remove_package_from_system(package pkg)
+void remove_package_from_system(package pkg, char *package_name)
 {
     // We remove the package from the system
-    char *remove_instructions = json_object_get_string(pkg.remove);
-    printf("%s\n", remove_instructions);
+    const char *remove_instructions = json_object_get_string(pkg.remove);
     system(remove_instructions);
 
-    char *package_folder = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(json_object_get_string(pkg.name)) + 1));
+    char *package_folder = malloc(sizeof(char) * (strlen("rm -rf ") + strlen("/var/japm/packages/") + strlen(package_name) + 1));
 
-    strcpy(package_folder, "/var/japm/packages/");
+    strcpy(package_folder, "rm -rf /var/japm/packages/");
+    strcat(package_folder, package_name);
 
-    system(strcat("rm -rf ", package_folder));
+    system(package_folder);
 }

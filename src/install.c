@@ -15,7 +15,7 @@
 #define MAX_COMMANDS_NUMBER 1000
 
 int install_single_package(char *package_name);
-void install_package_to_system(package package_info);
+void install_package_to_system(package package_info, char *package_name);
 
 int install_package(int argc, char **argv)
 {
@@ -84,7 +84,7 @@ int install_single_package(char *package_name)
 
     // We install the package to the system using the pkg_info struct
     printf("==> Installing the package...\n");
-    install_package_to_system(pkg_info);
+    install_package_to_system(pkg_info, package_name);
 
     printf("==> Updating local repo...\n");
     add_package_to_local_repo(pkg_info, package_name);
@@ -93,7 +93,7 @@ int install_single_package(char *package_name)
     printf("==> Package \"%s\" installed successfully\n", package_name);
 }
 
-void install_package_to_system(package package_info)
+void install_package_to_system(package package_info, char *package_name)
 {
     // This function would install the package and it's dependencies to the system
     // We install all the dependencies recursevly using the install_single_package function
@@ -133,7 +133,7 @@ void install_package_to_system(package package_info)
         FILE *used_by_file = fopen(strcat(dependency_folder_dir, "/used_by"), "a");
 
         // We append the name of the package being installed to the used_by file
-        fprintf(used_by_file, "%s\n", json_object_get_string(package_info.name));
+        fprintf(used_by_file, "%s\n", package_name);
     }
 
     // We need to execute the commands array in the package.json file
