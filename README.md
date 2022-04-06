@@ -36,7 +36,8 @@ sudo apt instal libjson-c-dev sqlite3 cmake
 ```bash
 git clone https://github.com/TheAlexDev23/japm.git
 cd japm
-make install
+chmod +x build.sh
+./build.sh
 ```
 #### OR
 
@@ -62,7 +63,8 @@ sudo pacman -S lib32-json-c sqlite3 cmake
 ```bash
 git clone https://github.com/TheAlexDev23/japm.git
 cd japm
-make install
+chmod +x build.sh
+./build.sh
 ```
 #### OR
 
@@ -77,4 +79,4 @@ make
 
 - Documentation:
 
-- Coming soon
+    - Coming soon
