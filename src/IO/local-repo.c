@@ -149,8 +149,6 @@ start_again:;
     strcat(sql, package_update);
     strcat(sql, "');");
 
-    // printf("\n\n%s\n\n", sql);
-
     rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
 
     if (rc)

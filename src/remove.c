@@ -5,6 +5,7 @@
 #include <dirent.h>
 
 #include "IO/local-repo.h"
+#include "IO/term.h"
 #include "package.h"
 #include "errors.h"
 
@@ -16,22 +17,23 @@ void remove_package(char *package_name)
 {
     // We get the package from the local repository
     // ! It's important to know that even though the package's dependency, removal and update instructions in the json object are usually arrays in this case they are strings
-    printf("==> Preparing to remove the package...\n");
+    printf("\033[0;32m==> Preparing to remove the package...\n");
     package pkg = get_package_from_local_repo(package_name);
 
     // We check if removing the package might break any depenencies
     check_if_remove_breaks_dependency(package_name);
 
     // We remove the package from the system
-    printf("==> Removing the package...\n");
+    printf("\033[0;32m==> Removing the package...\n");
     remove_package_from_system(pkg, package_name);
 
-    printf("==> Refreshing packages...\n");
+    printf("\033[0;32m==> Refreshing packages...\n");
     post_install(json_object_get_string(pkg.name));
 
     // We remove the package from the local repository
-    printf("==> Updating the local repository...\n");
+    printf("\033[0;32m==> Updating the local repository...\n");
     remove_package_from_local_repository(package_name);
+    reset();
 }
 
 void post_install(const char *package_name)
@@ -45,6 +47,7 @@ void post_install(const char *package_name)
     if (dir == NULL)
     {
         printf("\033[31m==> Something went wrong...\n");
+        reset();
         exit(unkown_error);
     }
 
@@ -52,7 +55,7 @@ void post_install(const char *package_name)
     
     while (de != NULL && strcmp(de->d_name, ".") != 0)
     {
-        printf("    ==> Updating %s...\n", de->d_name);
+        printf("\033[0;32m    ==> Updating %s...\n", de->d_name);
         // We open the package's used_by file
         char *used_by_file_dir = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(de->d_name) + strlen("/used_by") + 1));
         strcpy(used_by_file_dir, "/var/japm/packages/");
@@ -64,6 +67,7 @@ void post_install(const char *package_name)
         if (used_by_file == NULL)
         {
             printf("\n\033[31m==> Something went wrong...\n");
+            reset();
             exit(unkown_error);
         }
 
@@ -78,6 +82,7 @@ void post_install(const char *package_name)
         if (temp_file == NULL)
         {
             printf("\n\033[31m==> Something went wrong...\n");
+            reset();
             exit(unkown_error);
         }
 
@@ -139,6 +144,8 @@ check_if_remove_breaks_dependency(char *package_name)
             line_buffer[count] = '\0';
 
             printf("\033[31mRemoving the package breaks the dependency of %s\n", line_buffer);
+
+            reset();
 
             free(used_by);
             fclose(used_by_file);
