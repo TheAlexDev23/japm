@@ -24,3 +24,7 @@ jobs:
       run: cmake -B ${{github.workspace}}/build  -S ${{github.workspace}}/src
     - name: Build Project
       run: cd ${{github.workspace}}/build && make
+    - name: Install single package with dependency
+      run: sudo ./japm install test-package2
+    - name: Remove packages
+      run: sudo ./japm remove test-package2 && sudo ./japm remove test-package
