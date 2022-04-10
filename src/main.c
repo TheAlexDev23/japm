@@ -5,6 +5,7 @@
 #include "install.h"
 #include "main.h"
 #include "remove.h"
+#include "update.h"
 
 int main(int argc, char **argv)
 {
@@ -19,10 +20,28 @@ int main(int argc, char **argv)
     switch (input_type)
     {
     case 1:
+		//TODO: Multiple package install
         install_package(argc, argv);
-        break;
+		break;
     case 2:
+		//TODO: Multiple package removal
         remove_package(argv[2]);
+		break;
+	case 3:
+		//TODO: Multiple package updates
+		// pm update [package_name]
+		// pm update system
+			
+		if (strcmp(argv[2], "system") == 0)
+		{
+			update_system();
+		} 
+		else 
+		{
+			update_package(argv[2]);
+		}
+
+		break;
     default:
         break;
     }
