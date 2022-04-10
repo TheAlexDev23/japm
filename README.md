@@ -9,7 +9,7 @@ For now it's not finished and doesn't fully work. I'm only using GitHub to host 
 # Milestones
 
 - [x] Package Installation
-- [ ] Package Removal -> Working On
+- [x] Package Removal
 - [ ] Package Update
 - [ ] Package Search
 
