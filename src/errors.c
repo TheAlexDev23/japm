@@ -71,8 +71,8 @@ void remove_usage(char *program_name)
 {
     printf("\033[0mUsage:\n");
     printf("    %s remove [options] [package]\n", program_name);
-	printf("		  Options:\n");
-    printf("              -r    -> Remove package and the package that depend on it\n");
+	printf("           Options:\n");
+    printf("                -r    -> Remove package and the package that depend on it\n");
 }
 
 int check_remove_usage(int argc, char **argv)
@@ -83,6 +83,12 @@ int check_remove_usage(int argc, char **argv)
         remove_usage(argv[0]);
         return 1;
     }
+	else if (argc < 4 && strcmp(argv[2], "-r") == 0)
+	{
+        fprintf(stderr, "\033[31mBad Usage\n\n");
+        remove_usage(argv[0]);
+        return 1;
+	}
 
     return 0;
 }
@@ -119,3 +125,4 @@ int check_root()
 
     return 0;
 }
+

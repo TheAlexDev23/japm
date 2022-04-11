@@ -31,11 +31,22 @@ int main(int argc, char **argv)
 			break;
 		case 2:
 			if (check_remove_usage(argc, argv)) exit(wrong_usage_error);
-
-			for (int i = 0; i < argc - 2; i++) 
+			
+			if (strcmp(argv[2], "-r") == 0)
 			{
-				remove_package(argv[i + 2]);
+				for (int i = 0; i < argc - 3; i++) 
+				{
+					remove_package_rec(argv[i + 3]);
+				}
 			}
+			else
+			{
+				for (int i = 0; i < argc - 2; i++) 
+				{
+					remove_package(argv[i + 2]);
+				}
+			}
+
 			break;
 		case 3:
 			if (check_update_usage(argc, argv)) exit(wrong_usage_error);

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <stdbool.h>
 
 #include "IO/local-repo.h"
 #include "IO/term.h"
@@ -10,7 +11,7 @@
 #include "errors.h"
 
 void remove_package_from_system(package pkg, char *package_name);
-void check_if_remove_breaks_dependency(char *package_name);
+void check_if_remove_breaks_dependency(char *package_name, bool rec);
 void post_install(const char *package_name);
 
 void remove_package_no_dep_check(char *package_name)
@@ -33,6 +34,29 @@ void remove_package_no_dep_check(char *package_name)
     reset();
 }
 
+void remove_package_rec(char *package_name)
+{
+    // We get the package from the local repository
+    // ! It's important to know that even though the package's dependency, removal and update instructions in the json object are usually arrays in this case they are strings
+    printf("\033[0;32m==> Preparing to remove the package...\n");
+    package pkg = get_package_from_local_repo(package_name);
+
+    // We check if removing the package might break any depenencies
+    check_if_remove_breaks_dependency(package_name, true);
+
+    // We remove the package from the system
+    printf("\033[0;32m==> Removing the package...\n");
+    remove_package_from_system(pkg, package_name);
+
+    printf("\033[0;32m==> Refreshing packages...\n");
+    post_install(json_object_get_string(pkg.name));
+
+    // We remove the package from the local repository
+    printf("\033[0;32m==> Updating the local repository...\n");
+    remove_package_from_local_repository(package_name);
+    reset();
+}
+
 void remove_package(char *package_name)
 {
     // We get the package from the local repository
@@ -41,7 +65,7 @@ void remove_package(char *package_name)
     package pkg = get_package_from_local_repo(package_name);
 
     // We check if removing the package might break any depenencies
-    check_if_remove_breaks_dependency(package_name);
+    check_if_remove_breaks_dependency(package_name, false);
 
     // We remove the package from the system
     printf("\033[0;32m==> Removing the package...\n");
@@ -135,7 +159,7 @@ void post_install(const char *package_name)
 }
 
 void 
-check_if_remove_breaks_dependency(char *package_name)
+check_if_remove_breaks_dependency(char *package_name, bool rec)
 {
     // We get the used_by file from the package we want to remove (/var/japm/packages/<package_name>/used_by)
     char *used_by = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(package_name) + strlen("/used_by") + 1));
@@ -163,14 +187,21 @@ check_if_remove_breaks_dependency(char *package_name)
         {
             line_buffer[count] = '\0';
 
-            fprintf(stderr, "\033[31mRemoving the package breaks the dependency of %s\n", line_buffer);
+			if (rec)
+			{
+				remove_package_rec(line_buffer);
+			}
+			else
+			{
+				fprintf(stderr, "\033[31mRemoving the package breaks the dependency of %s\n", line_buffer);
 
-            reset();
+				reset();
 
-            free(used_by);
-            fclose(used_by_file);
+				free(used_by);
+				fclose(used_by_file);
 
-            exit(dependency_break_error);
+				exit(dependency_break_error);
+			}
         }
         else
         {
