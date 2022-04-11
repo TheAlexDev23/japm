@@ -71,36 +71,40 @@ void remove_usage(char *program_name)
 {
     printf("\033[0mUsage:\n");
     printf("    %s remove [options] [package]\n", program_name);
-    printf("              r    -> Remove package and the package that depend on it\n");
+	printf("		  Options:\n");
+    printf("              -r    -> Remove package and the package that depend on it\n");
 }
 
 int check_remove_usage(int argc, char **argv)
 {
-    // Return 0 if removing a single package
-    // Return 1 if bad usage
-    // Return 2 if removing all packages that depend on the package alongside with the package itself
-
     if (argc < 3)
     {
         fprintf(stderr, "\033[31mBad Usage\n\n");
         remove_usage(argv[0]);
         return 1;
     }
-    else if (argc == 4)
-    {
-        if (strcmp(argv[2], "r") != 0)
-        {
-            bad_usage(argv[2], argv[0]);
-            remove_usage(argv[0]);
-            return 1;
-        }
-        else
-        {
-            return 2;
-        }
-    }
 
     return 0;
+}
+
+void update_usage(char *program_name)
+{
+    printf("\033[0mUsage:\n");
+    printf("         %s update [package]\n", program_name);
+	printf("              Or\n");
+	printf("         %s update system -> update all packages\n", program_name);
+}
+
+int check_update_usage(int argc, char *argv[])
+{
+	if (argc < 3)
+	{
+		fprintf(stderr, "\033[0;31mBad usage\n\n");
+		update_usage(argv[0]);
+		return 1;
+	}
+
+	return 0;
 }
 
 /* SUDO AND ROOT PREVILIGIES CHECKING */

@@ -10,6 +10,9 @@ int check_install_usage(int argc, char **argv);
 void remove_usage(char *program_name);
 int check_remove_usage(int argc, char **argv);
 
+void update_usage(char *program_name);
+int check_update_usage(int argc, char *argv[]);
+
 /* sudo and root previliegies */
 
 int check_root();

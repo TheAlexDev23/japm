@@ -1,7 +1,7 @@
 - [x] Move to stderr
-- [ ] Fix system update error
-- [ ] Add support for multiple package install
-- [ ] Add support for multiple package remove
-- [ ] Add support for multiple package update
+- [x] Fix system update error
+- [x] Add support for multiple package install
+- [x] Add support for multiple package remove
+- [x] Add support for multiple package update
 - [ ] Add recursive package removal (with dependencies)
 

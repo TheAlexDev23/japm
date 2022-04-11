@@ -185,7 +185,10 @@ check_if_remove_breaks_dependency(char *package_name)
 
 void remove_package_from_system(package pkg, char *package_name)
 {
-    // We remove the package from the system
+	printf("\n\n");
+	reset();
+    
+	// We remove the package from the system
     const char *remove_instructions = json_object_get_string(pkg.remove);
     system(remove_instructions);
 
@@ -195,4 +198,8 @@ void remove_package_from_system(package pkg, char *package_name)
     strcat(package_folder, package_name);
 
     system(package_folder);
+	
+	printf("\n\n");
+	reset();
 }
+
