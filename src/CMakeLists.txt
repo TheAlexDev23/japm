@@ -13,11 +13,12 @@ add_library(update_pkg update.c update.h)
 add_library(local_repo IO/local-repo.c IO/local-repo.h)
 add_library(IO IO/json.c IO/json.h)
 add_library(term IO/term.c IO/term.h)
+add_library(search_pkg search.c search.h)
 
 add_library(errors errors.c errors.h)
 
 add_executable(${PROJECT_NAME} main.c)
 
-target_link_libraries(${PROJECT_NAME} errors install_pkg package IO internet remove_pkg local_repo term update_pkg)
+target_link_libraries(${PROJECT_NAME} errors install_pkg package IO internet remove_pkg local_repo term update_pkg search_pkg)
 
 target_link_libraries(${PROJECT_NAME} json-c sqlite3)

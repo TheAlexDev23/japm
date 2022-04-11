@@ -8,6 +8,7 @@
 #include "remove.h"
 #include "update.h"
 #include "IO/term.h"
+#include "search.h"
 
 int main(int argc, char **argv)
 {
@@ -57,8 +58,11 @@ int main(int argc, char **argv)
 				update_package(argv[i + 2]);
 			}
 			break;
-		default:
+		case 4:
+			search(argv[2]);
 			break;
+		default:
+			fprintf(stderr, "Something went wrong, operation not recognized\n");
     }
 
     return 0;
@@ -72,6 +76,6 @@ int check_input(int argc, char **argv)
         return 2;
     if (strcmp(argv[1], "update") == 0)
         return 3;
-    if (strcmp(argv[1], "upgrade") == 0)
+    if (strcmp(argv[1], "search") == 0)
         return 4;
 }
