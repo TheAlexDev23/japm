@@ -10,7 +10,7 @@ For now it's not finished and doesn't fully work. I'm only using GitHub to host 
 
 - [x] Package Installation
 - [x] Package Removal
-- [ ] Package Update
+- [x] Package Update
 - [ ] Package Search
 
 # Bulding from source
