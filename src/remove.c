@@ -13,6 +13,26 @@ void remove_package_from_system(package pkg, char *package_name);
 void check_if_remove_breaks_dependency(char *package_name);
 void post_install(const char *package_name);
 
+void remove_package_no_dep_check(char *package_name)
+{
+    // We get the package from the local repository
+    // ! It's important to know that even though the package's dependency, removal and update instructions in the json object are usually arrays in this case they are strings
+    printf("\033[0;32m==> Preparing to remove the package...\n");
+    package pkg = get_package_from_local_repo(package_name);
+
+    // We remove the package from the system
+    printf("\033[0;32m==> Removing the package...\n");
+    remove_package_from_system(pkg, package_name);
+
+    printf("\033[0;32m==> Refreshing packages...\n");
+    post_install(json_object_get_string(pkg.name));
+
+    // We remove the package from the local repository
+    printf("\033[0;32m==> Updating the local repository...\n");
+    remove_package_from_local_repository(package_name);
+    reset();
+}
+
 void remove_package(char *package_name)
 {
     // We get the package from the local repository

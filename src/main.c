@@ -32,8 +32,6 @@ int main(int argc, char **argv)
 		//TODO: Multiple package updates
 		if (strcmp(argv[2], "system") == 0) update_system();
 		else update_package(argv[2]);
-	default:
-		fprintf(stderr, "\033[0;31mNot implemented\n");
     }
 
     return 0;

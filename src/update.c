@@ -8,23 +8,70 @@
 #include "install.h"
 #include "IO/term.h"
 
+void pre_update(char *package_name)
+{
+	// Copy the package's used_by file to a tmp location
+	char *used_by_file_loc = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(package_name) + strlen("/used_by") + 1));
+
+	strcpy(used_by_file_loc, "/var/japm/packages/");
+	strcat(used_by_file_loc, package_name);
+	strcat(used_by_file_loc, "/used_by");
+
+	char *command = malloc(sizeof(char) * (strlen("cat   > /tmp/japm_package_update_temp_file") + strlen(used_by_file_loc) + 1));
+
+	strcpy(command, "cat ");
+	strcat(command, used_by_file_loc);
+	strcat(command, " > /tmp/japm_package_update_temp_file");
+	
+	system(command);
+
+	free(command);
+}
+
+void post_update(char *package_name)
+{
+	
+	// Copy the package's used_by file to a tmp location
+	char *used_by_file_loc = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(package_name) + strlen("/used_by") + 1));
+
+	strcpy(used_by_file_loc, "/var/japm/packages/");
+	strcat(used_by_file_loc, package_name);
+	strcat(used_by_file_loc, "/used_by");
+	
+	char *command = malloc(sizeof(char) * (strlen("cat /tmp/japm_package_update_temp_file > ") + strlen(used_by_file_loc) + 1));
+
+	strcpy(command, "cat /tmp/japm_package_update_temp_file > ");
+	strcat(command, used_by_file_loc);
+
+	system(command);
+
+	free(command);
+}
+
+
 void update_package(char *package_name)
 {
 	/*
 	 * This function will first remove the package from the system and install it's latest version from the repo
 	 * */
 
-	//Remove the package
-	
-	
+
+	printf("\033[0;32m==> Updating package %s\n\n", package_name);
+
+	printf("\033[0;32m==> Preparing for udpate...\n\n");
+	pre_update(package_name);
+
 	printf("\033[0;32m==> Reinstalling the package...\n\n");
-	remove_package(package_name);
+	remove_package_no_dep_check(package_name);
 
 	printf("\n\n");
 
 	install_single_package(package_name);
 
-	printf("\033[0;32m==> Package %s updated\n", package_name);
+	printf("\033[0;32m==> Executing post update\n", package_name);
+	post_update(package_name);
+	
+	printf("\033[0;32m==> Package %s updated succesfully\n", package_name);
 
 	reset();
 }

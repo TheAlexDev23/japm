@@ -16,48 +16,50 @@
 
 void install_package_to_system(package package_info, char *package_name)
 {
-    // This function would install the package and it's dependencies to the system
+	reset();
+	printf("\n");
+    // This function would install the package and it's dependencies (if dep true) to the system
     // We install all the dependencies recursevly using the install_single_package function
+	
+	// We get the number of dependencies
+	int dependencies_number = json_object_array_length(package_info.dependencies);
 
-    // We get the number of dependencies
-    int dependencies_number = json_object_array_length(package_info.dependencies);
+	// We print out the dependencies to the user
+	if (dependencies_number != 0)
+		printf("\033[0;32m==> Dependencies of %s:\n", json_object_get_string(package_info.name));
+	
+	reset();
 
-    // We print out the dependencies to the user
-    if (dependencies_number != 0)
-        printf("\033[0;32m==> Dependencies of %s:\n", json_object_get_string(package_info.name));
-    
-    reset();
+	// We iterate over the dependencies array
+	for (int i = 0; i < dependencies_number; i++)
+	{
+		// We get the current dependency
+		json_object *dependency = json_object_array_get_idx(package_info.dependencies, i);
 
-    // We iterate over the dependencies array
-    for (int i = 0; i < dependencies_number; i++)
-    {
-        // We get the current dependency
-        json_object *dependency = json_object_array_get_idx(package_info.dependencies, i);
+		// We print the dependency to the user
+		printf("    - %s\n", json_object_get_string(dependency));
+	}
 
-        // We print the dependency to the user
-        printf("    - %s\n", json_object_get_string(dependency));
-    }
+	// We iterate over all the dependencies and install them
+	for (int i = 0; i < dependencies_number; i++)
+	{
+		// We get the name of the dependency
+		json_object *dependency_name = json_object_array_get_idx(package_info.dependencies, i);
+		// We install the dependency
+		install_single_package(json_object_get_string(dependency_name));
 
-    // We iterate over all the dependencies and install them
-    for (int i = 0; i < dependencies_number; i++)
-    {
-        // We get the name of the dependency
-        json_object *dependency_name = json_object_array_get_idx(package_info.dependencies, i);
-        // We install the dependency
-        install_single_package(json_object_get_string(dependency_name));
+		// We would also need to append in the dependencies directory used_by file the name of the package being installed
+		char *dependency_name_str = json_object_get_string(dependency_name);
+		char *dependency_folder_dir = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(dependency_name_str) + 1));
+		strcpy(dependency_folder_dir, "/var/japm/packages/");
+		strcat(dependency_folder_dir, dependency_name_str);
 
-        // We would also need to append in the dependencies directory used_by file the name of the package being installed
-        char *dependency_name_str = json_object_get_string(dependency_name);
-        char *dependency_folder_dir = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(dependency_name_str) + 1));
-        strcpy(dependency_folder_dir, "/var/japm/packages/");
-        strcat(dependency_folder_dir, dependency_name_str);
+		// We open the used_by file of the dependency
+		FILE *used_by_file = fopen(strcat(dependency_folder_dir, "/used_by"), "a");
 
-        // We open the used_by file of the dependency
-        FILE *used_by_file = fopen(strcat(dependency_folder_dir, "/used_by"), "a");
-
-        // We append the name of the package being installed to the used_by file
-        fprintf(used_by_file, "%s\n", package_name);
-    }
+		// We append the name of the package being installed to the used_by file
+		fprintf(used_by_file, "%s\n", package_name);
+	}
 
     // We need to execute the commands array in the package.json file
     // We get the number of commands
@@ -72,13 +74,16 @@ void install_package_to_system(package package_info, char *package_name)
         //  We execute the command
         system(json_object_get_string(command));
     }
+	
+	printf("\n");
 }
 
 int install_single_package(char *package_name)
 {
     if (check_if_package_is_installed(package_name))
     {
-        fprintf(stderr, "\033[0;31m==> Package '%s' is already installed\n", package_name);
+		reset();
+        fprintf(stderr, "==> Package '%s' is already installed\n\n", package_name);
 		reset();
         return 0;
     }

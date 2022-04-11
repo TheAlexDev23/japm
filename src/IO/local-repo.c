@@ -28,7 +28,7 @@ void create_db(sqlite3 *db)
     // We create the table
 
     sqlite3_exec(db,
-                 "CREATE TABLE packages (\"name\" TEXT PRIMARY KEY NOT NULL, \"version\" TEXT NOT NULL, \"description\" TEXT NOT NULL, \"dependencies\" TEXT NOT NULL, \"remove_instructions\" TEXT NOT NULL, update_instructions TEXT NOT NULL);",
+                 "CREATE TABLE packages (\"name\" TEXT NOT NULL, \"version\" TEXT NOT NULL, \"description\" TEXT, \"dependencies\" TEXT, \"remove_instructions\" TEXT NOT NULL, update_instructions TEXT NOT NULL);",
                  NULL, NULL, NULL);
 }
 
@@ -42,7 +42,7 @@ void remove_package_from_local_repository(char *package_name)
 
     if (rc)
     {
-        printf("\033[31mSomething went wrong\n");
+        fprintf(stderr, "\033[31mSomething went wrong\n");
         sqlite3_close(db);
         exit(unkown_error);
     }
@@ -57,7 +57,7 @@ void remove_package_from_local_repository(char *package_name)
 
     if (rc != SQLITE_OK)
     {
-        printf("\033[31mSomething went wrong\n");
+        fprintf(stderr, "\033[31mSomething went wrong\n");
         sqlite3_free(zErrMsg);
         sqlite3_close(db);
         exit(unkown_error);
@@ -153,7 +153,7 @@ start_again:;
 
     if (rc)
     {
-        printf("\033[31mUnable to add package to local repo (%s)\n", zErrMsg);
+        fprintf(stderr, "\033[31mUnable to add package to local repo (%s)\n", zErrMsg);
         exit(unkown_error);
     }
 
@@ -174,7 +174,7 @@ int callback(void *ptr, int column_num, char **values, char **rows)
 
     if (fp == NULL)
     {
-        printf("Unable to open temp file\n");
+        fprintf(stderr, "Unable to open temp file\n");
         exit(unkown_error);
     }
 
@@ -187,8 +187,7 @@ int callback(void *ptr, int column_num, char **values, char **rows)
     return 0;
 }
 
-package
-get_package_from_local_repo(char *package_name)
+package get_package_from_local_repo(char *package_name)
 {
 start_again:;
     // We open the /var/japm/repos/local.db file and get the package using sqlite3
@@ -220,7 +219,7 @@ start_again:;
     if (rc)
     {
         // Print in red the error message
-        printf("\033[0;31mSomething went wrong (SQL error: %s)\033[0m\n", zErrMsg);
+        fprintf(stderr, "\033[0;31mSomething went wrong (SQL error: %s)\033[0m\n", zErrMsg);
         exit(unkown_error);
     }
 
@@ -230,7 +229,7 @@ start_again:;
 
     if (fp == NULL)
     {
-        printf("\033[31mUnable to open temporary file, aborting...\n");
+        fprintf(stderr, "\033[31mUnable to open temporary file, aborting...\n");
         exit(unkown_error);
     }
 
