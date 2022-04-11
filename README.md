@@ -8,7 +8,7 @@ For now it's not finished and doesn't fully work. I'm only using GitHub to host 
 
 # Milestones
 
-- [x] Package Installation
+- [x] Package Installation -> Currently working on adding more features
 - [x] Package Removal
 - [x] Package Update
 - [x] Package Search
