@@ -19,7 +19,7 @@ int http_req(char *url)
     FILE *fp = fopen("/tmp/response_code.txt", "r");
     if (fp == NULL)
     {
-        printf("Something went wrong. Check your internet connection\n");
+        fprintf(stderr, "Something went wrong. Check your internet connection\n");
         exit(unkown_error);
     }
 
@@ -46,6 +46,7 @@ void download_package(char *url, char *package_name)
     strcat(command, " ");
     strcat(command, url);
     system(command);
-    free(command);
+
+	free(command);
 }
 

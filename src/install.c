@@ -78,7 +78,7 @@ int install_single_package(char *package_name)
 {
     if (check_if_package_is_installed(package_name))
     {
-        printf("\033[0;32m==> Package '%s' is already installed\n", package_name);
+        fprintf(stderr, "\033[0;31m==> Package '%s' is already installed\n", package_name);
 		reset();
         return 0;
     }
@@ -100,7 +100,7 @@ int install_single_package(char *package_name)
     if (http_res == 404)
     {
         // Package is not found on the repo
-        printf("\033[0;31m==> Package \"%s\" not found \n", package_name);
+        fprintf(stderr, "\033[0;31m==> Package \"%s\" not found \n", package_name);
         reset();
         exit(package_not_found_error);
     }
@@ -108,7 +108,7 @@ int install_single_package(char *package_name)
     {
         // Some unkown or server error happened
 
-        printf("\033[31m==> Something Went Wrong...\033[0m\n");
+        fprintf(stderr, "\033[31m==> Something Went Wrong...\033[0m\n");
         reset();
         exit(unkown_error);
     }
@@ -126,7 +126,7 @@ int install_single_package(char *package_name)
 
     if (json_file == NULL)
     {
-        printf("\033[0;31m==> Couldn't open the package.json file\n");
+        fprintf(stderr, "\033[0;31m==> Couldn't open the package.json file\n");
         reset();
         exit(unkown_error);
     }

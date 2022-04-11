@@ -20,7 +20,7 @@ void usage(char *program_name)
 
 void bad_usage(char *arg, char *program_name)
 {
-    printf("\033[31mWrong Argument \"%s\"\n\n", arg);
+    fprintf(stderr, "\033[31mWrong Argument \"%s\"\n\n", arg);
     usage(program_name);
 }
 
@@ -82,7 +82,7 @@ int check_remove_usage(int argc, char **argv)
 
     if (argc < 3)
     {
-        printf("\033[31mBad Usage\n\n");
+        fprintf(stderr, "\033[31mBad Usage\n\n");
         remove_usage(argv[0]);
         return 1;
     }
@@ -109,7 +109,7 @@ int check_root()
 {
     if (geteuid() != 0)
     {
-        printf("\033[31mProgram needs to be run with root previliegies\n");
+        fprintf(stderr, "\033[31mProgram needs to be run with root previliegies\n");
         return 1;
     }
 

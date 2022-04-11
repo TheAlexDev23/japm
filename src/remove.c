@@ -46,7 +46,7 @@ void post_install(const char *package_name)
 
     if (dir == NULL)
     {
-        printf("\033[31m==> Something went wrong...\n");
+        fprintf(stderr, "\033[0;31m==> Something went wrong...\n");
         reset();
         exit(unkown_error);
     }
@@ -66,7 +66,7 @@ void post_install(const char *package_name)
 
         if (used_by_file == NULL)
         {
-            printf("\n\033[31m==> Something went wrong...\n");
+            fprintf(stderr, "\n\033[31m==> Something went wrong...\n");
             reset();
             exit(unkown_error);
         }
@@ -81,7 +81,7 @@ void post_install(const char *package_name)
 
         if (temp_file == NULL)
         {
-            printf("\n\033[31m==> Something went wrong...\n");
+            fprintf(stderr, "\n\033[31m==> Something went wrong...\n");
             reset();
             exit(unkown_error);
         }
@@ -143,7 +143,7 @@ check_if_remove_breaks_dependency(char *package_name)
         {
             line_buffer[count] = '\0';
 
-            printf("\033[31mRemoving the package breaks the dependency of %s\n", line_buffer);
+            fprintf(stderr, "\033[31mRemoving the package breaks the dependency of %s\n", line_buffer);
 
             reset();
 

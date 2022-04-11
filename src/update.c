@@ -37,7 +37,7 @@ void update_system()
 
     if (dir == NULL)
     {
-        printf("\033[31m==> Something went wrong...\n");
+        fprintf(stderr, "\033[31m==> Something went wrong...\n");
         reset();
         exit(unkown_error);
     }
