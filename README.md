@@ -11,7 +11,7 @@ For now it's not finished and doesn't fully work. I'm only using GitHub to host 
 - [x] Package Installation
 - [x] Package Removal
 - [x] Package Update
-- [ ] Package Search
+- [x] Package Search
 
 # Bulding from source
 
