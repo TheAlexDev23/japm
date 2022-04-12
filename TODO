@@ -5,3 +5,5 @@
 - [x] Add support for multiple package update
 - [x] Add recursive package removal (with dependencies)
 - [x] Implement package search
+- [ ] Add file downloads
+

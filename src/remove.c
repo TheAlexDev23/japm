@@ -103,8 +103,7 @@ void post_install(const char *package_name)
         // We open the package's used_by file
         char *used_by_file_dir = malloc(sizeof(char) * (strlen("/var/japm/packages/") + strlen(de->d_name) + strlen("/used_by") + 1));
         strcpy(used_by_file_dir, "/var/japm/packages/");
-        strcat(used_by_file_dir, de->d_name);
-        strcat(used_by_file_dir, "/used_by");
+        strcat(used_by_file_dir, de->d_name); strcat(used_by_file_dir, "/used_by");
 
         FILE *used_by_file = fopen(used_by_file_dir, "r");
 

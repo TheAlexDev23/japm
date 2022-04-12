@@ -15,6 +15,8 @@ package parse_package_information(FILE *file)
     json_object *description;
 
     json_object *dependencies;
+	
+	json_object *files;
 
     json_object *install;
     json_object *remove;
@@ -28,8 +30,9 @@ package parse_package_information(FILE *file)
     json_object_object_get_ex(parsed_json, "description", &description);
 
     json_object_object_get_ex(parsed_json, "dependencies", &dependencies);
-
-    json_object_object_get_ex(parsed_json, "install", &install);
+    json_object_object_get_ex(parsed_json, "files", &files);
+    
+	json_object_object_get_ex(parsed_json, "install", &install);
     json_object_object_get_ex(parsed_json, "remove", &remove);
     json_object_object_get_ex(parsed_json, "update", &update);
 
@@ -40,9 +43,11 @@ package parse_package_information(FILE *file)
 
     pkg.name = name;
     pkg.version = version;
-
     pkg.description = description;
+
     pkg.dependencies = dependencies;
+	
+	pkg.files = files;
 
     pkg.install = install;
     pkg.remove = remove;

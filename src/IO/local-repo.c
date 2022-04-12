@@ -28,7 +28,7 @@ void create_db(sqlite3 *db)
     // We create the table
 
     sqlite3_exec(db,
-                 "CREATE TABLE packages (\"name\" TEXT NOT NULL, \"version\" TEXT NOT NULL, \"description\" TEXT, \"dependencies\" TEXT, \"remove_instructions\" TEXT NOT NULL, update_instructions TEXT NOT NULL);",
+                 "CREATE TABLE packages (\"name\" TEXT NOT NULL, \"version\" TEXT NOT NULL, \"description\" TEXT, \"dependencies\" TEXT, \"remove_instructions\" TEXT NOT NULL, update_instructions TEXT);",
                  NULL, NULL, NULL);
 }
 
@@ -107,23 +107,15 @@ start_again:;
         strcat(package_remove, ";");
     }
 
-    char *package_update = calloc(strlen(json_object_get_string(pkg.update)), sizeof(char));
-    for (int i = 0; i < json_object_array_length(pkg.update); i++)
-    {
-        strcat(package_update, json_object_get_string(json_object_array_get_idx(pkg.update, i)));
-        strcat(package_update, ";");
-    }
-
     char *sql = malloc(sizeof(char) *
-                           (strlen("INSERT INTO packages (name, version, description, dependencies, remove_instructions, update_instructions) VALUES (") + 
+                           (strlen("INSERT INTO packages (name, version, description, dependencies, remove_instructions) VALUES (") + 
                            strlen(package_name) + strlen("'', ") + 
                            strlen(package_version) + strlen("'', ") + 
                            strlen(package_description) + strlen("'', ") + 
                            strlen(package_dependencies) + strlen("'', ") + 
-                           strlen(package_remove) + strlen("'', ") 
-                           + strlen(package_update) + strlen("'');")) + 1);
+                           strlen(package_remove) + strlen("'');")) + 1);
 
-    strcpy(sql, "INSERT INTO packages (name, version, description, dependencies, remove_instructions, update_instructions) VALUES (");
+    strcpy(sql, "INSERT INTO packages (name, version, description, dependencies, remove_instructions) VALUES (");
 
     strcat(sql, "'");
     strcat(sql, package_name);
@@ -143,10 +135,6 @@ start_again:;
 
     strcat(sql, "'");
     strcat(sql, package_remove);
-    strcat(sql, "', ");
-
-    strcat(sql, "'");
-    strcat(sql, package_update);
     strcat(sql, "');");
 
     rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
@@ -327,3 +315,4 @@ void update_package_in_local_repository(package pkg)
     free(sql);
     sqlite3_close(db);
 }
+

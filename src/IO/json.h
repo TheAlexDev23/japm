@@ -14,6 +14,8 @@ struct package
     json_object *description;
 
     json_object *dependencies;
+	
+	json_object *files;
 
     json_object *install;
     json_object *remove;
