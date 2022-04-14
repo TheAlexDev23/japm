@@ -1,9 +1,0 @@
-- [x] Move to stderr
-- [x] Fix system update error
-- [x] Add support for multiple package install
-- [x] Add support for multiple package remove
-- [x] Add support for multiple package update
-- [x] Add recursive package removal (with dependencies)
-- [x] Implement package search
-- [ ] Add file downloads
-
