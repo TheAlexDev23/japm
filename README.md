@@ -4,8 +4,6 @@
 
 I've seen many people trying to build their own package manager recently, so I also decided to try it out.
 
-For now it's not finished and doesn't fully work. I'm only using GitHub to host the code.
-
 # Milestones
 
 - [x] Package Installation
