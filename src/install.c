@@ -10,14 +10,16 @@
 #include "internet.h"
 
 // Some hardcoded values that are used in the program
+/*
 #define MAX_PACKAGE_FILE_SIZE 10240
 #define MAX_INSTALLED_PACKAGES_FILE_SIZE 131072
 #define MAX_COMMANDS_NUMBER 1000
+*/
 
 void install_package_to_system(package package_info, char *package_name);
 void install_files(json_object *files, char *package_name);
 
-int install_single_package(char *package_name)
+int install_single_package(const char *package_name)
 {
     if (check_if_package_is_installed(package_name))
     {

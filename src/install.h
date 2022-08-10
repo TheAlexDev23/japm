@@ -1,2 +1,2 @@
-int install_single_package(char *package_name);
+int install_single_package(const char *package_name);
 

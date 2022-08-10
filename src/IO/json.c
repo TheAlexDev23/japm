@@ -1,3 +1,4 @@
+#include <json-c/json.h>
 #include "json.h"
 
 package parse_package_information(FILE *file)

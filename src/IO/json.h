@@ -1,3 +1,6 @@
+#ifndef __JSON_H_
+#define __JSON_H_
+
 #include <json-c/json.h>
 #include <stdio.h>
 
@@ -23,3 +26,4 @@ struct package
 };
 
 package parse_package_information(FILE *file);
+#endif
