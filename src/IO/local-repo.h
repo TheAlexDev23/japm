@@ -1,3 +1,4 @@
+#include <json-c/json.h>
 #include "json.h"
 
 void add_package_to_local_repo(package pkg, char *package_name);
