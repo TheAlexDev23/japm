@@ -5,7 +5,7 @@
 I've seen many people trying to build their own package manager recently, so I also decided to try it out.
 
 # Milestones
-- [] Creating japml a library that handles all operations where japm would just be it's wrapper
+- [ ] Creating japml, a library that handles all operations where japm would just be it's implementation
 - [x] Package Installation
 - [x] Package Removal
 - [x] Package Update
