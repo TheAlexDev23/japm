@@ -4,6 +4,8 @@ project(japm)
 
 include_directories(src lib/libjapml)
 
+include_directories(lib)
+
 add_library(
     japml 
     lib/libjapml/japml.h
