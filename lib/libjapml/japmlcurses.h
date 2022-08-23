@@ -6,6 +6,8 @@
 #include "log.h"
 
 // * Initialazation
+
+// Initialize curses for JAPM
 void curses_init();
 
 WINDOW *log_window;

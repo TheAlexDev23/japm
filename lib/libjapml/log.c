@@ -4,11 +4,11 @@
 
 #include "japml.h"
 #include "handle.h" // definition for japml_handle_t
+#include "japmlcurses.h"
 #include "log.h"
 #include "error.h"
 #include "colors.h"
 #include "list.h"
-#include "japmlcurses.h"
 
 void terminal_init(japml_handle_t* handle)
 {

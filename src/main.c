@@ -45,6 +45,8 @@ int main(int argc, char **argv)
 {
     check_japml();
 
+    /*
+
     if (check_root())
         return 2;
 
@@ -97,6 +99,7 @@ int main(int argc, char **argv)
 		default:
 			fprintf(stderr, "Something went wrong, operation not recognized\n");
     }
+    */
 
     return 0;
 }
