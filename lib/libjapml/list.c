@@ -5,14 +5,14 @@
 #include "log.h"
 #include "error.h"
 
-void japml_list_add(japml_handle_t, japml_list_t *list, void* data)
+void japml_list_add(japml_handle_t *handle, japml_list_t *list, void* data)
 {
     japml_list_t* node = malloc(sizeof(japml_list_t));
     if (node)
     {
         char error_message[60]; // I dont't know how big the message would be
         sprintf(error_message, "Could not allocate memory of size %zu\n", sizeof(japml_list_t));
-        japml_throw_error(japml_error_t.malloc_error, error_message);
+        japml_throw_error(handle, malloc_error, error_message);
     }
 
     node->data = data;

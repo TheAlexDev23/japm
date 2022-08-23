@@ -2,6 +2,8 @@
 #define _LOG_H_INCLUDED
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 #include "japml.h"
 

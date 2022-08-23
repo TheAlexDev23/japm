@@ -1,13 +1,5 @@
-#ifndef JAPML_H_INCLUDED_
-#define JAPML_H_INCLUDED_
-
-#include "handle.h"
-#include "log.h"
-#include "db.h"
-#include "list.h"
-#include "package.h"
-#include "error.h"
-#include "exit.h"
+#ifndef _JAPML_H_INCLUDED_
+#define _JAPML_H_INCLUDED_
 
 /*
  * A handle is a instance of JAMPL, it should be created every time the program is run

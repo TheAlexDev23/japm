@@ -1,7 +1,9 @@
 #include <ncurses.h>
-#include <string.h>
+#include <string.h> // strlen
+#include <unistd.h> // sleep
 
 #include "japmlcurses.h"
+#include "log.h"
 
 void curses_init()
 {
@@ -40,15 +42,14 @@ void curses_init()
     init_pair(JAPML_CURSES_DEBUG_COLOR,    COLOR_YELLOW,  COLOR_BLACK);
     init_pair(JAPML_CURSES_INFO_COLOR,     COLOR_GREEN,   COLOR_BLACK);
     init_pair(JAPML_CURSES_ERROR_COLOR,    COLOR_RED,     COLOR_BLACK);
-    init_pair(JAPML_CURSES_CIRTICAL_COLOR, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(JAPML_CURSES_CRITICAL_COLOR, COLOR_MAGENTA, COLOR_BLACK);
+
+    japml_ncurses_log_buffer_length = getmaxx(log_window);
 }
 
-
-char* japml_ncurses_log_buffer[JAPML_NCURSES_LOG_BUFFER_LENGTH] = {0};
-int japml_ncurses_log_buffer_count = 0;
-void japml_ncurses_log(japml_log_level_t log_level, char *message)
+void japml_ncurses_log(japml_log_level_t log_level, char *message, bool use_color)
 {
-    if (japml_ncurses_log_buffer_count >= JAPML_NCURSES_LOG_BUFFER_LENGTH)
+    if (japml_ncurses_log_buffer_count >= japml_ncurses_log_buffer_length)
     {
         // Move everithing back 1 spot
         for (int i = 0; i < japml_ncurses_log_buffer_count; i++)
@@ -59,25 +60,32 @@ void japml_ncurses_log(japml_log_level_t log_level, char *message)
         japml_ncurses_log_buffer_count--;
     }
 
-    japml_ncurses_log_buffer[i] = message;
-
-    switch (log_level)
+    japml_ncurses_log_buffer[japml_ncurses_log_buffer_count] = message;
+    if (use_color)
     {
-        case 0:
-            japml_ncurses_log_win_update(JAPML_CURSES_DEBUG_COLOR);
-            break;
-        case 1:
-            japml_ncurses_log_win_update(JAPML_CURSES_INFO_COLOR);
-            break;
-        case 2:
-            japml_ncurses_log_win_update(JAPML_CURSES_ERROR_COLOR);
-            break;
-        case 3:
-            japml_ncurses_log_win_update(JAPML_CURSES_CRITICAL_COLOR);
-            break;
+        switch (log_level)
+        {
+            case 0:
+                japml_ncurses_log_win_update(JAPML_CURSES_DEBUG_COLOR);
+                break;
+            case 1:
+                japml_ncurses_log_win_update(JAPML_CURSES_INFO_COLOR);
+                break;
+            case 2:
+                japml_ncurses_log_win_update(JAPML_CURSES_ERROR_COLOR);
+                break;
+            case 3:
+                japml_ncurses_log_win_update(JAPML_CURSES_CRITICAL_COLOR);
+                break;
+        }
+    }
+    else
+    {
+        japml_ncurses_log_win_update(JAPML_CURSES_DO_NOT_USE_COLOR);
     }
 }
 
+// Update the log_window
 void japml_ncurses_log_win_update(int color)
 {
     wclear(log_window);
@@ -90,15 +98,15 @@ void japml_ncurses_log_win_update(int color)
 
     for (int i = 0; i < japml_ncurses_log_buffer_count; i++)
     {
-        if (color != NULL)
+        if (color != JAPML_CURSES_DO_NOT_USE_COLOR)
         {
             attron(COLOR_PAIR(color));
         }
 
-        printw("%s", japml_ncurses_log_buffer[JAPML_NCURSES_LOG_BUFFER_LENGTH]);
+        printw("%s", japml_ncurses_log_buffer[i]);
         wmove(log_window, getcury(log_window) + 1, getcurx(log_window));
        
-        if (color != NULL)
+        if (color != JAPML_CURSES_DO_NOT_USE_COLOR)
         {
             attroff(COLOR_PAIR(color));
         }
