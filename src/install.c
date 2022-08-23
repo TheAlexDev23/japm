@@ -251,4 +251,3 @@ void install_package_to_system(package package_info, char *package_name)
 	
 	printf("\n");
 }
-

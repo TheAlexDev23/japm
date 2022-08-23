@@ -3,7 +3,7 @@
 
 #include "japml.h"
 
-struct _japml_error
+enum _japml_error
 {
     malloc_error = 2
 };

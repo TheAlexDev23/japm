@@ -10,8 +10,38 @@
 #include "IO/term.h"
 #include "search.h"
 
+#include "../lib/libjapml/japml.h"
+#include "../lib/libjapml/log.h"
+#include "../lib/libjapml/exit.h"
+
+// In the early stages of development i will use this to check if japml works
+void check_japml()
+{
+    japml_handle_t handle;
+
+    handle.log_files = NULL;
+    handle.error_log_files = NULL;
+
+    handle.log_level = japml_log_level_t.Debug;
+    handle.use_colors = true;
+    handle.use_curses = true;
+
+    terminal_init(&handle);
+
+    japml_log(&handle, japml_log_level_t.Debug, "This is a dbug log");
+    japml_log(&handle, japml_log_level_t.Information, "This is a info log");
+    japml_log(&handle, japml_log_level_t.Error, "This is a error log");
+    japml_log(&handle, japml_log_level_t.Critical, "This is a critical log");
+
+    sleep(5);
+
+    exit_japml(&handle);
+}
+
 int main(int argc, char **argv)
 {
+    check_japml();
+
     if (check_root())
         return 2;
 

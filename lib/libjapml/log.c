@@ -7,34 +7,13 @@
 #include "error.h"
 #include "colors.h"
 #include "list.h"
-
-WINDOW *log_window;
-WINDOW *progress_window;
-WINDOW *package_list_window;
+#include "japmlcurses.h"
 
 void terminal_init(japml_handle_t* handle)
 {
     if (handle->use_curses)
     {
-        initscr();
-
-        int maxX, maxY;
-
-        getmaxyx(stdscr, maxY, maxX);
-
-        log_window          = newwin(maxY - handle->progress_bar_window_height, maxX - handle->package_list_window_width, 0, 0);
-        progress_window     = newwin(handle->progress_bar_window_height, maxX - handle->package_list_window_width, maxY - handle->progress_bar_window_height, 0);
-        package_list_window = newwin(maxY, handle->package_list_window_width, 0, maxX - handle->package_list_window_width);
-
-        refresh();
-
-        box(log_window,          ACS_VLINE, ACS_HLINE);
-        box(progress_window,     ACS_VLINE, ACS_HLINE);
-        box(package_list_window, ACS_VLINE, ACS_HLINE);
-
-        wrefresh(log_window);
-        wrefresh(progress_window);
-        wrefresh(package_list_window);
+        curses_init();
     }
 }
 
@@ -52,22 +31,28 @@ void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *messag
         {
             japml_log_error_files(handle, log_level, message);
         }
+
+        if (handle->use_curses)
+        {
+            japml_ncurses_log(log_level, message);
+        }
     }
 }
 
 void japml_log_normal_files(japml_handle_t* handle, japml_log_level_t log_level, char *message)
 {
     jampl_list_t log_files = japml_handle_t->log_files;
+    bool use_color = handle->use_colors;
 
     while (log_files)
     {
         if (log_level == 0)
         {
-            japml_debug_log(log_files->data, message);
+            japml_debug_log(log_files->data, use_color);
         }
         else if (log_level == 1)
         {
-            japml_info_log(log_files->data, message);
+            japml_info_log(log_files->data, use_color);
         }
 
         log_files = japml_list_next(log_files);
@@ -77,16 +62,17 @@ void japml_log_normal_files(japml_handle_t* handle, japml_log_level_t log_level,
 void japml_log_error_files(japml_handle_t* hanlde, japml_log_level_t log_level, char *message)
 {
     jampl_list_t log_files = japml_handle_t->error_log_files;
+    bool use_color = handle->use_colors;
 
     while (log_files)
     {
         if (log_level == 2)
         {
-            japml_debug_log(log_files->data, message);
+            japml_debug_log(log_files->data, message, use_color);
         }
         else if (log_level == 3)
         {
-            japml_info_log(log_files->data, message);
+            japml_info_log(log_files->data, message, use_color);
         }
 
         log_files = japml_list_next(log_files);
@@ -95,18 +81,18 @@ void japml_log_error_files(japml_handle_t* hanlde, japml_log_level_t log_level, 
 
 // * Debug Logging
 
-void japml_debug_log(FILE *output, char *message)
+void japml_debug_log(FILE *output, char *message, bool color)
 {
-    fprintf(output, ANSI_COLOR_YELLOW " ==> Debug: ");
+    if (color) fprintf(output, ANSI_COLOR_YELLOW " ==> Debug: ");
     fprintf(output, message); 
     color_reset(output); 
 }
 
 // * Info Logging
 
-void japml_info_log(FILE *output, char *message)
+void japml_info_log(FILE *output, char *message, bool color)
 {
-    fprintf(output, ANSI_COLOR_GREEN " ==> Inf: ");
+    if (color) fprintf(output, ANSI_COLOR_GREEN " ==> Inf: ");
     fprintf(output, message); 
     color_reset(output); 
 }
@@ -114,9 +100,9 @@ void japml_info_log(FILE *output, char *message)
 
 // * Error Logging
 
-void japml_error_log(FILE *output, char *message)
+void japml_error_log(FILE *output, char *message, bool color)
 {
-    fprintf(output, ANSI_COLOR_RED " ==> Err: ");
+    if (color) fprintf(output, ANSI_COLOR_RED " ==> Err: ");
     fprintf(output, message);
     color_reset(output);
 }
@@ -124,9 +110,9 @@ void japml_error_log(FILE *output, char *message)
 
 // * Critical Error Logging
 
-void japml_critical_log(FILE *output, char *message)
+void japml_critical_log(FILE *output, char *message, bool color)
 {
-    fprintf(output, ANSI_COLOR_MAGENTA " ==> Crit: ");
+    if (color) fprintf(output, ANSI_COLOR_MAGENTA " ==> Crit: ");
     fprintf(output, message);
     color_reset(output);
 }

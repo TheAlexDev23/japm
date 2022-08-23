@@ -25,5 +25,8 @@ void exit_japml(japml_handle_t *handle)
         error_log_files = japml_list_next(log_files);
      }
 
-     endwin(); // Stop curses mode
+     if (handle->use_curses)
+     {
+        endwin(); // Stop curses mode
+     }
 }

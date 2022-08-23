@@ -5,6 +5,9 @@
 #include <stdbool.h>
 
 #include "japml.h"
+#include "handle.h"
+#include "db.h"
+#include "list.h"
 
 struct _japml_handle
 {
@@ -18,8 +21,6 @@ struct _japml_handle
     // TUI
     bool use_colors;
     bool use_curses;
-    int progress_bar_window_height;
-    int package_list_window_width;
 };
 
 #endif
