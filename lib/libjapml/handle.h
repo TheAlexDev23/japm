@@ -3,12 +3,14 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <ncurses.h>
 
 #include "japml.h"
 #include "log.h"
 #include "handle.h"
 #include "db.h"
 #include "list.h"
+#include "japmlcurses.h"
 
 struct _japml_handle
 {
@@ -22,6 +24,14 @@ struct _japml_handle
     // TUI
     bool use_colors;
     bool use_curses;
+
+    WINDOW *log_window;
+    WINDOW *progress_window;
+    WINDOW *package_list_window;
+
+    char* ncurses_log_buffer[JAPML_NCURSES_LOG_BUFFER_MAX_LENGTH];
+    int ncurses_log_buffer_count;
+    int ncurses_log_buffer_length; // Max length of the buffer
 };
 
 #endif

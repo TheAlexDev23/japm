@@ -28,6 +28,10 @@ void check_japml()
     handle->use_colors = true;
     handle->use_curses = true;
 
+    // handle->ncurses_log_buffer = {0};
+    handle->ncurses_log_buffer_count = 0;
+    handle->ncurses_log_buffer_length = 0;
+
     terminal_init(handle);
 
     japml_log(handle, Debug, "This is a dbug log");
