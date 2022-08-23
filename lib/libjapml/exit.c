@@ -1,8 +1,9 @@
 #include <ncurses.h>
 #include <stdio.h>
 
-#include "exit.h"
 #include "japml.h"
+#include "exit.h"
+#include "handle.h"
 #include "list.h"
 
 void exit_japml(japml_handle_t *handle)

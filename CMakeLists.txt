@@ -4,6 +4,8 @@ project(japm)
 
 include_directories(src lib/libjapml)
 
+include_directories(lib)
+
 add_library(
     japml 
     lib/libjapml/japml.h
@@ -25,4 +27,4 @@ add_library(
 
 add_executable(${PROJECT_NAME} src/main.c)
 
-target_link_libraries(${PROJECT_NAME} ncureses japml)
+target_link_libraries(${PROJECT_NAME} ncurses japml curses)
