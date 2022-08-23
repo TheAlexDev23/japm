@@ -19,7 +19,7 @@ enum _japml_log_level
 void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *message);
 
 void japml_log_normal_files(japml_handle_t* handle, japml_log_level_t log_level, char *message);
-void japml_log_error_files(japml_handle_t* hanlde, japml_log_level_t log_level, char *message);
+void japml_log_error_files(japml_handle_t* handle, japml_log_level_t log_level, char *message);
 
 void japml_debug_log(FILE *output, char *message, bool color);
 void japml_info_log(FILE *output, char *message, bool color);;

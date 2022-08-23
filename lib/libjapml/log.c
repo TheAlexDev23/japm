@@ -42,27 +42,27 @@ void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *messag
 
 void japml_log_normal_files(japml_handle_t* handle, japml_log_level_t log_level, char *message)
 {
-    japml_list_t log_files = handle->log_files;
+    japml_list_t* log_files = handle->log_files;
     bool use_color = handle->use_colors;
 
     while (log_files)
     {
         if (log_level == 0)
         {
-            japml_debug_log(log_files->data, use_color);
+            japml_debug_log(log_files->data, message, use_color);
         }
         else if (log_level == 1)
         {
-            japml_info_log(log_files->data, use_color);
+            japml_info_log(log_files->data, message, use_color);
         }
 
         log_files = japml_list_next(log_files);
     }
 }
 
-void japml_log_error_files(japml_handle_t* hanlde, japml_log_level_t log_level, char *message)
+void japml_log_error_files(japml_handle_t* handle, japml_log_level_t log_level, char *message)
 {
-    japml_list_t log_files = japml_handle_t->error_log_files;
+    japml_list_t *log_files = handle->error_log_files;
     bool use_color = handle->use_colors;
 
     while (log_files)
