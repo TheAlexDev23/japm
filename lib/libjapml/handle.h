@@ -29,7 +29,7 @@ struct _japml_handle
     WINDOW *progress_window;
     WINDOW *package_list_window;
 
-    char* ncurses_log_buffer[JAPML_NCURSES_LOG_BUFFER_MAX_LENGTH];
+    japml_list_t* ncurses_log_buffer;
     int ncurses_log_buffer_count;
     int ncurses_log_buffer_length; // Max length of the buffer
 };

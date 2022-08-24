@@ -14,7 +14,7 @@ void terminal_init(japml_handle_t* handle)
 {
     if (handle->use_curses)
     {
-        curses_init();
+        curses_init(handle);
     }
 }
 
