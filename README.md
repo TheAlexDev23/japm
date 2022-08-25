@@ -22,21 +22,13 @@ The package manager worked before, until I decided to rewrite it in a different 
 
 # Bulding from source
 
-## Dependencies:
+- Dependencies:
 
 ```
-libjson-c sqlite3
+libjson-c sqlite3 ncurses
 ```
 
-
-### Debian or Debian based
-
-
-- Installing dependencies:
-
-```bash
-sudo apt instal libjson-c-dev sqlite3 cmake
-```
+Note, that even though JAPML has an option of not displaying curses mode (still work in progress, the option is not fully implemented), the ncurses library is still required for building from source.
 
 - Building:
 
@@ -46,34 +38,7 @@ cd japm
 chmod +x build.sh
 ./build.sh
 ```
-#### OR
-
-```bash
-git clone https://github.com/TheAlexDev23/japm.git
-cd japm
-mkdir build
-cmake -S src -B build
-cd build
-make
-```
-
-### Arch or Arch Base
-
-- Installing dependencies:
-
-```bash
-sudo pacman -S lib32-json-c sqlite3 cmake
-```
-
-- Building:
-
-```bash
-git clone https://github.com/TheAlexDev23/japm.git
-cd japm
-chmod +x build.sh
-./build.sh
-```
-#### OR
+Or
 
 ```bash
 git clone https://github.com/TheAlexDev23/japm.git
