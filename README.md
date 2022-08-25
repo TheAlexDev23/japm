@@ -4,6 +4,8 @@
 
 I've seen many people trying to build their own package manager recently, so I also decided to try it out.
 
+The package manager worked before, until I decided to rewrite it in a different way. Now all JAPM logic and
+
 # Milestones
 - [ ] Creating japml, a library that handles all operations where japm would just be it's implementation
 - [x] Package Installation
