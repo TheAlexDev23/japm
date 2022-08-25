@@ -1,0 +1,60 @@
+==45683== Memcheck, a memory error detector
+==45683== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==45683== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==45683== Command: ./japm
+==45683== Parent PID: 40502
+==45683== 
+==45683== 
+==45683== HEAP SUMMARY:
+==45683==     in use at exit: 297,616 bytes in 385 blocks
+==45683==   total heap usage: 651 allocs, 266 frees, 310,483 bytes allocated
+==45683== 
+==45683== 9 bytes in 1 blocks are possibly lost in loss record 8 of 91
+==45683==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==45683==    by 0x497260E: strdup (strdup.c:42)
+==45683==    by 0x48ABBE4: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==45683==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==45683==    by 0x487F238: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x1097C7: curses_init (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x10A27C: terminal_init (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x109552: check_japml (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x109669: main (in /home/alex/Documents/japm/build/japm)
+==45683== 
+==45683== 24 bytes in 1 blocks are possibly lost in loss record 30 of 91
+==45683==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==45683==    by 0x49EA14E: tsearch (tsearch.c:337)
+==45683==    by 0x48ABBFE: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==45683==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==45683==    by 0x487F238: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x1097C7: curses_init (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x10A27C: terminal_init (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x109552: check_japml (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x109669: main (in /home/alex/Documents/japm/build/japm)
+==45683== 
+==45683== 168 bytes in 1 blocks are possibly lost in loss record 62 of 91
+==45683==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==45683==    by 0x48ABB5D: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==45683==    by 0x48AEF28: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==45683==    by 0x487F238: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x487FB4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x487FBDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==45683==    by 0x1097C7: curses_init (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x10A27C: terminal_init (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x109552: check_japml (in /home/alex/Documents/japm/build/japm)
+==45683==    by 0x109669: main (in /home/alex/Documents/japm/build/japm)
+==45683== 
+==45683== LEAK SUMMARY:
+==45683==    definitely lost: 0 bytes in 0 blocks
+==45683==    indirectly lost: 0 bytes in 0 blocks
+==45683==      possibly lost: 201 bytes in 3 blocks
+==45683==    still reachable: 297,415 bytes in 382 blocks
+==45683==         suppressed: 0 bytes in 0 blocks
+==45683== Reachable blocks (those to which a pointer was found) are not shown.
+==45683== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==45683== 
+==45683== For lists of detected and suppressed errors, rerun with: -s
+==45683== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
