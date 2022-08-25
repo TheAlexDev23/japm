@@ -39,6 +39,14 @@ void check_japml()
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
 
+    for (int i = 0; i < 80; i++)
+    {
+        char msg[10];
+        sprintf(msg, "I is: %i", i);
+        japml_log(handle, Information, msg);
+        usleep(80000);
+    }
+
     japml_ncurses_free_log_buffer(handle);
     free(handle);
 

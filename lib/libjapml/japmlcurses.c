@@ -68,6 +68,8 @@ void japml_ncurses_free_log_buffer(japml_handle_t* handle)
     japml_list_t* it = handle->ncurses_log_buffer;
     while (it)
     {
+        // Since we malloc'd the message we need to free it to
+        free(((japml_log_message_t*)it->data)->message);
         free(it->data);
         it = japml_list_next(it);
     }
@@ -88,8 +90,12 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
         japml_throw_error(handle, malloc_error, error_message);
     }
 
+    // We want to malloc it to the heap so we can acces it later when printing logs
+    char *message_struct_message = malloc(sizeof(message) + 1 );
+    strcpy(message_struct_message, message);
+
     message_struct->log_level = log_level;
-    message_struct->message = message;
+    message_struct->message = message_struct_message;
 
     japml_list_add(handle, &handle->ncurses_log_buffer, message_struct);
 
