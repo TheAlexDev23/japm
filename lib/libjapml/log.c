@@ -22,7 +22,7 @@ void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *messag
 {
     japml_log_level_t handle_log_level = handle->log_level;
 
-    if (log_level >= handle_log_level) // if throws error just cast to int
+    if (log_level >= handle_log_level)
     {
         if (log_level < 2)
         {

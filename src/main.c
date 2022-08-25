@@ -15,6 +15,7 @@
 #include <libjapml/handle.h>
 #include <libjapml/log.h>
 #include <libjapml/exit.h>
+#include <libjapml/japmlcurses.h>
 
 // In the early stages of development i will use this to check if japml works
 void check_japml()
@@ -29,15 +30,16 @@ void check_japml()
     handle->use_curses = true;
 
     handle->ncurses_log_buffer = NULL;
-    handle->ncurses_log_buffer_count = -1;
+    handle->ncurses_log_buffer_count = 0;
     handle->ncurses_log_buffer_length = 0;
 
     terminal_init(handle);
-    japml_log(handle, Debug, "THis is a dbug log");
+    japml_log(handle, Debug, "This is a dbug log");
     japml_log(handle, Information, "This is a info log");
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
 
+    japml_ncurses_free_log_buffer(handle);
     free(handle);
 
     getch();

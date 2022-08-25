@@ -13,14 +13,18 @@ void curses_init(japml_handle_t *handle)
 {
     initscr();
     
-    if (handle->use_colors)
+    if (handle->use_colors && has_colors())
     {
         start_color();
+        use_default_colors();
 
-        init_pair(JAPML_CURSES_DEBUG_COLOR,    COLOR_YELLOW,  COLOR_BLACK);
-        init_pair(JAPML_CURSES_INFO_COLOR,     COLOR_GREEN,   COLOR_BLACK);
-        init_pair(JAPML_CURSES_ERROR_COLOR,    COLOR_RED,     COLOR_BLACK);
-        init_pair(JAPML_CURSES_CRITICAL_COLOR, COLOR_MAGENTA, COLOR_BLACK);
+        init_pair(JAPML_CURSES_DEBUG_COLOR,    COLOR_YELLOW,  -1);
+        init_pair(JAPML_CURSES_INFO_COLOR,     COLOR_GREEN,   -1);
+        init_pair(JAPML_CURSES_ERROR_COLOR,    COLOR_RED,     -1);
+        init_pair(JAPML_CURSES_CRITICAL_COLOR, COLOR_MAGENTA, -1);
+
+
+        clear();
     }
 
     int maxX, maxY;
@@ -58,9 +62,23 @@ void curses_init(japml_handle_t *handle)
 
 }
 
+void japml_ncurses_free_log_buffer(japml_handle_t* handle)
+{
+    // Free the malloc'd japml_log_message_t structs first
+    japml_list_t* it = handle->ncurses_log_buffer;
+    while (it)
+    {
+        free(it->data);
+        it = japml_list_next(it);
+    }
+
+    // Free the list itself
+    japml_list_free(handle->ncurses_log_buffer);
+}
+
 void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char *message, bool use_color)
 {
-    handle->ncurses_log_buffer_length = getmaxy(handle->log_window) - 5;
+    handle->ncurses_log_buffer_length = getmaxy(handle->log_window) - 2;
     japml_log_message_t* message_struct = malloc(sizeof(japml_log_message_t));
     
     if (!message_struct)
@@ -73,33 +91,13 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
     message_struct->log_level = log_level;
     message_struct->message = message;
 
-    FILE *f = fopen("haha.txt", "a");
-    fprintf(f, "1\n");
-    fclose(f);
-
-    japml_list_add(handle, handle->ncurses_log_buffer, message_struct);
-    if (handle->ncurses_log_buffer == NULL)
-    {
-        f = fopen("haha.txt", "a");
-        fprintf(f, "UMMM\n");
-        fclose(f);
-    }
-    else if (handle->ncurses_log_buffer->data == NULL)
-    {
-        f = fopen("haha.txt", "a");
-        fprintf(f, "UMMM2\n");
-        fclose(f);
-    }
+    japml_list_add(handle, &handle->ncurses_log_buffer, message_struct);
 
     handle->ncurses_log_buffer_count++;
 
     japml_ncurses_log_win_update(handle);
-    f = fopen("haha.txt", "a");
-    fprintf(f, "3\n");
-    fclose(f);
 }
 
-// Update the log_window
 void japml_ncurses_log_win_update(japml_handle_t *handle)
 {
     wclear(handle->log_window);
@@ -151,14 +149,31 @@ void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* me
                 break;
         }
 
-        attron(COLOR_PAIR(color));
+        wattron(handle->log_window, COLOR_PAIR(color));
     }
+
+    switch(message->log_level)
+    {
+        case 0:
+            wprintw(handle->log_window, "==> DBug: ");
+            break;
+        case 1:
+            wprintw(handle->log_window, "==> Inf: ");
+            break;
+        case 2:
+            wprintw(handle->log_window, "==> Err: ");
+            break;
+        case 3:
+            wprintw(handle->log_window, "==> Crit: ");
+            break;
+    }
+
 
     wprintw(handle->log_window, "%s\n", message->message);
     wmove(handle->log_window, getcury(handle->log_window), 1);
 
     if (handle->use_colors)
     {
-        attroff(COLOR_PAIR(color));
+        wattroff(handle->log_window, COLOR_PAIR(color));
     }
 }

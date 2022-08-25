@@ -3,6 +3,7 @@
 
 #include "japml.h"
 
+/* Closes everything created by JAPML and stops JAPML */
 void exit_japml(japml_handle_t *handle);
 
 #endif

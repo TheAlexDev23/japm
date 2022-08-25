@@ -16,10 +16,14 @@ void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* m
         japml_log(handle, (int)error_code, message);
     }
 
-    exit_japml(handle);
+    // The error is critical and we need to exit JAPML
+    if (error_code == 3)
+    {
+        exit_japml(handle);
 
-    japml_ncurses_log(handle, Information, "Press any key to exit", handle->use_colors);
-    getch();
+        japml_ncurses_log(handle, Information, "Press any key to exit", handle->use_colors);
+        getch();
 
-    exit((int)error_code);
+        exit((int)error_code);
+    }
 }

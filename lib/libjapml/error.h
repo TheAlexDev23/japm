@@ -5,9 +5,10 @@
 
 enum _japml_error
 {
-    malloc_error = 2
+    malloc_error = 3
 };
 
-void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* message); // message can be null if no message needs to be provided
+/* Pritns an error to the log screen and exits if the error is critical */
+void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* message);
 
 #endif
