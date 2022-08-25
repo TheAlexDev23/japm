@@ -1,4 +1,0 @@
-TODO:
-Set the log array to a list of japml_log_message_t. japml_log_message_t is still not created
-Add working functionality for printing in curses the log messages
-Migrate the logging system to japml_log_message_t
