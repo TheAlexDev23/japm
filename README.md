@@ -4,14 +4,21 @@
 
 I've seen many people trying to build their own package manager recently, so I also decided to try it out.
 
-The package manager worked before, until I decided to rewrite it in a different way. Now all JAPM logic and
+The package manager worked before, until I decided to rewrite it in a different way. Now all JAPM operations would be done in a separate library named [JAPML](lib/libjapml/README.md)
 
-# Milestones
-- [ ] Creating japml, a library that handles all operations where japm would just be it's implementation
+# Milestones => Deprecated, will not use anymore. Package manager is unusable until JAPML is finished
 - [x] Package Installation
 - [x] Package Removal
 - [x] Package Update
 - [x] Package Search
+
+# JAPML milestones
+- [ ] Logging System => doing (80% done)
+- [ ] Package Installation => doing (33% done)
+- [ ] Package Removal
+- [ ] Package Update
+- [ ] Package Search
+
 
 # Bulding from source
 
