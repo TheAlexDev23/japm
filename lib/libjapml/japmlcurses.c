@@ -91,7 +91,7 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
     }
 
     // We want to malloc it to the heap so we can acces it later when printing logs
-    char *message_struct_message = malloc(sizeof(message) + 1 );
+    char *message_struct_message = malloc(strlen(message) + 1);
     strcpy(message_struct_message, message);
 
     message_struct->log_level = log_level;

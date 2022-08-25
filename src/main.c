@@ -47,12 +47,11 @@ void check_japml()
         usleep(80000);
     }
 
-    japml_ncurses_free_log_buffer(handle);
-    free(handle);
-
     getch();
 
     exit_japml(handle);
+    japml_ncurses_free_log_buffer(handle);
+    free(handle);
 }
 
 int main(int argc, char **argv)
