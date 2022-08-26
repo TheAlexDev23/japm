@@ -5,8 +5,7 @@ if [ -d build ]; then
     make
     cd ..
 else
-    mkdir build
-    cmake -S src -B build
+    cmake -S . -B build
     cd build
     make
     cd ..
