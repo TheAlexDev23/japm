@@ -22,6 +22,7 @@ struct _japml_handle
     japml_list_t *error_log_files; // Place where errors would be written
 
     // TUI
+
     bool use_colors;
     bool use_curses;
 
@@ -32,6 +33,13 @@ struct _japml_handle
     japml_list_t* ncurses_log_buffer;
     int ncurses_log_buffer_count;
     int ncurses_log_buffer_length; // Max length of the buffer
+
+    // Callback functions
+
+    /* This will be called when no specific function for the error code is found */
+    void (*cb_error_general)(japml_handle_t*, jampl_error_t, char*);
+
+    void (*cb_error_malloc)(japml_handle_t^, japml_error_t, char*);
 };
 
 #endif

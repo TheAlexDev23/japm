@@ -8,7 +8,8 @@ include_directories(lib)
 
 add_library(
     japml 
-    lib/libjapml/japml.h
+    lib/libjapml/action.c
+    lib/libjapml/action.h
     lib/libjapml/colors.h
     lib/libjapml/db.h
     lib/libjapml/error.c
@@ -16,13 +17,17 @@ add_library(
     lib/libjapml/exit.c
     lib/libjapml/exit.h
     lib/libjapml/handle.h
+    lib/libjapml/install.c
+    lib/libjapml/install.h
     lib/libjapml/japmlcurses.c
     lib/libjapml/japmlcurses.h
+    lib/libjapml/japml.h
+    lib/libjapml/json.c
+    lib/libjapml/json.h
     lib/libjapml/list.c
     lib/libjapml/list.h
     lib/libjapml/log.c
     lib/libjapml/log.h
-    lib/libjapml/package.h
     )
 
 add_executable(${PROJECT_NAME} src/main.c)

@@ -27,3 +27,13 @@ void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* m
         exit((int)error_code);
     }
 }
+
+/* Called inside JAPML by JAPML*/
+void _japml_throw_error(japml_handle_t* handle, japml_error_t error_code, char* message)
+{
+    switch error_code
+    {
+        case malloc_error:
+            break;
+    }
+}
