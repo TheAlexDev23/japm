@@ -8,9 +8,7 @@ japml_action_t* japml_action_create(japml_handle_t* handle, japml_list_t* packag
     japml_action_t* action = malloc(sizeof(japml_action_t));
     if (!action)
     {
-        char message[50];
-        sprintf(message, "Could not allocate memory of size %zu", sizeof(japml_action_t));
-        japml_throw_error(handle, malloc_error, message);
+        _japml_throw_error(handle, malloc_error, NULL);
     }
 
     action->targets     = package_list;

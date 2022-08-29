@@ -29,6 +29,7 @@ typedef struct _japml_db_remote japml_db_remote_t;
 
 /* JAPML errors */
 typedef enum _japml_error japml_error_t;
+typedef struct _japml_error_callbacks japml_error_callbacks_t;
 
 /* A log level for logging */
 typedef enum _japml_log_level japml_log_level_t;

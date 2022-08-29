@@ -17,13 +17,13 @@ add_library(
     lib/libjapml/exit.c
     lib/libjapml/exit.h
     lib/libjapml/handle.h
-    lib/libjapml/install.c
-    lib/libjapml/install.h
+    #lib/libjapml/install.c
+    #lib/libjapml/install.h
     lib/libjapml/japmlcurses.c
     lib/libjapml/japmlcurses.h
     lib/libjapml/japml.h
-    lib/libjapml/json.c
-    lib/libjapml/json.h
+    #lib/libjapml/json.c
+    #lib/libjapml/json.h
     lib/libjapml/list.c
     lib/libjapml/list.h
     lib/libjapml/log.c

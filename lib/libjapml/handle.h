@@ -10,6 +10,7 @@
 #include "handle.h"
 #include "db.h"
 #include "list.h"
+#include "error.h"
 #include "japmlcurses.h"
 
 struct _japml_handle
@@ -35,11 +36,7 @@ struct _japml_handle
     int ncurses_log_buffer_length; // Max length of the buffer
 
     // Callback functions
-
-    /* This will be called when no specific function for the error code is found */
-    void (*cb_error_general)(japml_handle_t*, jampl_error_t, char*);
-
-    void (*cb_error_malloc)(japml_handle_t^, japml_error_t, char*);
+    japml_error_callbacks_t error_callbacks;
 };
 
 #endif

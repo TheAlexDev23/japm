@@ -85,9 +85,7 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
     
     if (!message_struct)
     {
-        char error_message[60]; // I dont't know how big the message would be
-        sprintf(error_message, "Could not allocate memory of size %zu\n", sizeof(japml_list_t));
-        japml_throw_error(handle, malloc_error, error_message);
+        _japml_throw_error(handle, malloc_error, NULL);
     }
 
     // We want to malloc it to the heap so we can acces it later when printing logs

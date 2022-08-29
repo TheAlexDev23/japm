@@ -34,13 +34,12 @@ void check_japml()
     handle->ncurses_log_buffer_count = 0;
     handle->ncurses_log_buffer_length = 0;
 
-    handle->cb_error_general = &japml_throw_error;
-
     terminal_init(handle);
     japml_log(handle, Debug, "This is a dbug log");
     japml_log(handle, Information, "This is a info log");
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
+    _japml_throw_error(handle, malloc_error, NULL);
 
     for (int i = 0; i < 80; i++)
     {
