@@ -14,6 +14,7 @@ The package manager worked before, until I decided to rewrite it in a different 
 
 # JAPML milestones
 - [x] Logging System
+- [ ] Error system => doing (80% done)
 - [ ] Package Installation => doing (33% done)
 - [ ] Package Removal
 - [ ] Package Update
