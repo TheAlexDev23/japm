@@ -13,7 +13,7 @@ The package manager worked before, until I decided to rewrite it in a different 
 - [x] Package Search
 
 # JAPML milestones
-- [ ] Logging System => doing (80% done)
+- [x] Logging System
 - [ ] Package Installation => doing (33% done)
 - [ ] Package Removal
 - [ ] Package Update
