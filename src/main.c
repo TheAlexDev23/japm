@@ -39,7 +39,7 @@ void check_japml()
     japml_log(handle, Information, "This is a info log");
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
-    _japml_throw_error(handle, malloc_error, NULL);
+    japml_throw_error(handle, malloc_error, NULL);
 
     for (int i = 0; i < 80; i++)
     {

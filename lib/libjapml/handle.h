@@ -36,6 +36,7 @@ struct _japml_handle
     int ncurses_log_buffer_length; // Max length of the buffer
 
     // Callback functions
+    /* Callbacks that will be called on error */
     japml_error_callbacks_t error_callbacks;
 };
 

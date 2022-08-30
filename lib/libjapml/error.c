@@ -9,7 +9,7 @@
 #include "exit.h"
 #include "japmlcurses.h"
 
-void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* message)
+void _japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* message)
 {
     if (message != NULL)
     {
@@ -28,10 +28,10 @@ void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* m
     }
 }
 
-void japml_throw_malloc_error(japml_handle_t* handle) { japml_throw_error(handle, malloc_error, "Could not allocate memory"); }
-void japml_unkown_error(japml_handle_t* handle)       { japml_throw_error(handle, unknown_error, "Unknown error"); }
+void japml_throw_malloc_error(japml_handle_t* handle) { _japml_throw_error(handle, malloc_error, "Could not allocate memory"); }
+void japml_unkown_error(japml_handle_t* handle)       { _japml_throw_error(handle, unknown_error, "Unknown error"); }
 
-void _japml_throw_error(japml_handle_t* handle, japml_error_t error_code, char* message)
+void japml_throw_error(japml_handle_t* handle, japml_error_t error_code, char* message)
 {
     japml_error_callbacks_t cbs = handle->error_callbacks;
 

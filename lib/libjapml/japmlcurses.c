@@ -85,7 +85,7 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
     
     if (!message_struct)
     {
-        _japml_throw_error(handle, malloc_error, NULL);
+        japml_throw_error(handle, malloc_error, NULL);
     }
 
     // We want to malloc it to the heap so we can acces it later when printing logs
