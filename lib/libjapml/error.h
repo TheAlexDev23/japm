@@ -32,7 +32,7 @@ struct _japml_error_callbacks
 };
 
 /* Prints an error to the log screen and exits if the error is critical */
-void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* message);
+void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* msg);
 void _japml_throw_error(japml_handle_t* handle, japml_error_t error_code, char* message);
 
 void japml_unkown_error(japml_handle_t* handle, char*msg);

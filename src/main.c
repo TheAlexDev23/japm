@@ -26,11 +26,6 @@ void check_japml()
     // Should be enough
     handle->log_message = malloc(sizeof(10000));
 
-    handle->error_callbacks.cb_japml_dependency_break_error = NULL;
-    handle->error_callbacks.cb_japml_malloc_error = NULL;
-    handle->error_callbacks.cb_japml_install_error = NULL;
-    handle->error_callbacks.cb_japml_unkown_error = NULL;
-
     handle->log_files = NULL;
     handle->error_log_files = NULL;
 
@@ -41,6 +36,8 @@ void check_japml()
     handle->ncurses_log_buffer = NULL;
     handle->ncurses_log_buffer_count = 0;
     handle->ncurses_log_buffer_length = 0;
+
+    handle->exit_on_critical = true;
 
     terminal_init(handle);
     japml_log(handle, Debug, "This is a dbug log");
