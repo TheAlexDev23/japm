@@ -6,17 +6,18 @@
 
 struct _japml_db_local
 {
-	japml_handle_t *handle;
 	char *file_location;
 };
 
 struct _japml_db_remote
 {
-	japml_handle_t *handle;
 	char *url;
 };
 
 /* Run a sql command on the local db*/
 int japml_local_db_run(japml_handle_t* handle, char* sql_commmand);
+
+japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* package_name);
+japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* package_name);
 
 #endif
