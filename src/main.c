@@ -26,6 +26,11 @@ void check_japml()
     // Should be enough
     handle->log_message = malloc(sizeof(10000));
 
+    handle->error_callbacks.cb_japml_dependency_break_error = NULL;
+    handle->error_callbacks.cb_japml_malloc_error = NULL;
+    handle->error_callbacks.cb_japml_install_error = NULL;
+    handle->error_callbacks.cb_japml_unkown_error = NULL;
+
     handle->log_files = NULL;
     handle->error_log_files = NULL;
 
@@ -44,6 +49,7 @@ void check_japml()
     japml_log(handle, Critical, "This is a critical log");
     japml_throw_error(handle, malloc_error, NULL);
 
+    /*
     for (int i = 0; i < 80; i++)
     {
         char msg[10];
@@ -51,6 +57,7 @@ void check_japml()
         japml_log(handle, Information, msg);
         usleep(80000);
     }
+    */
 
     getch();
 

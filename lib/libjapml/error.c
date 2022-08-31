@@ -13,7 +13,18 @@ void _japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* 
 {
     if (message != NULL)
     {
-        japml_log(handle, (int)error_code, message);
+        if (error_code < custom_error_error)
+        {
+            japml_log(handle, Information, message);
+        }
+        else if (error_code < custom_error_critical)
+        {
+            japml_log(handle, Error, message);
+        }
+        else
+        {
+            japml_log(handle, Critical, message);
+        }
     }
 
     // The error is critical and we need to exit JAPML
