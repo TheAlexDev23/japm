@@ -30,4 +30,8 @@ void exit_japml(japml_handle_t *handle)
      {
         endwin(); // Stop curses mode
      }
+
+     japml_ncurses_free_log_buffer(handle);
+     free(handle->log_message);
+     free(handle);
 }

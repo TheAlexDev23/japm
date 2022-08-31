@@ -1,5 +1,8 @@
+#include <stdio.h>
+
 #include "japml.h"
 #include "action.h"
+#include "package.h"
 #include "error.h"
 #include "log.h"
 
@@ -11,16 +14,21 @@ japml_action_t* japml_action_create(japml_handle_t* handle, japml_list_t* packag
         japml_throw_error(handle, malloc_error, NULL);
     }
 
+    japml_log(handle, Debug, "JAPML: Creating new action");
+
     action->targets     = package_list;
     action->action_type = action_type;
     action->status      = JAPML_ACTION_STATUS_INITIALIZED;
 
+    japml_log(handle, Debug, "JAPML: Created new action");
     return action;
 }
 
-void japml_action_commit(japml_handle_t* handle, japml_action_t* action)
+void japml_action_commit(japml_handle_t* handle)
 {
-    japml_log(handle, Debug, "Action commit began");
+    // TODO: Check if action is valid
 
-    
+    // TODO: If installing get package from remote db and call japml_install_packages
+
+    // TODO: If removing get package from local db and call japml_remove_packages
 }

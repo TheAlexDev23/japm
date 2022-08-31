@@ -23,6 +23,9 @@ void check_japml()
 {
     japml_handle_t *handle = malloc(sizeof(japml_handle_t));
 
+    // Should be enough
+    handle->log_message = malloc(sizeof(10000));
+
     handle->log_files = NULL;
     handle->error_log_files = NULL;
 
@@ -52,8 +55,6 @@ void check_japml()
     getch();
 
     exit_japml(handle);
-    japml_ncurses_free_log_buffer(handle);
-    free(handle);
 }
 
 int main(int argc, char **argv)

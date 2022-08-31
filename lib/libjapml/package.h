@@ -17,15 +17,22 @@ struct _japml_package
     /* Packages that depend on it */
     japml_list_t* depending_packages;
 
-    //* Installation
+    // * Installation
+    /* List of instructions executed before installation */
+    japml_list_t* pre_install;
     /* List of install instructions for the package */
     japml_list_t* install;
     /* List of files required for install or usage */
     japml_list_t* files;
+    /* List of instructions executed after installation */
+    japml_list_t* post_install;
 
-    //* Removal
+    // * Removal
     /* List of removal instructions for the package */
     japml_list_t* remove;
 };
+
+/* Sets the depending_packages to packages that depend on pkg */
+void japml_set_dpenending_packages(japml_handle_t* handle, japml_package_t* pkg);
 
 #endif
