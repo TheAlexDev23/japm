@@ -40,13 +40,13 @@ I'm not 100% sure but the progress bar for now is aproximately at 36.27% done.
 
 Note that when it reaches 100%, it will only mean the the package manager has the basic features working (install, remove, update, search). I will still continue working on it to improve it's efficiency, bugs, security, tidiness, etc.
 
-# Bulding from source
-
-- Dependencies:
+# Dependencies:
 
 ```
 libjson-c sqlite3 ncurses curl
 ```
+# Bulding from source
+
 
 Note, that even though JAPML has an option of not displaying curses mode (still work in progress, the option is not fully implemented), the ncurses library is still required for building from source.
 
