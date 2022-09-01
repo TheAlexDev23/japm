@@ -13,8 +13,9 @@ The package manager worked before, until I decided to rewrite it in a different 
 - [x] Package Search
 
 # JAPML milestones
-- [x] Logging System
+- [x] Logging system
 - [x] Error system
+- [ ] Input parsing system
 - [ ] JSON parsing
 - [ ] Local DB reading
 - [ ] Remote DB reading
