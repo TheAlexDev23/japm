@@ -2,6 +2,7 @@
 #include <string.h> // strlen
 #include <unistd.h> // sleep
 #include <stdio.h>
+#include <ctype.h> // tolower
 
 #include "japml.h"
 #include "handle.h"
@@ -62,6 +63,8 @@ void curses_init(japml_handle_t *handle)
 
 }
 
+// * Logging
+
 void japml_ncurses_free_log_buffer(japml_handle_t* handle)
 {
     // Free the malloc'd japml_log_message_t structs first
@@ -78,7 +81,7 @@ void japml_ncurses_free_log_buffer(japml_handle_t* handle)
     japml_list_free(handle->ncurses_log_buffer);
 }
 
-void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char *message, bool use_color)
+void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char *message)
 {
     handle->ncurses_log_buffer_length = getmaxy(handle->log_window) - 2;
     japml_log_message_t* message_struct = malloc(sizeof(japml_log_message_t));
@@ -179,5 +182,68 @@ void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* me
     if (handle->use_colors)
     {
         wattroff(handle->log_window, COLOR_PAIR(color));
+    }
+}
+
+bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
+{
+    Yn_dialogue_start_again:
+    sprintf(handle->log_message, "%s [Y/n] ", message);
+    japml_ncurses_log(handle, Information, handle->log_message);
+    char ch = getch();
+    
+    if (tolower(ch) == 'y' || ch == '\n')
+    {
+        return true;
+    }
+    else if (tolower(ch) == 'n')
+    {
+        return false;
+    }
+    else
+    {
+        goto Yn_dialogue_start_again;
+    }
+}
+
+bool japml_ncurses_yN_dialogue(japml_handle_t* handle, char* message)
+{
+    yN_dialogue_start_again:
+    sprintf(handle->log_message, "%s [y/N] ", message);
+    japml_ncurses_log(handle, Information, handle->log_message);
+    char ch = getch();
+    
+    if (tolower(ch) == 'n' || ch == '\n')
+    {
+        return false;
+    }
+    else if (tolower(ch) == 'y')
+    {
+        return true;
+    }
+    else
+    {
+        goto yN_dialogue_start_again;
+    }
+}
+
+bool japml_ncurses_yn_dialogue(japml_handle_t* handle, char* message)
+{
+    yN_dialogue_start_again:
+    sprintf(handle->log_message, "%s [y/n] ", message);
+    japml_ncurses_log(handle, Information, handle->log_message);
+    char ch = getch();
+    
+    if (tolower(ch) == 'y')
+    {
+        return true;
+    }
+    else if (tolower(ch) == 'n')
+    {
+        return false;
+    }
+    else
+    {
+        goto yN_dialogue_start_again;
     }
 }

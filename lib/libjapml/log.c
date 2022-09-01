@@ -28,7 +28,7 @@ void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *messag
 
         if (handle->use_curses)
         {
-            japml_ncurses_log(handle, log_level, message, handle->use_colors);
+            japml_ncurses_log(handle, log_level, message);
         }
     }
 }
