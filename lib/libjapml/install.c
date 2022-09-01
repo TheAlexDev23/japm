@@ -54,6 +54,7 @@ void japml_pre_install(japml_handle_t* handle, japml_package_t* package)
     while (it)
     {
         sprintf(handle->log_message, "  %s", ((japml_package_t*)it->data)->name);
+        japml_log(handle, Information, handle->log_message);
     }
 
     sprintf(handle->log_message, "Installing build dependencies for %s", package->name);
