@@ -6,13 +6,19 @@ I've seen many people trying to build their own package manager recently, so I a
 
 The package manager worked before, until I decided to rewrite it in a different way. Now all JAPM operations would be done in a separate library named [JAPML](lib/libjapml/README.md)
 
-# Milestones => Deprecated, will not use anymore. Package manager is only usabe if you tweak a bit the source code to work as before
+# Important
+
+JAPM is undergoing heavy development, since I'm creating JAPML and without it JAPM doesn't work.
+
+If you want to use the package manager the way it worked before you can either tweak a bit the source code or install the v1.0.0 release (old JAPM without JAPML).
+
+# Milestones => Deprecated
 - [x] Package Installation
 - [x] Package Removal
 - [x] Package Update
 - [x] Package Search
 
-# JAPML necessary milestones (milestones required for JAPML to work) => doing (36.27% done)
+# JAPML necessary milestones
 - [x] Logging system
 - [x] Error system
 - [ ] Input parsing system
@@ -28,35 +34,31 @@ The package manager worked before, until I decided to rewrite it in a different 
 # JAPML optional milestones
 - [ ] Documentation => doing (about 7% done)
 
+# When will JAPML be finished?
+
+I'm not 100% sure but the progress bar for now is aproximately at 36.27% done.
+
+Note that when it reaches 100%, it will only mean the the package manager has the basic features working (install, remove, update, search). I will still continue working on it to improve it's efficiency, bugs, security, tidiness, etc.
+
 # Bulding from source
 
 - Dependencies:
 
 ```
-libjson-c sqlite3 ncurses
+libjson-c sqlite3 ncurses curl
 ```
 
 Note, that even though JAPML has an option of not displaying curses mode (still work in progress, the option is not fully implemented), the ncurses library is still required for building from source.
 
-- Building:
-
 ```bash
 git clone https://github.com/TheAlexDev23/japm.git
 cd japm
-chmod +x build.sh
-./build.sh
-```
-Or
-
-```bash
-git clone https://github.com/TheAlexDev23/japm.git
-cd japm
-mkdir build
-cmake -S src -B build
+cmake -S . -B build
 cd build
 make
+cp ./japm /usr/bin
 ```
 
-- Documentation:
+# Documentation:
 
-    - Coming soon
+Also work in progress. Docs are found at docs/. I dont have a precise progress bar for that but it's about 7% done.
