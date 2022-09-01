@@ -39,6 +39,8 @@ japml_handle_t* japml_init_default(int argc, char* argv[])
     handle->use_colors = true;
     // TODO: Parse comand line args and check if curses is needed
     handle->use_curses = true;
+    // TODO: Parse comand line args and check if we want default to all questions
+    handle->default_to_all = false;
 
     // * Logging
 
@@ -82,6 +84,8 @@ japml_handle_t* japml_init_devel(int argc, char* argv[])
     handle->use_colors = true;
     // TODO: Parse comand line args and check if curses is needed
     handle->use_curses = true;
+    // TODO: Parse comand line args and check if we want default to all questions
+    handle->default_to_all = false;
 
     // * Logging
 

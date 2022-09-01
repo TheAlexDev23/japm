@@ -39,6 +39,9 @@ struct _japml_handle
     bool use_colors;
     bool use_curses;
 
+    /* If true, in cases where JAPML asks the user for something, JAPML will automatically chose the default option (if available) */
+    bool default_to_all;
+
     // * Logging
 
     WINDOW *log_window;
