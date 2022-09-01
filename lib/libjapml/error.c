@@ -56,8 +56,11 @@ void japml_throw_error(japml_handle_t* handle, japml_error_t error_code, char* m
             frontend_cb = cbs.cb_japml_install_error;
             break;
         case dependency_break_error:
-            _japml_throw_error(handle, dependency_break_error, msg != NULL ? msg : "Dependency break error"); 
+            _japml_throw_error(handle, dependency_break_error, msg != NULL ? msg : "Removing this package breaks a dependency"); 
             frontend_cb = cbs.cb_japml_dependency_break_error;
+        case package_corrupted_error:
+            _japml_throw_error(handle, package_corrupted_error, msg != NULL ? msg : "Package is corrupted"); 
+            frontend_cb = cbs.cb_japml_package_corrupted_error;
         default:
             _japml_throw_error(handle, unknown_error, msg != NULL ? msg : "Unknown error"); 
             frontend_cb = cbs.cb_japml_unkown_error;

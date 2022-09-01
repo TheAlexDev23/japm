@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <ncurses.h>
+#include <curl/curl.h>
 
 #include "japml.h"
 #include "log.h"
@@ -15,20 +16,30 @@
 
 struct _japml_handle
 {
+    // * DBs
+
     japml_db_local_t *local_db;
     japml_list_t     *remote_dbs; // list of japml_db_remote_t
 
+    // * Logging
+
     /* If you want to format a message and use it in logging you can format this vairable */
     char* log_message;
-
     japml_log_level_t log_level; // The level of logging, only logs above it's level of importance would be shown
     japml_list_t *log_files; // Place to write logs into (could be a text file or stdout for example)
     japml_list_t *error_log_files; // Place where errors would be written
+
+    // * CURL
+
+    CURL* curl;
+    CURLcode res;
 
     // * TUI
 
     bool use_colors;
     bool use_curses;
+
+    // * Logging
 
     WINDOW *log_window;
     WINDOW *progress_window;

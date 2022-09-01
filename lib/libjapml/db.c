@@ -1,3 +1,5 @@
+#include <curl/curl.h>
+
 #include "db.h"
 #include "japml.h"
 #include "package.h"

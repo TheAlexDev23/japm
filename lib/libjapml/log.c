@@ -10,13 +10,6 @@
 #include "colors.h"
 #include "list.h"
 
-void terminal_init(japml_handle_t* handle)
-{
-    if (handle->use_curses)
-    {
-        curses_init(handle);
-    }
-}
 
 void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *message)
 {

@@ -17,6 +17,7 @@ enum _japml_error
     /* Removing the package breaks a depenency */
     dependency_break_error,
     /* Errow while running system commands used to install package */
+    package_corrupted_error,
     install_error,
     /* Error while allocating memory with malloc */
     malloc_error,
@@ -25,10 +26,11 @@ enum _japml_error
 
 struct _japml_error_callbacks 
 {
-    void (*cb_japml_unkown_error)           (japml_handle_t*);
-    void (*cb_japml_dependency_break_error) (japml_handle_t*);
-    void (*cb_japml_install_error)          (japml_handle_t*);
-    void (*cb_japml_malloc_error)           (japml_handle_t*);
+    void (*cb_japml_unkown_error)            (japml_handle_t*);
+    void (*cb_japml_dependency_break_error)  (japml_handle_t*);
+    void (*cb_japml_install_error)           (japml_handle_t*);
+    void (*cb_japml_malloc_error)            (japml_handle_t*);
+    void (*cb_japml_package_corrupted_error) (japml_handle_t*);
 };
 
 /* Prints an error to the log screen and exits if the error is critical */

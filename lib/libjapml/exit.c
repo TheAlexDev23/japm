@@ -33,5 +33,6 @@ void exit_japml(japml_handle_t *handle)
 
      japml_ncurses_free_log_buffer(handle);
      free(handle->log_message);
+     curl_easy_cleanup(handle->curl);
      free(handle);
 }

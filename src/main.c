@@ -17,36 +17,18 @@
 #include <libjapml/exit.h>
 #include <libjapml/japmlcurses.h>
 #include <libjapml/error.h>
+#include <libjapml/init.h>
 
 // In the early stages of development i will use this to check if japml works
 void check_japml()
 {
-    japml_handle_t *handle = malloc(sizeof(japml_handle_t));
-
-    // Should be enough
-    handle->log_message = malloc(sizeof(10000));
-
-    handle->log_files = NULL;
-    handle->error_log_files = NULL;
-
-    handle->log_level = Debug;
-    handle->use_colors = true;
-    handle->use_curses = true;
-
-    handle->ncurses_log_buffer = NULL;
-    handle->ncurses_log_buffer_count = 0;
-    handle->ncurses_log_buffer_length = 0;
-
-    handle->exit_on_critical = true;
-
-    terminal_init(handle);
+    japml_handle_t* handle = japml_init_devel(1, NULL);
     japml_log(handle, Debug, "This is a dbug log");
     japml_log(handle, Information, "This is a info log");
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
     japml_throw_error(handle, malloc_error, NULL);
 
-    /*
     for (int i = 0; i < 80; i++)
     {
         char msg[10];
@@ -54,7 +36,6 @@ void check_japml()
         japml_log(handle, Information, msg);
         usleep(80000);
     }
-    */
 
     getch();
 

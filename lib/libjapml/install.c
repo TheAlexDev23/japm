@@ -20,7 +20,7 @@ void japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
     {
         japml_package_t* pkg = (japml_package_t*)it->data;
 
-        japml_install_single_package(halfdelay, pkg);
+        japml_install_single_package(handle, pkg);
 
         it = japml_list_next(it);
     }
@@ -62,7 +62,7 @@ void japml_pre_install(japml_handle_t* handle, japml_package_t* package)
     // Install build deps
     japml_install_packages(handle, package->build_deps);
 
-    sptrinf(handle->log_message, "Build dependencies for %s installed", package->name);
+    sprintf(handle->log_message, "Build dependencies for %s installed", package->name);
     japml_log(handle, Information, handle->log_message);
 }
 
