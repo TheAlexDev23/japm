@@ -26,6 +26,33 @@ void japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
     }
 }
 
+void japml_install_single_package(japml_handle_t* handle, japml_package_t* package)
+{
+    japml_pre_install(handle, package);
+
+    sprintf(handle->log_message, "Installing package %s", package->name);
+    japml_log(handle, Information, handle->log_message);
+
+    japml_list_t* it = package->install;
+    while (it)
+    {
+        char *cmd = (char*)it->data;
+        if (system(cmd) == -1)
+        {
+            japml_throw_error(handle, install_error, NULL);
+        }
+    }
+
+    japml_post_install(handle, package);
+
+    sprintf(handle->log_message, "Package %s installed succesfully", package->name);
+    japml_log(handle, Information, handle->log_message);
+
+    // TODO: call progress bar callback (not implemented yet)
+
+    // TODO: update package_list ncurses window
+}
+
 void japml_pre_install(japml_handle_t* handle, japml_package_t* package)
 {
     // * Run pre install script
@@ -34,12 +61,16 @@ void japml_pre_install(japml_handle_t* handle, japml_package_t* package)
     if (it)
     {
         sprintf(handle->log_message, "Running pre-install script for %s", package->name);
-        japml_log(handle, Information, handle->log_message);
+        japml_log(handle, Debug, handle->log_message);
     }
 
     while (it)
     {
-        system((char*)it->data);
+        if (system((char*)it->data) == -1)
+        {
+            sprintf(handle->log_message, "Command failed in pre-install script for %s", package->name);
+            japml_throw_error(handle, install_error, handle->log_message);
+        }
         it = japml_list_next(it);
     }
 
@@ -60,27 +91,31 @@ void japml_pre_install(japml_handle_t* handle, japml_package_t* package)
     sprintf(handle->log_message, "Installing build dependencies for %s", package->name);
     japml_log(handle, Information, handle->log_message);
 
-    // Install build deps
+    // Actually install the build deps
     japml_install_packages(handle, package->build_deps);
 
     sprintf(handle->log_message, "Build dependencies for %s installed", package->name);
     japml_log(handle, Information, handle->log_message);
 }
 
-void japml_install_single_package(japml_handle_t* handle, japml_package_t* package)
+void japml_post_install(japml_handle_t* handle, japml_package_t* package)
 {
-    japml_pre_install(handle, package);
+    // * Execute post install script
+    japml_list_t* it = package->post_install;
 
-    sprintf(handle->log_message, "Installing package %s", package->name);
-    japml_log(handle, Information, handle->log_message);
+    if (it)
+    {
+        sptrinf(handle->log_message, "Running post install script for %s", package->name);
+        japml_log(handle, Debug, handle->log_message);
+    }
 
-    japml_list_t* it = package->install;
     while (it)
     {
-        char *cmd = (char*)it->data;
-        if (system(cmd) != -1)
+        if (system((char*)it->data) == -1)
         {
-            japml_throw_error(handle, install_error, NULL);
+            sprintf(handle->log_message, "Command failed in post-install script for %s", package->name);
+            japml_throw_error(handle, install_error, handle->log_message);
         }
+        it = japml_list_next(it);
     }
 }
