@@ -45,10 +45,9 @@ Note that when it reaches 100%, it will only mean the the package manager has th
 ```
 libjson-c sqlite3 ncurses curl
 ```
-# Bulding from source
-
 
 Note, that even though JAPML has an option of not displaying curses mode (still work in progress, the option is not fully implemented), the ncurses library is still required for building from source.
+# Bulding from source
 
 ```bash
 git clone https://github.com/TheAlexDev23/japm.git
