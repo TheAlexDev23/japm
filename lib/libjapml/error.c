@@ -30,7 +30,7 @@ void _japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* 
     // The error is critical and we need to exit JAPML
     if (error_code >= custom_error_critical && handle->exit_on_critical)
     {
-        japml_ncurses_log(handle, Information, "Press any key to exit", handle->use_colors);
+        japml_ncurses_log(handle, Information, "Press any key to exit");
         getch();
 
         exit_japml(handle);
