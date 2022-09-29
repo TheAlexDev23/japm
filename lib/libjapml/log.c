@@ -77,7 +77,8 @@ void japml_log_error_files(japml_handle_t* handle, japml_log_level_t log_level, 
 
 void japml_debug_log(FILE *output, char *message, bool color)
 {
-    if (color) fprintf(output, ANSI_COLOR_YELLOW " ==> Debug: ");
+    if (color) fprintf(output, ANSI_COLOR_YELLOW);
+    fprintf(output, " ==> Debug: ");
     fprintf(output, "%s", message); 
     color_reset(output); 
 }
@@ -86,7 +87,8 @@ void japml_debug_log(FILE *output, char *message, bool color)
 
 void japml_info_log(FILE *output, char *message, bool color)
 {
-    if (color) fprintf(output, ANSI_COLOR_GREEN " ==> Inf: ");
+    if (color) fprintf(output, ANSI_COLOR_GREEN);
+    fprintf(output, " ==> Inf: ");
     fprintf(output, "%s", message); 
     color_reset(output); 
 }
@@ -96,7 +98,8 @@ void japml_info_log(FILE *output, char *message, bool color)
 
 void japml_error_log(FILE *output, char *message, bool color)
 {
-    if (color) fprintf(output, ANSI_COLOR_RED " ==> Err: ");
+    if (color) fprintf(output, ANSI_COLOR_RED); 
+    fprintf(output, " ==> Err: ");
     fprintf(output, "%s", message);
     color_reset(output);
 }
@@ -106,7 +109,8 @@ void japml_error_log(FILE *output, char *message, bool color)
 
 void japml_critical_log(FILE *output, char *message, bool color)
 {
-    if (color) fprintf(output, ANSI_COLOR_MAGENTA " ==> Crit: ");
+    if (color) fprintf(output, ANSI_COLOR_MAGENTA);
+    fprintf(output, " ==> Crit: ");
     fprintf(output, "%s", message);
     color_reset(output);
 }
