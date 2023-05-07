@@ -4,12 +4,13 @@
 #include "japml.h"
 
 #define MAX_PACKAGE_NAME_LENGTH 128
+#define MAX_PACKAGE_DESCRIPTION_LENGTH 1042
 
 struct _japml_package
 {
-	char *name;
-	char *description;
-	char *version;
+	char name[MAX_PACKAGE_NAME_LENGTH];
+	char description[MAX_PACKAGE_DESCRIPTION_LENGTH];
+	char version[25];
 
     // * Dependencies
     /* Dependencies to be able to build this package */
@@ -33,6 +34,9 @@ struct _japml_package
     /* List of removal instructions for the package */
     japml_list_t* remove;
 };
+
+// ! IMPLEMENT
+void japml_free_package(japml_package_t* package);
 
 /* Sets depender as a package that depends on pkg */
 void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);

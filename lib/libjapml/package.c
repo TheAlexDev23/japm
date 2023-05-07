@@ -52,3 +52,17 @@ int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** l
     japml_list_add(handle, list, package);
     return 0;
 }
+
+void japml_free_package(japml_package_t* package)
+{
+    japml_list_free(package->build_deps);
+    jampl_list_free(package->deps);
+    japml_list_free(package->depending_packages);
+    japml_list_free(package->pre_install);
+    japml_list_free(package->install);
+    japml_list_free(package->files);
+    japml_list_free(package->post_install);
+    japml_list_free(package->remove);
+
+    free(package);
+}

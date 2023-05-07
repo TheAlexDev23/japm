@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <sqlite3.h>
 #include <stdio.h>
 
 #include "japml.h"
@@ -9,6 +10,8 @@
 void exit_japml(japml_handle_t *handle)
 {
    japml_list_free(handle->remote_dbs);
+
+   sqlite3_close(handle->sqlite);
    
    // Close all normal log files
    japml_list_t *log_files = handle->log_files;

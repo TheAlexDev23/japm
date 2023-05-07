@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sqlite3.h>
 #include <curl/curl.h>
 
 #include "init.h"
@@ -25,6 +26,14 @@ japml_handle_t* japml_init_base(int argc, char* argv[])
     remotedb->url = "https://github.com/TheAlexDev23/japm-official-packages";
 
     japml_list_add(handle, &handle->remote_dbs, remotedb);
+
+    restart_sqlitedb:
+    if (sqlite3_open("/var/japml/local.db", &handle->sqlite))
+    {
+        japml_create_local_db(handle);
+    }
+
+    
 
     // * Logging
 
