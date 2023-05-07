@@ -8,12 +8,18 @@ enum _japml_error
     /* If there's a need to call a 'warning' error, but the type needed doesn't exist
      in japml_error_t call japml_throw_error with error_code as custom_error_warning */
     custom_error_warning,
+
     /* If there's a need to call a 'error' error, but the type needed doesn't exist
      in japml_error_t call japml_throw_error with error_code as custom_error_warning */
     custom_error_error,
+    action_not_accepted_error,
+
+    not_implemented_error,
     /* If there's a need to call a 'critical' error, but the type needed doesn't exist
      in japml_error_t call japml_throw_error with error_code as custom_error_warning */
     custom_error_critical,
+
+    package_not_found_error,
     /* Removing the package breaks a depenency */
     dependency_break_error,
     /* Errow while running system commands used to install package */
@@ -22,15 +28,6 @@ enum _japml_error
     /* Error while allocating memory with malloc */
     malloc_error,
     unknown_error
-};
-
-struct _japml_error_callbacks 
-{
-    void (*cb_japml_unkown_error)            (japml_handle_t*);
-    void (*cb_japml_dependency_break_error)  (japml_handle_t*);
-    void (*cb_japml_install_error)           (japml_handle_t*);
-    void (*cb_japml_malloc_error)            (japml_handle_t*);
-    void (*cb_japml_package_corrupted_error) (japml_handle_t*);
 };
 
 /* Prints an error to the log screen and exits if the error is critical */

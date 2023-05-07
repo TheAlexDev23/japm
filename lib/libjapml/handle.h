@@ -53,8 +53,6 @@ struct _japml_handle
     int ncurses_log_buffer_length; // Max length of the buffer
 
     // * Errors
-    /* Callbacks that will be called on error */
-    japml_error_callbacks_t error_callbacks;
     /* True if JAPML should exit when the error passed to japml_throw_error is critical */
     bool exit_on_critical;
 

@@ -8,7 +8,7 @@
 #include "log.h"
 #include "handle.h"
 
-japml_handle_t* japml_init_default(int argc, char* argv[])
+japml_handle_t* japml_init_base(int argc, char* argv[])
 {
     japml_handle_t* handle = malloc(sizeof(japml_handle_t));
 
@@ -19,10 +19,16 @@ japml_handle_t* japml_init_default(int argc, char* argv[])
         return NULL;
     }
 
+    // * DBs
+
+    japml_db_remote_t* remotedb = malloc(sizeof(japml_db_remote_t));
+    remotedb->url = "https://github.com/TheAlexDev23/japm-official-packages";
+
+    japml_list_add(handle, &handle->remote_dbs, remotedb);
+
     // * Logging
 
     handle->log_message = malloc(10000);
-    handle->log_level = Information;
 
     // TODO: Parse comand line args and check if log files are provided
 
@@ -53,49 +59,21 @@ japml_handle_t* japml_init_default(int argc, char* argv[])
     return handle;
 }
 
+japml_handle_t* japml_init_default(int argc, char* argv[])
+{
+    japml_handle_t* handle = japml_init_base(argc, argv);
+
+    handle->log_level = Information;
+    
+    return handle;
+}
+
 japml_handle_t* japml_init_devel(int argc, char* argv[])
 {
-    japml_handle_t* handle = malloc(sizeof(japml_handle_t));
+    japml_handle_t* handle = japml_init_base(argc, argv);
 
-    if (!handle)
-    {
-        // Since not even curses is initialized
-        fprintf(stderr, "Crit: Criticall error initializing JAPML, could not alloc enough memory for handle\n");
-        return NULL;
-    }
-
-    // * Logging
-
-    handle->log_message = malloc(10000);
     handle->log_level = Debug;
-
-    // TODO: Parse comand line args and check if log files are provided
-
-    // * CURL
-
-    handle->curl = curl_easy_init();
-
-    if (!handle->curl)
-    {
-        fprintf(stderr, "Err: Error initializing JAPML could not create CURL handle");
-    }
-
-    // * TUI
-    handle->use_colors = true;
-    // TODO: Parse comand line args and check if curses is needed
-    handle->use_curses = true;
-    // TODO: Parse comand line args and check if we want default to all questions
-    handle->default_to_all = !handle->use_curses;
-
-    // * Logging
-
-    handle->ncurses_log_buffer_count  = 0;
-    handle->ncurses_log_buffer_length = 0;
-
-    terminal_init(handle);
-
-    handle->exit_on_critical = true;
-
+    
     return handle;
 }
 

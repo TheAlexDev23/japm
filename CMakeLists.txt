@@ -32,6 +32,7 @@ add_library(
     lib/libjapml/log.c
     lib/libjapml/log.h
     lib/libjapml/package.h
+    lib/libjapml/package.c
     )
 
 add_executable(${PROJECT_NAME} src/main.c)

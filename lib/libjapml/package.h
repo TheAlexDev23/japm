@@ -3,6 +3,8 @@
 
 #include "japml.h"
 
+#define MAX_PACKAGE_NAME_LENGTH 128
+
 struct _japml_package
 {
 	char *name;
@@ -32,7 +34,18 @@ struct _japml_package
     japml_list_t* remove;
 };
 
-/* Sets the depending_packages to packages that depend on pkg */
-void japml_set_dpenending_packages(japml_handle_t* handle, japml_package_t* pkg);
+/* Sets depender as a package that depends on pkg */
+void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);
+/* 
+* Sets depending_packages of package to the packages that depend on it.
+* This function should be called every time dpeneding_packages are updated and need to be accessed.
+*/
+void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package);
+
+/* 
+* Will insure that package does not exist in the list before adding it
+* Returns 1 if package is already in list, 0 otherwise
+ */
+int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** list, japml_package_t* package);
 
 #endif

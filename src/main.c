@@ -27,7 +27,6 @@ void check_japml()
     japml_log(handle, Information, "This is a info log");
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
-    japml_throw_error(handle, malloc_error, NULL);
 
     for (int i = 0; i < 80; i++)
     {
@@ -37,6 +36,8 @@ void check_japml()
         usleep(80000);
     }
 
+    japml_throw_error(handle, malloc_error, NULL);
+	
     getch();
 
     exit_japml(handle);
