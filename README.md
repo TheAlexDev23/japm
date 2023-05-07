@@ -20,13 +20,11 @@ If you want to use the package manager the way it worked before you can either t
 - [x] Error system
 - [ ] Input parsing system
 - [x] JSON parsing
-- [ ] Local DB reading
-- [ ] Remote DB reading
-- [ ] Actions system => doing (33% done)
-- [ ] Package Installation => doing (66% done)
+- [ ] Local DB reading => doing 
+- [x] Remote DB reading
+- [ ] Actions system => doing
+- [ ] Package Installation => doing 
 - [ ] Package Removal
-- [ ] Package Update
-- [ ] Package Search
 
 # Dependencies:
 
