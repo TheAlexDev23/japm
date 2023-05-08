@@ -18,8 +18,8 @@ If you want to use the package manager the way it worked before you can either t
 - [x] Error system
 - [ ] Input parsing system
 - [x] JSON parsing
-- [ ] Local DB reading => doing 
-- [x] Remote DB reading
+- [x] Local DB CRUD => requires testing
+- [x] Remote DB reading => requires testing
 - [ ] Actions system => doing
 - [ ] Package Installation => doing 
 - [ ] Package Removal
