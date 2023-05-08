@@ -87,3 +87,31 @@ void japml_list_free(japml_list_t* list)
         list = tmp;
     }
 }
+
+japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list) 
+{
+    japml_list_t* list;
+    japml_list_add(handle, &list, string_list);
+
+    char* token = strtok(string_list, ";");
+    while (token)
+    {
+        japml_list_add(handle, &list, token);
+        token = strtok(NULL, ";");
+    }
+
+    return list;
+}
+
+char* japml_list_to_string(japml_handle_t* handle, japml_list_t* list)
+{
+    char* string_list = calloc(sizeof(MAX_CHAR_LIST_LENGTH), sizeof(char));
+    while (list)
+    {
+        strcat(string_list, (char*)(list->data));
+        strcat(string_list, ";");
+        list = japml_list_next(list);
+    }
+
+    return string_list;
+}

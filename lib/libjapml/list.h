@@ -39,4 +39,11 @@ Returns NULL if list is  empty or if the list is smaller than 'n'
 */
 japml_list_t* japml_list_get_element(japml_list_t *list, int n);
 
+#define MAX_CHAR_LIST_LENGTH 5000
+
+/* A new list of items separated by a semicolon in the string will be created */
+japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list);
+/* Retuns a string with all items of a list each sepparated by a semicolon */
+char* japml_list_to_string(japml_handle_t* handle, japml_list_t* list);
+
 #endif

@@ -13,8 +13,11 @@
 #include "package.h"
 #include "log.h"
 #include "error.h"
+#include "list.h"
 #include "json.h"
 
+// TEST
+// REMINDER -> maybe transfer this to a separate file
 int japml_create_file_recursive(char* pathname)
 {
     for (char *p = pathname; (p = strchr(p ,'/')) != NULL; ++p) {
@@ -31,6 +34,7 @@ int japml_create_file_recursive(char* pathname)
     return fd;
 }
 
+// Creates local.db and the packages table
 void japml_create_local_db(japml_handle_t* handle)
 {
     japml_create_file_recurisve("/var/japml/local.db");
@@ -42,35 +46,6 @@ void japml_create_local_db(japml_handle_t* handle)
                  \"version\" TEXT NOT NULL, \ 
                  \"remove\" TEXT);",
                  NULL, NULL, NULL);
-}
-
-japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list) 
-{
-    japml_list_t* list;
-    japml_list_add(handle, &list, string_list);
-
-    char* token = strtok(string_list, ";");
-    while (token)
-    {
-        japml_list_add(handle, &list, token);
-        token = strtok(NULL, ";");
-    }
-
-    return list;
-}
-
-
-char* japml_list_to_string(japml_handle_t* handle, japml_list_t* list)
-{
-    char* string_list = calloc(sizeof(MAX_CHAR_LIST_LENGTH), sizeof(char));
-    while (list)
-    {
-        strcat(string_list, (char*)(list->data));
-        strcat(string_list, ";");
-        list = japml_list_next(list);
-    }
-
-    return string_list;
 }
 
 int callback(void *ptr, int column_num, char **values, char **rows)
@@ -93,8 +68,6 @@ int callback(void *ptr, int column_num, char **values, char **rows)
 
 japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* package_name)
 {
-    japml_throw_error(handle, not_implemented_error, "japml_get_package_from_local_db not implemented");
-
     char *sql = malloc(sizeof(char) *
         (strlen("SELECT * FROM packages WHERE name = ''") 
         + strlen(package_name) + strlen(";") + 1));
@@ -102,7 +75,16 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
     sprintf(sql, "SELECT * FROM packages WHERE name ='%s';", package_name);
 
     remove("/tmp/japml/sql_callback_temp_file");
-    sqlite3_exec(handle->sqlite, sql, callback, NULL, NULL);
+    
+    char* errMsg = 0;
+    if (sqlite3_exec(handle->sqlite, sql, callback, NULL, &errMsg))
+    {
+        sprintf(handle->log_message, "Canont execute sql (%s)", errMsg);
+        japml_throw_error(handle, sql_command_fail_error, handle->log_message);
+        return NULL;
+    }
+
+    free(sql);
 
     // Absence of callback file means such package was not found in db
     if (access("/tmp/japml/sql_callback_temp_file", F_OK) != 0) 
@@ -115,13 +97,23 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
     char line[5000];
 
     japml_package_t* package = malloc(sizeof(package));
-    fgets(line, sizeof(line), fp);
-    strcpy(package->name, line);
-    fgets(line, sizeof(line), fp);
-    strcpy(package->description, line);
-    fgets(line, sizeof(line), fp);
-    strcpy(package->version, line);
-    fgets(line, sizeof(line), fp);
+
+    char* fields_to_modif[3] = {
+        package->name,
+        package->description,
+        package->version
+    };
+
+    int i = 0;
+    while(fgets(line, sizeof(line), fp))
+    {
+        // Remove newline character
+        line[strlen(line) - 1] = "\0";
+        fields_to_modif[i] = malloc(sizeof(char) * strlen(line));
+        strcpy(fields_to_modif[i], line);
+        i++;
+    }
+
     package->remove = japml_string_to_list(handle, line);
 
     return package;
@@ -177,10 +169,58 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
     if (!found)
     {
         japml_throw_error(handle, package_not_found_error, "Package cannot be found in any remote database");
-        return;
+        return NULL;
     }
 
     japml_package_t* package = japml_parse_json_file(handle, "/tmp/japml/packagefetch");
 
     return package;
+}
+
+int japml_add_package_to_local_db(japml_handle_t* handle, japml_package_t* package)
+{
+    char* remove = japml_list_to_string(handle, package->remove);
+    char *sql = malloc(sizeof(char) *
+        strlen("INSERT INTO packages (name, description, version, remove) VALUES ();") + 
+        
+            strlen(package->name) + strlen("'', ") +
+            strlen(package->description) + strlen("'', ") +
+            strlen(package->version) + strlen("'', ") +
+            strlen(remove) + strlen("'', ")
+    );
+
+    sprintf(sql, "INSERT INTO packages (name, description, verson, remove) VALUES ( \
+            '%s', '%s', '%s', '%s');",
+            package->name, package->description, package->version, remove);
+
+    char *errMsg = 0;
+    if (sqlite3_exec(handle->sqlite, sql, NULL, NULL, &errMsg))
+    {
+        sprintf(handle->log_message, "Canont execute sql (%s)", errMsg);
+        japml_throw_error(handle, sql_command_fail_error, handle->log_message);
+        return 1;
+    }
+
+    free(sql);
+    free(remove);
+    return 0;
+}
+
+int japml_remove_package_from_local_db(japml_handle_t* handle, japml_package_t* package)
+{
+    char *sql = malloc(sizeof(char) * 
+        strlen("DELETE FROM packages WHERE name = '';") +
+        strlen(package->name));
+    
+    sprintf(sql, "DELETE FROM packages WHERE name = '%s';", package->name);
+
+    char* errMsg = 0;
+    if (sqlite3_exec(handle->sqlite, sql, NULL, NULL, &errMsg))
+    {
+        sprintf(handle->log_message, "Canont execute sql (%s)", errMsg);
+        japml_throw_error(handle, sql_command_fail_error, handle->log_message);
+        return 1;
+    }
+
+    return 0;
 }

@@ -18,7 +18,7 @@ enum _japml_error
     /* If there's a need to call a 'critical' error, but the type needed doesn't exist
      in japml_error_t call japml_throw_error with error_code as custom_error_warning */
     custom_error_critical,
-
+    sql_command_fail_error,
     package_not_found_error,
     /* Removing the package breaks a depenency */
     dependency_break_error,

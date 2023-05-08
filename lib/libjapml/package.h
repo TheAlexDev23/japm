@@ -8,9 +8,9 @@
 
 struct _japml_package
 {
-	char name[MAX_PACKAGE_NAME_LENGTH];
-	char description[MAX_PACKAGE_DESCRIPTION_LENGTH];
-	char version[25];
+	char* name;
+	char* description;
+	char* version;
 
     // * Dependencies
     /* Dependencies to be able to build this package */
@@ -40,6 +40,13 @@ void japml_free_package(japml_package_t* package);
 
 /* Sets depender as a package that depends on pkg */
 void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);
+
+/* 
+* Generally, if a package is deleted, we should also remove the "dependency link" between the package and the packages it depends on 
+* This will remove depender from package's used_by list
+*/
+void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* package, japml_package_t* depender);
+
 /* 
 * Sets depending_packages of package to the packages that depend on it.
 * This function should be called every time dpeneding_packages are updated and need to be accessed.

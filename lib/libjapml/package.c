@@ -24,6 +24,27 @@ void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* 
     fclose(f);
 }
 
+void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* package, japml_package_t* depender)
+{
+    char* file = japml_get_used_by_file(package);
+    FILE* f = fopen(file, "r");
+    char buffer[1024];
+
+    fread(buffer, sizeof(buffer), 1, f);
+    fclose(f);
+    f = fopen(file, "w");
+
+    char chunk[MAX_PACKAGE_NAME_LENGTH];
+    while(fgets(chunk, sizeof(chunk), f) != NULL) {
+        if (strcmp(chunk, depender->name) != 0)
+        {
+            fprintf(f, "%s\n", chunk);
+        }
+    }
+
+    fclose(f);
+}
+
 void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package)
 {
     char* file = japml_get_used_by_file(package);
