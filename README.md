@@ -4,18 +4,16 @@
 
 I've seen many people trying to build their own package manager recently, so I also decided to try it out.
 
+JAPM is different from other package managers in the sense that it uses ncurses to create a TUI and represent information in a more organized and better looking way.
+
+A package is a .json file usually saved in a remote repository, by default it is [Japm Official Packages](https://github.com/TheAlexDev23/japm-official-packages)
+
 # Important
 Doesn't fully work in the current state.
 
 If you want to use the package manager the way it worked before you can either tweak a bit the source code or install the v1.0.0 release (old JAPM without JAPML).
 
-# Milestones => Deprecated
-- [x] Package Installation
-- [x] Package Removal
-- [x] Package Update
-- [x] Package Search
-
-# JAPML necessary milestones
+# JAPM necessary milestones
 - [x] Logging system
 - [x] Error system
 - [ ] Input parsing system
