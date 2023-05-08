@@ -33,83 +33,91 @@ int japml_action_create(japml_handle_t* handle, japml_list_t* package_list, japm
     return 0;
 }
 
+void japml_action_check_type_remove(japml_handle_t* handle)
+{
+    japml_list_t* it = handle->action->targets;
+    // Iterate through all targets checking if they have pacakages depending on them
+    while (it)
+    {
+        japml_package_t* pkg = (japml_package_t*)(it->data);
+        japml_get_depending_packages(handle, pkg);
+
+        if (pkg->depending_packages)
+        {
+            handle->action->status = JAPML_ACTION_STATUS_ABORTED;
+            sprintf(handle->log_message, "Removing package breaks dependency: %s", ((japml_package_t*)(pkg->depending_packages->data))->name);
+            japml_throw_error(handle, dependency_break_error, handle->log_message);
+        }
+
+        it = japml_list_next(it);
+    }
+}
+
+void japml_action_check_type_remove_recursive(japml_handle_t* handle)
+{
+restart_type_removal_recursive:
+    japml_list_t* it = handle->action->targets;
+    // Iterate through all targets checking if they have pacakages depending on them
+    while (it)
+    {
+        japml_package_t* pkg = (japml_package_t*)(it->data);
+        japml_get_depending_packages(handle, pkg);
+
+        japml_list_t* depending_packages = pkg->depending_packages;
+        while(depending_packages)
+        {
+            // In case a new dependant package needs to be removed, we need to rerun in case it has unremoved dependant_packages
+            if (!japml_add_package_to_list_no_repeat(handle, handle->action->targets, (japml_package_t*)(depending_packages->data)))
+            {
+                goto restart_type_removal_recursive;
+            }
+
+            depending_packages = japml_list_next(depending_packages);
+        }
+
+        it = japml_list_next(it);
+    }
+}
+
+void japml_action_check_type_install(japml_handle_t* handle)
+{
+restart_type_install:
+    japml_list_t* it = handle->action->targets;
+    // Iterate through all targets checking if they have pacakages depending on them
+    while (it)
+    {
+        japml_package_t* pkg = (japml_package_t*)(it->data);
+        japml_get_depending_packages(handle, pkg);
+
+        japml_list_t* dependencies = pkg->deps;
+        while(dependencies)
+        {
+            // In a case a new dependency needs to be added to install list we will need to rerun in case it also has uninstalled dependencies
+            if (!japml_add_package_to_list_no_repeat(handle, handle->action->targets, (japml_package_t*)(dependencies->data)))
+            {
+                goto restart_type_install;
+            }
+
+            dependencies = japml_list_next(dependencies);
+        }
+
+        it = japml_list_next(it);
+    }
+}
+
 int japml_action_check(japml_handle_t* handle)
 {
-    // IMPORTANT -> CHECK NOTES FOR TODO
-
-    // If we are removing a package and some other packages depend on it abort unless we remove recursively
-    if (handle->action->action_type == JAPML_ACTION_TYPE_REMOVE)
+    switch (handle->action->action_type)
     {
-        japml_list_t* it = handle->action->targets;
-        // Iterate through all targets checking if they have pacakages depending on them
-        while (it)
-        {
-            japml_package_t* pkg = (japml_package_t*)(it->data);
-            japml_get_depending_packages(handle, pkg);
-
-            if (pkg->depending_packages)
-            {
-                handle->action->status = JAPML_ACTION_STATUS_ABORTED;
-                sprintf(handle->log_message, "Removing package breaks dependency: %s", ((japml_package_t*)(pkg->depending_packages->data))->name);
-                japml_throw_error(handle, dependency_break_error, handle->log_message);
-            }
-
-            it = japml_list_next(it);
-        }
-    }
-
-    // If we are removing recursively, also add packages that depend on that package (and the same recursively)
-    if (handle->action->action_type == JAPML_ACTION_TYPE_REMOVE_RECURSIVE)
-    {
-        restart_type_removal_recursive:
-        japml_list_t* it = handle->action->targets;
-        // Iterate through all targets checking if they have pacakages depending on them
-        while (it)
-        {
-            japml_package_t* pkg = (japml_package_t*)(it->data);
-            japml_get_depending_packages(handle, pkg);
-
-            japml_list_t* depending_packages = pkg->depending_packages;
-            while(depending_packages)
-            {
-                // In case a new dependant package needs to be removed, we need to rerun in case it has unremoved dependant_packages
-                if (!japml_add_package_to_list_no_repeat(handle, handle->action->targets, (japml_package_t*)(depending_packages->data)))
-                {
-                    goto restart_type_removal_recursive;
-                }
-
-                depending_packages = japml_list_next(depending_packages);
-            }
-
-            it = japml_list_next(it);
-        }
-    }
-
-    // Add dependencies and their dependencies recursively
-    if (handle->action->action_type == JAPML_ACTION_TYPE_INSTALL)
-    {
-        restart_type_install:
-        japml_list_t* it = handle->action->targets;
-        // Iterate through all targets checking if they have pacakages depending on them
-        while (it)
-        {
-            japml_package_t* pkg = (japml_package_t*)(it->data);
-            japml_get_depending_packages(handle, pkg);
-
-            japml_list_t* dependencies = pkg->deps;
-            while(dependencies)
-            {
-                // In a case a new dependency needs to be added to install list we will need to rerun in case it also has uninstalled dependencies
-                if (!japml_add_package_to_list_no_repeat(handle, handle->action->targets, (japml_package_t*)(dependencies->data)))
-                {
-                    goto restart_type_install;
-                }
-
-                dependencies = japml_list_next(dependencies);
-            }
-
-            it = japml_list_next(it);
-        }
+        case JAPML_ACTION_TYPE_REMOVE:
+            japml_action_check_type_remove(handle);
+            break;
+        case JAPML_ACTION_TYPE_REMOVE_RECURSIVE:
+            japml_action_check_type_remove_recursive(handle);
+            break;
+        case JAPML_ACTION_TYPE_INSTALL:
+            japml_action_check_type_install(handle);
+            break;
     }
 
     if (handle->action->action_type == JAPML_ACTION_TYPE_INSTALL)
