@@ -15,7 +15,9 @@ japml_list_t* japml_json_to_list(json_object* obj)
     {
         json_object* item = json_object_array_get_idx(list, i);
         japml_list_add(handle, &list, (char*)json_object_get_string(item));
-    }   
+    }
+
+    return list;
 }
 
 /* Allocates memory for and creates a japml package from the json file provided */
