@@ -12,7 +12,6 @@
 japml_handle_t* japml_init_base(int argc, char* argv[])
 {
     japml_handle_t* handle = malloc(sizeof(japml_handle_t));
-
     if (!handle)
     {
         // Since not even curses is initialized
@@ -31,10 +30,9 @@ japml_handle_t* japml_init_base(int argc, char* argv[])
     if (sqlite3_open("/var/japml/local.db", &handle->sqlite))
     {
         japml_create_local_db(handle);
+        goto restart_sqlitedb;
     }
-
     
-
     // * Logging
 
     handle->log_message = malloc(10000);

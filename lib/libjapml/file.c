@@ -10,16 +10,22 @@
 
 int japml_create_file_recursive(char* pathname)
 {
-    for (char *p = pathname; (p = strchr(p ,'/')) != NULL; ++p) {
+    // Copying since pathname might be readonly
+    char *path = malloc(sizeof(char) * strlen(pathname));
+    strcpy(path, pathname);
+
+    for (char *p = path; (p = strchr(p ,'/')) != NULL; ++p) {
         char c = p[1];
         p[1] = '\0';
         errno = 0;
-        if (mkdir(pathname, 0700) != 0 && errno != EEXIST) {
+        if (mkdir(path, 0700) != 0 && errno != EEXIST) {
             return 1;
         }
         p[1] = c;
     }
+
     int fd = creat(pathname, 0600);
+    free(path);
 
     return fd;
 }
