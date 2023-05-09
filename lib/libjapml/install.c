@@ -128,8 +128,10 @@ int japml_post_install(japml_handle_t* handle, japml_package_t* package)
         it = japml_list_next(it);
     }
 
+    japml_log(handle, Information, "Updating local db...");
     japml_add_package_to_local_db(handle, package);
     japml_mark_depending_packages(handle, package);
+    japml_log(handle, Information, "Done");
 
     return 0;
 }

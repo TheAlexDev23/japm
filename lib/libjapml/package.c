@@ -38,30 +38,38 @@ void japml_append_depenending_package(japml_handle_t* handle, japml_package_t* p
     fclose(f);
 }
 
-void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* package, japml_package_t* depender)
+void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* depender)
 {
-    char* file = japml_get_used_by_file(package);
+    japml_list_t* it = depender->deps;
 
-    FILE *f = fopen(file, "r");
-    
-    japml_create_file_recursive(PACKAGE_USED_BY_TMP);
-    FILE *tmp = fopen(PACKAGE_USED_BY_TMP, "w");
-
-    // Essentially copy into tmp all packages except depender->name
-    char chunk[MAX_PACKAGE_NAME_LENGTH];
-    while(fgets(chunk, sizeof(chunk), f)) 
+    while (it)
     {
-        chunk[strlen(chunk) - 1] = '\0';
-        if (strcmp(chunk, depender->name) != 0)
+        japml_package_t* package = (japml_package_t*)(it->data);
+        char* file = japml_get_used_by_file(package);
+
+        FILE *f = fopen(file, "r");
+        
+        japml_create_file_recursive(PACKAGE_USED_BY_TMP);
+        FILE *tmp = fopen(PACKAGE_USED_BY_TMP, "w");
+
+        // Essentially copy into tmp all packages except depender->name
+        char chunk[MAX_PACKAGE_NAME_LENGTH];
+        while(fgets(chunk, sizeof(chunk), f)) 
         {
-            fprintf(tmp, "%s\n", chunk);
+            chunk[strlen(chunk) - 1] = '\0';
+            if (strcmp(chunk, depender->name) != 0)
+            {
+                fprintf(tmp, "%s\n", chunk);
+            }
         }
+
+        fclose(tmp);
+        fclose(f);
+
+        japml_copy_file(PACKAGE_USED_BY_TMP, file);
+
+        it = japml_list_next(it);
     }
-
-    fclose(tmp);
-    fclose(f);
-
-    japml_copy_file(PACKAGE_USED_BY_TMP, file);
 }
 
 void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package)

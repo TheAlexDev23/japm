@@ -44,10 +44,10 @@ void japml_free_package(japml_package_t* package);
 void japml_append_depenending_package(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);
 
 /* 
-* Generally, if a package is deleted, we should also remove the "dependency link" between the package and the packages it depends on 
-* This will remove depender from package's used_by list
+* Generally, if a package is deleted, we should also remove the "dependency link" between the package and the packages it depends on
+* THis will cycle thorugh all deps of depender and remove depender->name from their used_by
 */
-void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* package, japml_package_t* depender);
+void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* depender);
 
 /* 
 * Sets depending_packages of package to the packages that depend on it.
