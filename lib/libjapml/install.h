@@ -4,9 +4,10 @@
 #include "japml.h"
 #include "list.h"
 
-void japml_install_packages(japml_handle_t* handle, japml_list_t* packages);
-void japml_install_single_package(japml_handle_t* handle, japml_package_t* package);
+int japml_install_packages(japml_handle_t* handle, japml_list_t* packages);
+int japml_install_single_package(japml_handle_t* handle, japml_package_t* package);
 
-void japml_pre_install(japml_handle_t* handle, japml_package_t* package);
+int japml_pre_install(japml_handle_t* handle, japml_package_t* package);
+int japml_post_install(japml_handle_t* handle, japml_package_t* package);
 
 #endif

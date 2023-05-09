@@ -15,24 +15,7 @@
 #include "error.h"
 #include "list.h"
 #include "json.h"
-
-// TEST
-// REMINDER -> maybe transfer this to a separate file
-int japml_create_file_recursive(char* pathname)
-{
-    for (char *p = pathname; (p = strchr(p ,'/')) != NULL; ++p) {
-        char c = p[1];
-        p[1] = '\0';
-        errno = 0;
-        if (mkdir(pathname, 0700) != 0 && errno != EEXIST) {
-            return -1;
-        }
-        p[1] = c;
-    }
-    int fd = creat(pathname, 0600);
-
-    return fd;
-}
+#include "file.h" // japml_create_file_recursive
 
 // Creates local.db and the packages table
 void japml_create_local_db(japml_handle_t* handle)

@@ -17,6 +17,8 @@ add_library(
     lib/libjapml/error.h
     lib/libjapml/exit.c
     lib/libjapml/exit.h
+    lib/libjapml/file.h
+    lib/libjapml/file.c
     lib/libjapml/handle.h
     lib/libjapml/init.c
     lib/libjapml/init.h

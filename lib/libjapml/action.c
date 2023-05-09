@@ -87,18 +87,27 @@ restart_type_install:
     while (it)
     {
         japml_package_t* pkg = (japml_package_t*)(it->data);
-        japml_get_depending_packages(handle, pkg);
 
         japml_list_t* dependencies = pkg->deps;
+        japml_list_t* build_deps = pkg->build_deps;
         while(dependencies)
         {
             // In a case a new dependency needs to be added to install list we will need to rerun in case it also has uninstalled dependencies
-            if (!japml_add_package_to_list_no_repeat(handle, handle->action->targets, (japml_package_t*)(dependencies->data)))
+            if (!japml_add_package_to_list_no_repeat(handle, 
+                handle->action->targets, (japml_package_t*)(dependencies->data)))
             {
                 goto restart_type_install;
             }
 
             dependencies = japml_list_next(dependencies);
+            
+            if (!japml_add_package_to_list_no_repeat(handle, 
+                handle->action->targets, (japml_package_t*)(build_deps->data)))
+            {
+                goto restart_type_install;
+            }
+
+            build_deps = japml_list_next(build_deps);
         }
 
         it = japml_list_next(it);
