@@ -139,11 +139,7 @@ int japml_action_check(japml_handle_t* handle)
     }
 
     japml_list_t* it = handle->action->targets;
-    while (it)
-    {
-        japml_log(handle, Information, ((japml_package_t*)it->data)->name);
-        it = japml_list_next(it);
-    }
+    japml_print_package_list(handle, handle->action->targets);
 
     if (japml_ncurses_Yn_dialogue(handle, "Do you wish to continue? "))
     {
@@ -171,6 +167,6 @@ int japml_action_commit(japml_handle_t* handle)
     }
     else
     {
-        japml_throw_error(handle, custom_error_critical, "japml_action_commit for removal not yet implemented");
+        japml_remove_packages(handle, handle->action->targets);
     }
 }

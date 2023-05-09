@@ -107,3 +107,13 @@ void japml_free_package(japml_package_t* package)
 
     free(package);
 }
+
+void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages)
+{
+    while (packages)
+    {
+        sprintf(handle->log_message, "  %s", ((japml_package_t*)packages->data)->name);
+        japml_log(handle, Information, handle->log_message);
+        packages = japml_list_next(packages);
+    }
+}

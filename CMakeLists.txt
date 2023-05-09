@@ -35,6 +35,10 @@ add_library(
     lib/libjapml/log.h
     lib/libjapml/package.h
     lib/libjapml/package.c
+    lib/libjapml/remove.h
+    lib/libjapml/remove.c
+    lib/libjapml/system.h
+    lib/libjapml/system.c
     )
 
 add_executable(${PROJECT_NAME} src/main.c)

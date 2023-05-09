@@ -7,38 +7,12 @@
 #include "package.h"
 #include "db.h"
 #include "handle.h"
+#include "system.h" // japml_run_instructions
 
-void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages)
-{
-    while (packages)
-    {
-        sprintf(handle->log_message, "  %s", ((japml_package_t*)packages->data)->name);
-        japml_log(handle, Information, handle->log_message);
-        packages = japml_list_next(packages);
-    }
-}
 
-int japml_run_instructions(japml_list_t* instructions)
-{
-    while (instructions)
-    {
-        char *cmd = (char*)instructions->data;
-        if (system(cmd) == -1)
-        {
-            return 1;
-        }
-
-        instructions = japml_list_next(instructions);
-    }
-}
 
 int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
 {
-    if (!packages)
-    {
-        return 1;
-    }
-
     japml_list_t* it = packages;
 
     while (it)

@@ -61,4 +61,7 @@ void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* packa
  */
 int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** list, japml_package_t* package);
 
+/* Will print a list of packages */
+void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages);
+
 #endif
