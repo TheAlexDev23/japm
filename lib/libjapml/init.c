@@ -14,7 +14,7 @@ japml_handle_t* japml_init_base(int argc, char* argv[])
     japml_handle_t* handle = malloc(sizeof(japml_handle_t));
     if (!handle)
     {
-        // Since not even curses is initialized
+        // Log system is not initialized
         fprintf(stderr, "Crit: Criticall error initializing JAPML, could not alloc enough memory for handle\n");
         return NULL;
     }
@@ -26,10 +26,12 @@ japml_handle_t* japml_init_base(int argc, char* argv[])
 
     japml_list_add(handle, &handle->remote_dbs, remotedb);
 
+    int i = -1;
     restart_sqlitedb:
-    if (sqlite3_open("/var/japml/local.db", &handle->sqlite))
+    if (sqlite3_open("/var/japml/local.db", &handle->sqlite) && !i)
     {
         japml_create_local_db(handle);
+        i++;
         goto restart_sqlitedb;
     }
     
