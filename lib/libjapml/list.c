@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h> // strtok for list manipulation
 
 #include "list.h"
 #include "japml.h"

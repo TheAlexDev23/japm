@@ -55,7 +55,7 @@ void japml_action_check_type_remove(japml_handle_t* handle)
 
 void japml_action_check_type_remove_recursive(japml_handle_t* handle)
 {
-restart_type_removal_recursive:
+restart_type_removal_recursive: ;
     japml_list_t* it = handle->action->targets;
     // Iterate through all targets checking if they have pacakages depending on them
     while (it)
@@ -67,7 +67,7 @@ restart_type_removal_recursive:
         while(depending_packages)
         {
             // In case a new dependant package needs to be removed, we need to rerun in case it has unremoved dependant_packages
-            if (!japml_add_package_to_list_no_repeat(handle, handle->action->targets, (japml_package_t*)(depending_packages->data)))
+            if (!japml_add_package_to_list_no_repeat(handle, &(handle->action->targets), (japml_package_t*)(depending_packages->data)))
             {
                 goto restart_type_removal_recursive;
             }
@@ -81,7 +81,7 @@ restart_type_removal_recursive:
 
 void japml_action_check_type_install(japml_handle_t* handle)
 {
-restart_type_install:
+restart_type_install: ;
     japml_list_t* it = handle->action->targets;
     // Iterate through all targets checking if they have pacakages depending on them
     while (it)
@@ -94,7 +94,7 @@ restart_type_install:
         {
             // In a case a new dependency needs to be added to install list we will need to rerun in case it also has uninstalled dependencies
             if (!japml_add_package_to_list_no_repeat(handle, 
-                handle->action->targets, (japml_package_t*)(dependencies->data)))
+                &(handle->action->targets), (japml_package_t*)(dependencies->data)))
             {
                 goto restart_type_install;
             }
@@ -102,7 +102,7 @@ restart_type_install:
             dependencies = japml_list_next(dependencies);
             
             if (!japml_add_package_to_list_no_repeat(handle, 
-                handle->action->targets, (japml_package_t*)(build_deps->data)))
+                &(handle->action->targets), (japml_package_t*)(build_deps->data)))
             {
                 goto restart_type_install;
             }

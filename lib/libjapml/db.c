@@ -20,13 +20,13 @@
 // Creates local.db and the packages table
 void japml_create_local_db(japml_handle_t* handle)
 {
-    japml_create_file_recurisve("/var/japml/local.db");
+    japml_create_file_recursive("/var/japml/local.db");
     sqlite3_open("/var/japml/local.db", &handle->sqlite);
     sqlite3_exec(handle->sqlite,
-                 "CREATE TABLE packages ( \ 
-                 \"name\" TEXT NOT NULL, \ 
-                 \"description\" TEXT, \ 
-                 \"version\" TEXT NOT NULL, \ 
+                 "CREATE TABLE packages ( \
+                 \"name\" TEXT NOT NULL, \
+                 \"description\" TEXT, \
+                 \"version\" TEXT NOT NULL, \
                  \"remove\" TEXT);",
                  NULL, NULL, NULL);
 }
@@ -34,9 +34,9 @@ void japml_create_local_db(japml_handle_t* handle)
 int callback(void *ptr, int column_num, char **values, char **rows)
 {
     char *temp_file = "/tmp/japml/sql_callback_temp_file";
-    japml_create_file_recurisve(temp_file);
+    japml_create_file_recursive(temp_file);
     // Basically empties the file
-    fclsoe(fopen(temp_file, "w"));
+    fclose(fopen(temp_file, "w"));
 
     FILE *fp = fopen(temp_file, "a");
 
@@ -76,8 +76,6 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
     }
 
     FILE *fp = fopen("/tmp/japml/sql_callback_temp_file", "r");
-    int i = 0;
-    char line[5000];
 
     japml_package_t* package = malloc(sizeof(package));
 
@@ -88,10 +86,11 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
     };
 
     int i = 0;
+    char line[5000];
     while(fgets(line, sizeof(line), fp))
     {
         // Remove newline character
-        line[strlen(line) - 1] = "\0";
+        line[strlen(line) - 1] = '\0';
         fields_to_modif[i] = malloc(sizeof(char) * strlen(line));
         strcpy(fields_to_modif[i], line);
         i++;

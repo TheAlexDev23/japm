@@ -14,7 +14,7 @@ char* japml_get_used_by_file(japml_package_t* pkg)
     return package_used_by_file;
 }
 
-void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender)
+void japml_append_depenending_package(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender)
 {
     char* file = japml_get_used_by_file(pkg);
     FILE *f = fopen(file, "r");
@@ -30,7 +30,7 @@ void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* 
     }
 
     fclose(f);
-    f = open(file, "a");
+    f = fopen(file, "a");
 
     fprintf(f, "%s\n", depender->name);
 
@@ -44,14 +44,14 @@ void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* pac
 
     FILE *f = fopen(file, "r");
     
-    japml_create_file_recursive(package_used_by_tmp);
-    FILE *tmp = fopen(package_used_by_tmp, "w");
+    japml_create_file_recursive(PACKAGE_USED_BY_TMP);
+    FILE *tmp = fopen(PACKAGE_USED_BY_TMP, "w");
 
     // Essentially copy into tmp all packages except depender->name
     char chunk[MAX_PACKAGE_NAME_LENGTH];
     while(fgets(chunk, sizeof(chunk), f)) 
     {
-        chunk[strlen(chunk) - 1] = "\0";
+        chunk[strlen(chunk) - 1] = '\0';
         if (strcmp(chunk, depender->name) != 0)
         {
             fprintf(tmp, "%s\n", chunk);
@@ -61,7 +61,7 @@ void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* pac
     fclose(tmp);
     fclose(f);
 
-    japml_copy_file(package_used_by_tmp, file);
+    japml_copy_file(PACKAGE_USED_BY_TMP, file);
 }
 
 void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package)
@@ -71,7 +71,7 @@ void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* packa
 
     char chunk[MAX_PACKAGE_NAME_LENGTH];
     while(fgets(chunk, sizeof(chunk), f) != NULL) {
-        chunk[strlen(chunk) - 1] = "\0";
+        chunk[strlen(chunk) - 1] = '\0';
         japml_package_t* package = japml_get_package_from_local_db(handle, chunk);
         japml_list_add(handle, &package->depending_packages, package);
     }
@@ -97,7 +97,7 @@ int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** l
 void japml_free_package(japml_package_t* package)
 {
     japml_list_free(package->build_deps);
-    jampl_list_free(package->deps);
+    japml_list_free(package->deps);
     japml_list_free(package->depending_packages);
     japml_list_free(package->pre_install);
     japml_list_free(package->install);

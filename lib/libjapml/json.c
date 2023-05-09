@@ -7,13 +7,13 @@
 #include "json.h"
 
 /* A json list is converted into a japml list */
-japml_list_t* japml_json_to_list(json_object* obj)
+japml_list_t* japml_json_to_list(japml_handle_t* handle, json_object* obj)
 {
     japml_list_t* list = malloc(sizeof(japml_list_t));
 
-    for (int i = 0; i < json_object_array_length(list); i++)
+    for (int i = 0; i < json_object_array_length(obj); i++)
     {
-        json_object* item = json_object_array_get_idx(list, i);
+        json_object* item = json_object_array_get_idx(obj, i);
         japml_list_add(handle, &list, (char*)json_object_get_string(item));
     }
 
@@ -80,14 +80,14 @@ japml_package_t* japml_parse_json_file(japml_handle_t* handle, char* file_locati
     pkg->version = (char*)json_object_get_string(version);
     pkg->description = (char*)json_object_get_string(description);
 
-    pkg->deps = japml_json_to_list(dependencies);
-    pkg->build_deps = japml_json_to_list(build_dependencies);
+    pkg->deps = japml_json_to_list(handle, dependencies);
+    pkg->build_deps = japml_json_to_list(handle, build_dependencies);
 
-    pkg->pre_install = japml_json_to_list(pre_install);
-    pkg->install = japml_json_to_list(install);
-    pkg->post_install = japml_json_to_list(post_install);
+    pkg->pre_install = japml_json_to_list(handle, pre_install);
+    pkg->install = japml_json_to_list(handle, install);
+    pkg->post_install = japml_json_to_list(handle, post_install);
 
-    pkg->remove = japml_json_to_list(remove);
+    pkg->remove = japml_json_to_list(handle, remove);
 
     return pkg;
 }

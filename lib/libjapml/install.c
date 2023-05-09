@@ -127,7 +127,7 @@ void japml_mark_depending_packages(japml_handle_t* handle, japml_package_t* pack
     while (dep)
     {
         // Sicne it will not append if it's already in used_by there's no need to check that here
-        japml_append_depenending_packages(handle, package, dep);
+        japml_append_depenending_package(handle, package, (japml_package_t*)(dep->data));
         dep = japml_list_next(dep);
     }
 }
@@ -139,7 +139,7 @@ int japml_post_install(japml_handle_t* handle, japml_package_t* package)
 
     if (it) { return 0; }
     
-    sptrinf(handle->log_message, "Running post install script for %s", package->name);
+    sprintf(handle->log_message, "Running post install script for %s", package->name);
     japml_log(handle, Debug, handle->log_message);
     
     while (it)

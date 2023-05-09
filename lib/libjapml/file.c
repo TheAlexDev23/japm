@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #include "file.h"
 
@@ -25,8 +26,8 @@ int japml_create_file_recursive(char* pathname)
 
 void japml_copy_file(char* source, char* dest)
 {
-    f = fopen(dest, "w");
-    tmp = fopen(source, "r");
+    FILE *f = fopen(dest, "w");
+    FILE *tmp = fopen(source, "r");
 
     if(!(f && tmp))
     {
@@ -41,5 +42,4 @@ void japml_copy_file(char* source, char* dest)
 
     fclose(tmp);
     fclose(f);
-    free(file);
 }

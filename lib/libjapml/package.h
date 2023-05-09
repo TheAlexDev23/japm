@@ -38,10 +38,10 @@ struct _japml_package
 // Fully frees a pacakge and it's children
 void japml_free_package(japml_package_t* package);
 
-const char* package_used_by_tmp = "/tmp/japml/depending_pkg_tmp";
+#define PACKAGE_USED_BY_TMP "/tmp/japml/depending_pkg_tmp"
 
 /* Sets depender as a package that depends on pkg */
-void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);
+void japml_append_depenending_package(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);
 
 /* 
 * Generally, if a package is deleted, we should also remove the "dependency link" between the package and the packages it depends on 

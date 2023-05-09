@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h> // sleep
 
-#include "errors.h"
+// #include "errors.h" -> commented due to compile err
 #include "install.h"
 #include "main.h"
 #include "remove.h"
