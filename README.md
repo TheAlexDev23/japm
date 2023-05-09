@@ -21,8 +21,9 @@ If you want to use the package manager the way it worked before you can either t
 - [x] Local DB CRUD => requires testing
 - [x] Remote DB reading => requires testing
 - [ ] Actions system => doing
-- [ ] Package Installation => doing 
+- [x] Package Installation
 - [ ] Package Removal
+- [ ] Package Update
 
 # Dependencies:
 
