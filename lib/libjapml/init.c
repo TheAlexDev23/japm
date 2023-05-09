@@ -28,10 +28,10 @@ japml_handle_t* japml_init_base(int argc, char* argv[])
 
     int i = -1;
     restart_sqlitedb:
+    i++;
     if (sqlite3_open("/var/japml/local.db", &handle->sqlite) && !i)
     {
         japml_create_local_db(handle);
-        i++;
         goto restart_sqlitedb;
     }
     
