@@ -5,6 +5,7 @@
 #include "package.h"
 #include "db.h"
 #include "list.h"
+#include "file.h"
 
 char* japml_get_used_by_file(japml_package_t* pkg)
 {
@@ -16,7 +17,20 @@ char* japml_get_used_by_file(japml_package_t* pkg)
 void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender)
 {
     char* file = japml_get_used_by_file(pkg);
-    FILE *f = fopen(file, "a");
+    FILE *f = fopen(file, "r");
+
+    // Esentially if depender->name is found already don't add to list
+    char pkg_name[MAX_PACKAGE_NAME_LENGTH];
+    while (fscanf(f, "%s", pkg_name) != EOF)
+    {
+        if (strcmp(pkg_name, depender->name) == 0)
+        {
+            return;
+        }
+    }
+
+    fclose(f);
+    f = open(file, "a");
 
     fprintf(f, "%s\n", depender->name);
 
@@ -27,22 +41,27 @@ void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* 
 void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* package, japml_package_t* depender)
 {
     char* file = japml_get_used_by_file(package);
-    FILE* f = fopen(file, "r");
-    char buffer[1024];
 
-    fread(buffer, sizeof(buffer), 1, f);
-    fclose(f);
-    f = fopen(file, "w");
+    FILE *f = fopen(file, "r");
+    
+    japml_create_file_recursive(package_used_by_tmp);
+    FILE *tmp = fopen(package_used_by_tmp, "w");
 
+    // Essentially copy into tmp all packages except depender->name
     char chunk[MAX_PACKAGE_NAME_LENGTH];
-    while(fgets(chunk, sizeof(chunk), f) != NULL) {
+    while(fgets(chunk, sizeof(chunk), f)) 
+    {
+        chunk[strlen(chunk) - 1] = "\0";
         if (strcmp(chunk, depender->name) != 0)
         {
-            fprintf(f, "%s\n", chunk);
+            fprintf(tmp, "%s\n", chunk);
         }
     }
 
+    fclose(tmp);
     fclose(f);
+
+    japml_copy_file(package_used_by_tmp, file);
 }
 
 void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package)
@@ -52,6 +71,7 @@ void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* packa
 
     char chunk[MAX_PACKAGE_NAME_LENGTH];
     while(fgets(chunk, sizeof(chunk), f) != NULL) {
+        chunk[strlen(chunk) - 1] = "\0";
         japml_package_t* package = japml_get_package_from_local_db(handle, chunk);
         japml_list_add(handle, &package->depending_packages, package);
     }

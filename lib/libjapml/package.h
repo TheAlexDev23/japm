@@ -35,8 +35,10 @@ struct _japml_package
     japml_list_t* remove;
 };
 
-// ! IMPLEMENT
+// Fully frees a pacakge and it's children
 void japml_free_package(japml_package_t* package);
+
+const char* package_used_by_tmp = "/tmp/japml/depending_pkg_tmp";
 
 /* Sets depender as a package that depends on pkg */
 void japml_append_depenending_packages(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);
@@ -54,7 +56,7 @@ void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* pac
 void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package);
 
 /* 
-* Will insure that package does not exist in the list before adding it
+* Will ensure that package does not exist in the list before adding it
 * Returns 1 if package is already in list, 0 otherwise
  */
 int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** list, japml_package_t* package);
