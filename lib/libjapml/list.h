@@ -21,6 +21,9 @@ void japml_list_free(japml_list_t* list);
 /* Adds a new node to the list. Requires handle to log in case of error */
 void japml_list_add(japml_handle_t* handle, japml_list_t** list, void* data);
 
+/* Returns the amount of items in list */
+int japml_list_length(japml_list_t* list);
+
 /* 
 Returns the node after 'list' in the list
 Returns NULL if 'list' is NULL or if no node is after 'list'
