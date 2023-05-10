@@ -24,6 +24,9 @@ If you want to use the package manager the way it worked before you can either t
 - [x] Package Installation => requires testing
 - [x] Package Removal => requries testing
 - [ ] Package Update
+- [ ] Package Search
+- [ ] Progress bar
+- [ ] Package list
 
 # Dependencies:
 
