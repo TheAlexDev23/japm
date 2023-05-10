@@ -8,6 +8,19 @@
 
 #include "file.h"
 
+japml_list_t* japml_create_file_list(japml_list_t* files)
+{
+    japml_list_t* list = malloc(sizeof(list));
+    while (files)
+    {
+        FILE *f = fopen((char*)(files->data), "w");
+        japml_list_add(NULL, &list, f);
+        list = japml_list_next(list);
+    }
+
+    return list;
+}
+
 int japml_create_file_recursive(char* pathname)
 {
     // Copying since pathname might be readonly
