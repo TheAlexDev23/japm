@@ -4,6 +4,8 @@
 /* A handle is a instance of JAMPL */
 typedef struct _japml_handle japml_handle_t;
 
+typedef enum _japml_arg_type japml_arg_type_t;
+typedef struct _japml_parse_parameters japml_parse_parameters_t;
 
 /* A linked list */
 typedef struct _japml_list japml_list_t;

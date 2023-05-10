@@ -22,6 +22,7 @@ add_library(
     lib/libjapml/handle.h
     lib/libjapml/init.c
     lib/libjapml/init.h
+    lib/libjapml/input.h
     lib/libjapml/install.c
     lib/libjapml/install.h
     lib/libjapml/japmlcurses.c
@@ -33,12 +34,14 @@ add_library(
     lib/libjapml/list.h
     lib/libjapml/log.c
     lib/libjapml/log.h
-    lib/libjapml/package.h
     lib/libjapml/package.c
-    lib/libjapml/remove.h
+    lib/libjapml/package.h
+    lib/libjapml/parser.c
+    lib/libjapml/parser.h
     lib/libjapml/remove.c
-    lib/libjapml/system.h
+    lib/libjapml/remove.h
     lib/libjapml/system.c
+    lib/libjapml/system.h
     )
 
 add_executable(${PROJECT_NAME} src/main.c)
