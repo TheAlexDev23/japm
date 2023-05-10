@@ -16,13 +16,13 @@ If you want to use the package manager the way it worked before you can either t
 # JAPM necessary milestones
 - [x] Logging system
 - [x] Error system
-- [ ] Input parsing system
+- [x] Input parsing system => requires testing
 - [x] JSON parsing
 - [x] Local DB CRUD => requires testing
 - [x] Remote DB reading => requires testing
-- [x] Actions system => doing
-- [x] Package Installation
-- [x] Package Removal
+- [x] Actions system => requires testing
+- [x] Package Installation => requires testing
+- [x] Package Removal => requries testing
 - [ ] Package Update
 
 # Dependencies:
