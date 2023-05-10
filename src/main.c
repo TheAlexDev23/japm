@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h> // sleep
 
-#include "errors.h"
+// #include "errors.h" -> commented due to compile err
 #include "install.h"
 #include "main.h"
 #include "remove.h"
@@ -10,8 +11,44 @@
 #include "IO/term.h"
 #include "search.h"
 
+#include <libjapml/japml.h>
+#include <libjapml/handle.h>
+#include <libjapml/log.h>
+#include <libjapml/exit.h>
+#include <libjapml/japmlcurses.h>
+#include <libjapml/error.h>
+#include <libjapml/init.h>
+
+// In the early stages of development i will use this to check if japml works
+void check_japml()
+{
+    japml_handle_t* handle = japml_init_devel(1, NULL);
+    japml_log(handle, Debug, "This is a dbug log");
+    japml_log(handle, Information, "This is a info log");
+    japml_log(handle, Error, "This is a error log");
+    japml_log(handle, Critical, "This is a critical log");
+
+    for (int i = 0; i < 80; i++)
+    {
+        char msg[10];
+        sprintf(msg, "I is: %i", i);
+        japml_log(handle, Information, msg);
+        usleep(80000);
+    }
+
+    japml_throw_error(handle, malloc_error, NULL);
+	
+    getch();
+
+    exit_japml(handle);
+}
+
 int main(int argc, char **argv)
 {
+    check_japml();
+
+    /*
+
     if (check_root())
         return 2;
 
@@ -64,6 +101,7 @@ int main(int argc, char **argv)
 		default:
 			fprintf(stderr, "Something went wrong, operation not recognized\n");
     }
+    */
 
     return 0;
 }

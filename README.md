@@ -4,77 +4,42 @@
 
 I've seen many people trying to build their own package manager recently, so I also decided to try it out.
 
-# Milestones
-- [ ] Creating japml, a library that handles all operations where japm would just be it's implementation
-- [x] Package Installation
-- [x] Package Removal
-- [x] Package Update
-- [x] Package Search
+JAPM is different from other package managers in the sense that it uses ncurses to create a TUI and represent information in a more organized and better looking way.
+
+A package is a .json file usually saved in a remote repository, by default it is [Japm Official Packages](https://github.com/TheAlexDev23/japm-official-packages)
+
+# Important
+Doesn't fully work in the current state.
+
+If you want to use the package manager the way it worked before you can either tweak a bit the source code or install the v1.0.0 release (old JAPM without JAPML).
+
+# JAPM necessary milestones
+- [x] Logging system
+- [x] Error system
+- [x] Input parsing system => requires testing
+- [x] JSON parsing
+- [x] Local DB CRUD => requires testing
+- [x] Remote DB reading => requires testing
+- [x] Actions system => requires testing
+- [x] Package Installation => requires testing
+- [x] Package Removal => requries testing
+- [ ] Package Update
+
+# Dependencies:
+
+```
+libjson-c sqlite3 ncurses curl
+```
+
+Note, that even though JAPML has an option of not displaying curses mode (still work in progress, the option is not fully implemented), the ncurses library is still required for building from source.
 
 # Bulding from source
 
-## Dependencies:
-
-```
-libjson-c sqlite3
-```
-
-
-### Debian or Debian based
-
-
-- Installing dependencies:
-
-```bash
-sudo apt instal libjson-c-dev sqlite3 cmake
-```
-
-- Building:
-
 ```bash
 git clone https://github.com/TheAlexDev23/japm.git
 cd japm
-chmod +x build.sh
-./build.sh
-```
-#### OR
-
-```bash
-git clone https://github.com/TheAlexDev23/japm.git
-cd japm
-mkdir build
-cmake -S src -B build
+cmake -S . -B build
 cd build
 make
+cp ./japm /usr/bin
 ```
-
-### Arch or Arch Base
-
-- Installing dependencies:
-
-```bash
-sudo pacman -S lib32-json-c sqlite3 cmake
-```
-
-- Building:
-
-```bash
-git clone https://github.com/TheAlexDev23/japm.git
-cd japm
-chmod +x build.sh
-./build.sh
-```
-#### OR
-
-```bash
-git clone https://github.com/TheAlexDev23/japm.git
-cd japm
-mkdir build
-cmake -S src -B build
-cd build
-make
-```
-
-- Documentation:
-
-    - Coming soon
