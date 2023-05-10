@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sqlite3.h>
 #include <curl/curl.h>
+#include <unistd.h>
 
+#include "parser.h"
 #include "init.h"
-#include "japmlcurses.h"
 #include "japml.h"
+#include "japmlcurses.h"
 #include "log.h"
 #include "handle.h"
 
@@ -96,7 +99,65 @@ void terminal_init(japml_handle_t* handle)
 
 japml_handle_t* japml_init(int argc, char* argv[])
 {
-    // TODO: Parse input when input parser will be done
+    japml_parse_parameters_t* parameters = japml_parse_input(argc, argv);
+    
+    if (parameters->wrong_param)
+    {
+        fprintf(stderr, "Wrong parameters. Refer to --help for proper usage.");
+        return NULL;
+    }
 
-    // TODO: Create a jampl handle depending if were in devel mode or not
+    if (geteuid() != 0)
+    {
+        fprintf(stderr, "Please run with loot priviligies.");
+        return NULL;
+    }
+
+    japml_handle_t* handle;
+
+    if (parameters->devel == true)
+    {
+        handle = japml_init_devel(argc, argv);
+    }
+    else
+    {
+        handle = japml_init_default(argc, argv);
+    }
+
+    if (parameters->default_to_all != NULL)
+    {
+        handle->default_to_all = parameters->default_to_all;
+    }
+
+    if (parameters->exit_on_critical != NULL)
+    {
+        handle->exit_on_critical = parameters->exit_on_critical;
+    }
+
+    if (parameters->log_level != NULL)
+    {
+        handle->log_level = parameters->log_level;
+    }
+
+    if (parameters->log_files != NULL)
+    {
+        handle->log_files = parameters->log_files;
+    }
+
+    if (parameters->error_log_files != NULL)
+    {
+        handle->error_log_files = parameters->error_log_files;
+    }
+
+    if (parameters->curses != NULL)
+    {
+        handle->use_curses = parameters->curses;
+    }
+
+    if (parameters->color != NULL)
+    {
+        handle->use_colors = parameters->color;
+    }
+
+    return handle;
 }

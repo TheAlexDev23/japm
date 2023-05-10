@@ -8,11 +8,12 @@
 #include "list.h"
 #include "input.h"
 
+/* A struct represeting comand line arguments */
 struct _japml_parse_parameters
 {
     bool wrong_param;
     // * General
-    bool root;
+    
     bool devel;
     bool default_to_all;
     bool exit_on_critical;

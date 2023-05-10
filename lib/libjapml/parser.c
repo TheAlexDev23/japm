@@ -49,7 +49,7 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
 
         char* param = (char*)(char_params->data);
 
-        japml_log_level_t log_level = Information;
+        japml_log_level_t log_level;
         if (strcmp(param, "Debug") == 0)
         {
             log_level = Debug;
