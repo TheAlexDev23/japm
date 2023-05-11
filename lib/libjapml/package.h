@@ -2,9 +2,19 @@
 #define _PACKAGE_H_INCLUDED
 
 #include "japml.h"
+#include "list.h"
+#include "handle.h"
 
 #define MAX_PACKAGE_NAME_LENGTH 128
 #define MAX_PACKAGE_DESCRIPTION_LENGTH 1042
+
+enum _japml_package_action
+{
+    japml_package_search,
+    japml_package_install,
+    japml_package_update,
+    japml_package_remove
+};
 
 struct _japml_package
 {

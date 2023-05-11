@@ -31,7 +31,6 @@ struct _japml_handle
     // * SQLite3
     sqlite3* sqlite;
 
-
     // * CURL
 
     CURL* curl;

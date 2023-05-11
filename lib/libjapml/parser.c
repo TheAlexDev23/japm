@@ -1,19 +1,22 @@
 #include <string.h>
 
-#include "parser.h"
 #include "japml.h"
+#include "parser.h"
+#include "package.h"
 #include "input.h"
 #include "list.h"
 #include "file.h"
 
 japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
 {
-    japml_parse_parameters_t* params = malloc(sizeof(japml_parse_parameters_t*));
+    japml_parse_parameters_t* params = malloc(sizeof(japml_parse_parameters_t));
+    *(params->devel) = false;
+
     for (int i = 1; i < argc; i++)
     {
         if (japml_parse_arg(i, argv, params))
         {
-            params->wrong_param = true;
+            *(params->wrong_param) = true;
             return params;
         }
     }
@@ -23,6 +26,15 @@ japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
 int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
 {
     char* arg = argv[argc];
+    japml_package_action_t* action_type = malloc(sizeof(japml_package_action_t));
+
+    if (japml_is_action(arg, action_type))
+    {
+        params->package_action = action_type;
+        params->packages = japml_get_param_list(argc, argv);
+        return 0;
+    }
+
     if (!japml_input_is_param(arg))
     {
         return 0;
@@ -32,15 +44,15 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
 
     if (strcmp(arg, JAPML_DEVEL_ARG) == 0)
     {
-        params->devel = true;
+        *(params->devel) = true;
     }
     else if (strcmp(arg, JAPML_DEFAULT_TO_ALL_ARG) == 0)
     {
-        params->default_to_all = true;
+        *(params->default_to_all) = true;
     }
     else if (strcmp(arg, JAPML_STAY_ON_CRITICAL_ARG) == 0)
     {
-        params->exit_on_critical = false;
+        *(params->exit_on_critical) = false;
     }
     else if (strcmp(arg, JAPML_LOG_LEVEL_ARG) == 0)
     {
@@ -63,7 +75,7 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
             log_level = Error;
         }
 
-        params->log_level = log_level;
+        *(params->log_level) = log_level;
     }
     else if (strcmp(arg, JAPML_LOG_FILES_ARG) == 0)
     {
@@ -75,11 +87,11 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
     }
     else if (strcmp(arg, JAPML_NO_CURSES_ARG) == 0)
     {
-        params->curses = false;
+        *(params->curses) = false;
     }
     else if (strcmp(arg, JAPML_NO_COLOR_ARG) == 0)
     {
-        params->color = false;
+        *(params->color) = false;
     }
     else
     {
@@ -90,9 +102,6 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
     japml_list_free(char_params);
     return 0;
 }
-
-bool japml_input_is_param(char* arg)
-{ return (arg[1] == '-'); }
 
 japml_list_t* japml_get_param_list(int argc, char** argv)
 {
@@ -105,4 +114,41 @@ japml_list_t* japml_get_param_list(int argc, char** argv)
     }
 
     return list;
+}
+
+bool japml_input_is_param(char* arg)
+{ return (arg[1] == '-' || japml_is_action(arg, NULL)); }
+
+bool japml_is_action(char* arg, japml_package_action_t* type)
+{
+    if (strcmp(arg, "install") == 0)
+    {
+        if (type)
+        {
+            *type = japml_package_install;
+        }
+        return true;
+    }
+    else if (strcmp(arg, "remove") == 0)
+    {
+        if (type)
+        {
+            *type = japml_package_remove;
+        }
+        return true;
+    }
+    else if (strcmp(arg, "update") == 0)
+    {
+        *type = japml_package_update;
+        return true;
+    }
+    else if (strcmp(arg, "search") == 0)
+    {
+        *type = japml_package_search;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

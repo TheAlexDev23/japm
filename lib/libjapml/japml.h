@@ -19,6 +19,8 @@ typedef struct _japml_action japml_action_t;
 typedef enum _japml_action_type japml_action_type_t;
 typedef enum _japml_action_status japml_action_status_t;
 
+/* Enum representing an action you can do with a package */
+typedef enum _japml_package_action japml_package_action_t;
 /* Represents a JAPML package */
 typedef struct _japml_package japml_package_t;
 

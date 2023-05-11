@@ -12,7 +12,7 @@
 #include "log.h"
 #include "handle.h"
 
-japml_handle_t* japml_init_base(int argc, char* argv[])
+japml_handle_t* japml_init_base()
 {
     japml_handle_t* handle = malloc(sizeof(japml_handle_t));
     if (!handle)
@@ -71,18 +71,18 @@ japml_handle_t* japml_init_base(int argc, char* argv[])
     return handle;
 }
 
-japml_handle_t* japml_init_default(int argc, char* argv[])
+japml_handle_t* japml_init_default()
 {
-    japml_handle_t* handle = japml_init_base(argc, argv);
+    japml_handle_t* handle = japml_init_base();
 
     handle->log_level = Information;
     
     return handle;
 }
 
-japml_handle_t* japml_init_devel(int argc, char* argv[])
+japml_handle_t* japml_init_devel()
 {
-    japml_handle_t* handle = japml_init_base(argc, argv);
+    japml_handle_t* handle = japml_init_base();
 
     handle->log_level = Debug;
     
@@ -97,9 +97,12 @@ void terminal_init(japml_handle_t* handle)
     }
 }
 
-japml_handle_t* japml_init(int argc, char* argv[])
+japml_handle_t* japml_init(japml_parse_parameters_t* parameters)
 {
-    japml_parse_parameters_t* parameters = japml_parse_input(argc, argv);
+    if (!parameters)
+    {
+        return NULL;
+    }
     
     if (parameters->wrong_param)
     {
@@ -115,28 +118,33 @@ japml_handle_t* japml_init(int argc, char* argv[])
 
     japml_handle_t* handle;
 
-    if (parameters->devel == true)
+    if (parameters->devel == NULL)
     {
-        handle = japml_init_devel(argc, argv);
+        return NULL;
+    }
+
+    if (*(parameters->devel) == true)
+    {
+        handle = japml_init_devel();
     }
     else
     {
-        handle = japml_init_default(argc, argv);
+        handle = japml_init_default();
     }
 
-    if (parameters->default_to_all != NULL)
+    if (&(parameters->default_to_all) != NULL)
     {
-        handle->default_to_all = parameters->default_to_all;
+        handle->default_to_all = *(parameters->default_to_all);
     }
 
     if (parameters->exit_on_critical != NULL)
     {
-        handle->exit_on_critical = parameters->exit_on_critical;
+        handle->exit_on_critical = *(parameters->exit_on_critical);
     }
 
     if (parameters->log_level != NULL)
     {
-        handle->log_level = parameters->log_level;
+        handle->log_level = *(parameters->log_level);
     }
 
     if (parameters->log_files != NULL)
@@ -151,12 +159,12 @@ japml_handle_t* japml_init(int argc, char* argv[])
 
     if (parameters->curses != NULL)
     {
-        handle->use_curses = parameters->curses;
+        handle->use_curses = *(parameters->curses);
     }
 
     if (parameters->color != NULL)
     {
-        handle->use_colors = parameters->color;
+        handle->use_colors = *(parameters->color);
     }
 
     return handle;

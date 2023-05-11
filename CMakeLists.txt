@@ -44,6 +44,10 @@ add_library(
     lib/libjapml/system.h
     )
 
-add_executable(${PROJECT_NAME} src/main.c)
+add_executable(${PROJECT_NAME} 
+    src/main.c
+    src/devel.h
+    src/devel.c
+    )
 
 target_link_libraries(${PROJECT_NAME} ncurses japml curses curl sqlite3 json-c)

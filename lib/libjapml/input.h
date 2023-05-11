@@ -12,6 +12,11 @@ enum _japml_arg_type {
     japml_arg_no_color
 };
 
+#define JAPML_INSTALL_ARG "install"
+#define JAPML_REMOVE_ARG "remove"
+#define JAPML_UPDATE_ARG "update"
+#define JAPML_SEARCH_ARG "search"
+
 #define JAPML_DEVEL_ARG "-d"
 #define JAPML_DEFAULT_TO_ALL_ARG "-Y"
 #define JAPML_STAY_ON_CRITICAL_ARG "-critstay"
