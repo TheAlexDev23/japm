@@ -10,9 +10,13 @@
 void japml_list_add(japml_handle_t *handle, japml_list_t **list, void* data)
 {
     japml_list_t* node = malloc(sizeof(japml_list_t));
-    if (!node)
+    if (!node && handle)
     {
-        japml_throw_error(handle, malloc_error, NULL);
+        if (handle)
+        {
+            japml_throw_error(handle, malloc_error, NULL);
+        }
+        return;
     }
 
     node->data = data;
