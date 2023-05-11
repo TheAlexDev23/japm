@@ -33,7 +33,7 @@ void japml_throw_error(japml_handle_t *handle, japml_error_t error_code, char* m
         japml_ncurses_log(handle, Information, "Press any key to exit");
         getch();
 
-        exit_japml(handle);
+        japml_exit(handle);
 
         exit((int)error_code);
     }

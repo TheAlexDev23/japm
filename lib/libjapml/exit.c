@@ -7,7 +7,7 @@
 #include "handle.h"
 #include "list.h"
 
-void exit_japml(japml_handle_t *handle)
+void japml_exit(japml_handle_t *handle)
 {
    japml_list_free(handle->remote_dbs);
 

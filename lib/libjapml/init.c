@@ -132,7 +132,7 @@ japml_handle_t* japml_init(japml_parse_parameters_t* parameters)
         handle = japml_init_default();
     }
 
-    if (&(parameters->default_to_all) != NULL)
+    if (parameters->default_to_all != NULL)
     {
         handle->default_to_all = *(parameters->default_to_all);
     }

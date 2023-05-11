@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdbool.h>
 
 #include "japml.h"
 #include "parser.h"
@@ -10,12 +11,14 @@
 japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
 {
     japml_parse_parameters_t* params = malloc(sizeof(japml_parse_parameters_t));
+    params->devel = malloc(sizeof(bool));
     *(params->devel) = false;
 
     for (int i = 1; i < argc; i++)
     {
         if (japml_parse_arg(i, argv, params))
         {
+            params->wrong_param = malloc(sizeof(bool));
             *(params->wrong_param) = true;
             return params;
         }
@@ -27,6 +30,7 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
 {
     char* arg = argv[argc];
     japml_package_action_t* action_type = malloc(sizeof(japml_package_action_t));
+    printf("3\n");
 
     if (japml_is_action(arg, action_type))
     {
@@ -48,10 +52,12 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
     }
     else if (strcmp(arg, JAPML_DEFAULT_TO_ALL_ARG) == 0)
     {
+        params->default_to_all = malloc(sizeof(bool));
         *(params->default_to_all) = true;
     }
     else if (strcmp(arg, JAPML_STAY_ON_CRITICAL_ARG) == 0)
     {
+        params->exit_on_critical = malloc(sizeof(bool));
         *(params->exit_on_critical) = false;
     }
     else if (strcmp(arg, JAPML_LOG_LEVEL_ARG) == 0)
@@ -75,6 +81,7 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
             log_level = Error;
         }
 
+        params->log_level = malloc(sizeof(japml_package_action_t));
         *(params->log_level) = log_level;
     }
     else if (strcmp(arg, JAPML_LOG_FILES_ARG) == 0)
@@ -87,10 +94,12 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
     }
     else if (strcmp(arg, JAPML_NO_CURSES_ARG) == 0)
     {
+        params->curses = malloc(sizeof(bool));
         *(params->curses) = false;
     }
     else if (strcmp(arg, JAPML_NO_COLOR_ARG) == 0)
     {
+        params->color = malloc(sizeof(bool));
         *(params->color) = false;
     }
     else

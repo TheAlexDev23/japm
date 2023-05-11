@@ -8,6 +8,7 @@
 #include <libjapml/handle.h>
 #include <libjapml/init.h>
 #include <libjapml/package.h>
+#include <libjapml/exit.h>
 
 #define TESTING false
 
@@ -56,6 +57,8 @@ int main(int argc, char **argv)
 	}
 
 	perform_action(handle, parameters);
+
+    japml_exit(handle);
 
     return 0;
 }

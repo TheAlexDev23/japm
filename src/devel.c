@@ -27,5 +27,5 @@ void test_japml()
 	
     getch();
 
-    exit_japml(handle);
+    japml_exit(handle);
 }
