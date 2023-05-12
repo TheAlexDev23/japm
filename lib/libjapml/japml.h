@@ -24,7 +24,7 @@ typedef enum _japml_package_action japml_package_action_t;
 /* Represents a JAPML package */
 typedef struct _japml_package japml_package_t;
 
-/* A structure representin a remote databse */
+/* A structure representing a remote databse */
 typedef struct _japml_db_remote japml_db_remote_t;
 
 /* JAPML errors */

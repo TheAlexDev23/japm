@@ -20,6 +20,7 @@
 // Creates local.db and the packages table
 void japml_create_local_db(japml_handle_t* handle)
 {
+    japml_log(handle, Information, "Creating local database ...");
     japml_create_file_recursive("/var/japml/local.db");
     sqlite3_open("/var/japml/local.db", &handle->sqlite);
     sqlite3_exec(handle->sqlite,
@@ -112,41 +113,61 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
         japml_throw_error(handle, custom_error_critical, "No instance of cURL found on handle");
     }
 
+    japml_create_file_recursive("/tmp/japml/packagefetch");
     FILE* f = fopen("/tmp/japml/packagefetch", "w");
+    
+    if (!f)
+    {
+        japml_throw_error(handle, custom_error_error, "Error opening cURL temp file");
+        return NULL;
+    }
 
     japml_list_t* remote_dbs = handle->remote_dbs;
 
     bool found = false;
     while (remote_dbs)
     {
-        sprintf(handle->log_message, "Fetching %s", ((japml_db_remote_t*)remote_dbs->data)->url);
+        char* remote_url = ((japml_db_remote_t*)remote_dbs->data)->url;
+        char* url = malloc(sizeof(char) * (strlen(remote_url) + strlen(package_name) + strlen("/package.json")) + 1);
+        sprintf(url, "%s%s/package.json", remote_url, package_name);
+
+        sprintf(handle->log_message, "Fetching %s", url);
         japml_log(handle, Information, handle->log_message);
 
-        if (handle->curl)
+        if (!handle->curl)
         {
-            curl_easy_setopt(handle->curl, CURLOPT_URL, ((japml_db_remote_t*)(remote_dbs->data))->url);
-            curl_easy_setopt(handle->curl, CURLOPT_WRITEFUNCTION, write_data);
-            curl_easy_setopt(handle->curl, CURLOPT_WRITEDATA, f);
-            int res = curl_easy_perform(handle->curl);
-            if (res != 0)
-            {
-                japml_throw_error(handle, unknown_error, "Unkown error. cURL action performed with unsuccesful output");
-            }
-
-            int http_code = 0;
-            curl_easy_getinfo(handle->curl, CURLINFO_RESPONSE_CODE, &http_code);
-
-            // Package found, no need to search other repos.
-            if (http_code == 200)
-            {
-                japml_log(handle, Information, "Found");
-                found = true;
-                break;
-            }
-
-            japml_log(handle, Information, "Not found");
+            japml_throw_error(handle, custom_error_error, "JAPML handle does not contain a reference to cURL");
+            return NULL;
         }
+
+        curl_easy_setopt(handle->curl, CURLOPT_URL, url);
+        curl_easy_setopt(handle->curl, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(handle->curl, CURLOPT_WRITEDATA, f);
+        int res = curl_easy_perform(handle->curl);
+        if (res != 0)
+        {
+            japml_throw_error(handle, unknown_error, "Unkown error. cURL action performed with unsuccesful output");
+        }
+
+        int http_code = 0;
+        curl_easy_getinfo(handle->curl, CURLINFO_RESPONSE_CODE, &http_code);
+
+        // Package found, no need to search other repos.
+        if (http_code == 200)
+        {
+            japml_log(handle, Information, "Found");
+            found = true;
+            break;
+        }
+
+        japml_log(handle, Information, "Not found");
+
+        free(url);
+
+        remote_dbs = japml_list_next(remote_dbs);
     }
+
+    fclose(f);
 
     if (!found)
     {

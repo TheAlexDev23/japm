@@ -1,73 +1,34 @@
-==22414== Memcheck, a memory error detector
-==22414== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==22414== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==22414== Command: ./japm --log_files log.txt install d
-==22414== Parent PID: 22413
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B53C: japml_init (init.c:105)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10C1DC: japml_list_add (list.c:26)
-==22414==    by 0x10B3A6: japml_init_base (init.c:30)
-==22414==    by 0x10B4A5: japml_init_default (init.c:74)
-==22414==    by 0x10B5DA: japml_init (init.c:130)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B5EA: japml_init (init.c:133)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B609: japml_init (init.c:138)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B628: japml_init (init.c:143)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B663: japml_init (init.c:153)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B680: japml_init (init.c:158)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B69F: japml_init (init.c:163)
-==22414==    by 0x10AAC2: main (main.c:56)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10C1DC: japml_list_add (list.c:26)
-==22414==    by 0x10BC9A: japml_ncurses_log (japmlcurses.c:101)
-==22414==    by 0x10C6CD: japml_log (log.c:32)
-==22414==    by 0x10AA72: perform_action (main.c:31)
-==22414==    by 0x10AAF3: main (main.c:64)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10B185: japml_exit (exit.c:30)
-==22414==    by 0x10AB0B: main (main.c:67)
-==22414== 
-==22414== Conditional jump or move depends on uninitialised value(s)
-==22414==    at 0x10C3CC: japml_list_free (list.c:102)
-==22414==    by 0x10B192: japml_exit (exit.c:36)
-==22414==    by 0x10AB0B: main (main.c:67)
-==22414== 
-==22414== 
-==22414== HEAP SUMMARY:
-==22414==     in use at exit: 87,271 bytes in 164 blocks
-==22414==   total heap usage: 5,425 allocs, 5,261 frees, 393,652 bytes allocated
-==22414== 
-==22414== LEAK SUMMARY:
-==22414==    definitely lost: 116 bytes in 6 blocks
-==22414==    indirectly lost: 39 bytes in 5 blocks
-==22414==      possibly lost: 0 bytes in 0 blocks
-==22414==    still reachable: 87,116 bytes in 153 blocks
-==22414==         suppressed: 0 bytes in 0 blocks
-==22414== Rerun with --leak-check=full to see details of leaked memory
-==22414== 
-==22414== Use --track-origins=yes to see where uninitialised values come from
-==22414== For lists of detected and suppressed errors, rerun with: -s
-==22414== ERROR SUMMARY: 11 errors from 11 contexts (suppressed: 0 from 0)
+==36895== Memcheck, a memory error detector
+==36895== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==36895== Using Valgrind-3.20.0 and LibVEX; rerun with -h for copyright info
+==36895== Command: ./japm --log-files ../test/japm.log install test-pacakage1
+==36895== Parent PID: 36894
+==36895== 
+
+valgrind:  Fatal error at startup: a function redirection
+valgrind:  which is mandatory for this platform-tool combination
+valgrind:  cannot be set up.  Details of the redirection are:
+valgrind:  
+valgrind:  A must-be-redirected function
+valgrind:  whose name matches the pattern:      strlen
+valgrind:  in an object with soname matching:   ld-linux-x86-64.so.2
+valgrind:  was not found whilst processing
+valgrind:  symbols from the object with soname: ld-linux-x86-64.so.2
+valgrind:  
+valgrind:  Possible fixes: (1, short term): install glibc's debuginfo
+valgrind:  package on this machine.  (2, longer term): ask the packagers
+valgrind:  for your Linux distribution to please in future ship a non-
+valgrind:  stripped ld.so (or whatever the dynamic linker .so is called)
+valgrind:  that exports the above-named function using the standard
+valgrind:  calling conventions for this platform.  The package you need
+valgrind:  to install for fix (1) is called
+valgrind:  
+valgrind:    On Debian, Ubuntu:                 libc6-dbg
+valgrind:    On SuSE, openSuSE, Fedora, RHEL:   glibc-debuginfo
+valgrind:  
+valgrind:  Note that if you are debugging a 32 bit process on a
+valgrind:  64 bit system, you will need a corresponding 32 bit debuginfo
+valgrind:  package (e.g. libc6-dbg:i386).
+valgrind:  
+valgrind:  Cannot continue -- exiting now.  Sorry.
+

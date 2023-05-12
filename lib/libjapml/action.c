@@ -20,6 +20,7 @@ int japml_action_create(japml_handle_t* handle, japml_list_t* package_list, japm
     if (!action)
     {
         japml_throw_error(handle, malloc_error, NULL);
+        return -1;
     }
 
     japml_log(handle, Debug, "JAPML: Creating new action");
@@ -148,7 +149,7 @@ int japml_action_check(japml_handle_t* handle)
     else
     {
         handle->action->status = JAPML_ACTION_STATUS_ABORTED;
-        return 1;
+        return -1;
     }
 }
 
@@ -157,7 +158,7 @@ int japml_action_commit(japml_handle_t* handle)
     if (handle->action->status != JAPML_ACTION_STATUS_APPROVED)
     {
         japml_throw_error(handle, action_not_accepted_error, "Action is not approved. Cannot commit");
-        return 1;
+        return -1;
     }
 
     if (handle->action->action_type == JAPML_ACTION_TYPE_INSTALL)

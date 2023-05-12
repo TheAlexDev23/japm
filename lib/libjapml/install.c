@@ -9,8 +9,6 @@
 #include "handle.h"
 #include "system.h" // japml_run_instructions
 
-
-
 int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
 {
     japml_list_t* it = packages;

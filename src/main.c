@@ -14,6 +14,8 @@
 #define TESTING false
 
 #include "devel.h"
+#include "install.h"
+
 
 /* Unlike the name might sugest, it doesn't directly create a japml_action_t, rather call inidivdual install functions of JAPM */
 void perform_action(japml_handle_t* handle, japml_parse_parameters_t* paramters)
@@ -23,12 +25,10 @@ void perform_action(japml_handle_t* handle, japml_parse_parameters_t* paramters)
 		return;
 	}
 
-    
-
 	switch(*(paramters->package_action))
 	{
 		case japml_package_install:
-            japml_log(handle, Information, "install");
+            install_packages(handle, paramters->packages);
 			break;
 		case japml_package_remove:
 			break;
@@ -61,6 +61,8 @@ int main(int argc, char **argv)
 	}
 
 	perform_action(handle, parameters);
+
+    getch();
 
     japml_exit(handle);
 

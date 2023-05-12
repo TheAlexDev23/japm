@@ -1,0 +1,8 @@
+[32m ==> Inf: Fetching https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/test-package/package.json
+[0m[32m ==> Inf: Found
+[0m[32m ==> Inf: 406
+[0m[32m ==> Inf: The following packages will be installed:
+[0m[32m ==> Inf:   package name
+[0m[32m ==> Inf: Installing package package name
+[0m[32m ==> Inf: Package package name installed succesfully
+[0m

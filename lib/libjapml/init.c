@@ -29,13 +29,15 @@ japml_handle_t* japml_init_base()
 
     japml_list_add(handle, &handle->remote_dbs, remotedb);
 
-    int i = -1;
-    restart_sqlitedb:
-    i++;
-    if (sqlite3_open("/var/japml/local.db", &handle->sqlite) && !i)
+    if (access("/var/japml/local.db", F_OK) != 0)
     {
         japml_create_local_db(handle);
-        goto restart_sqlitedb;
+    }
+
+    if (sqlite3_open("/var/japml/local.db", &handle->sqlite))
+    {
+        sqlite3_close(handle->sqlite);
+        fprintf(stderr, "Crit: criticall error initialazing JAPML, could not open local database");
     }
     
     // * Logging
