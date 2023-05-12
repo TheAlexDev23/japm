@@ -60,13 +60,9 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-    system ("echo 1 > r1.txt");
 	perform_action(handle, parameters);
-    system ("echo 2 >> r1.txt");
 
     japml_exit(handle);
-
-    system("echo 3 >> r1.txt");
 
     return 0;
 }
