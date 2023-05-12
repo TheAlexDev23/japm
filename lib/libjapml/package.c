@@ -116,6 +116,18 @@ void japml_free_package(japml_package_t* package)
     free(package);
 }
 
+void japml_free_package_list(japml_list_t* packages)
+{
+    // ? Maybe move freeing to separate file since it's reused by remove and update and search
+    while (packages)
+    {
+        japml_free_package((japml_package_t*)(packages->data));
+        packages = japml_list_next(packages);
+    }
+
+    japml_list_free(packages);
+}
+
 void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages)
 {
     while (packages)

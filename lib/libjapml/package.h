@@ -48,6 +48,9 @@ struct _japml_package
 // Fully frees a pacakge and it's children
 void japml_free_package(japml_package_t* package);
 
+// Frees all the packages in packages and the list itself
+void japml_free_package_list(japml_list_t* packages);
+
 #define PACKAGE_USED_BY_TMP "/tmp/japml/depending_pkg_tmp"
 
 /* Sets depender as a package that depends on pkg */
