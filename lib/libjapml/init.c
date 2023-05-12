@@ -25,7 +25,7 @@ japml_handle_t* japml_init_base()
     // * DBs
 
     japml_db_remote_t* remotedb = malloc(sizeof(japml_db_remote_t));
-    remotedb->url = "https://github.com/TheAlexDev23/japm-official-packages";
+    remotedb->url = "https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/";
 
     japml_list_add(handle, &handle->remote_dbs, remotedb);
 
