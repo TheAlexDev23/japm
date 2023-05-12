@@ -138,17 +138,16 @@ int japml_action_check(japml_handle_t* handle)
         japml_log(handle, Information, "The following packages will be removed:");
     }
 
-    japml_list_t* it = handle->action->targets;
     japml_print_package_list(handle, handle->action->targets);
 
     if (japml_ncurses_Yn_dialogue(handle, "Do you wish to continue? "))
     {
-        handle->action->action_type = JAPML_ACTION_STATUS_APPROVED;
+        handle->action->status = JAPML_ACTION_STATUS_APPROVED;
         return 0;
     }
     else
     {
-        handle->action->action_type = JAPML_ACTION_STATUS_ABORTED;
+        handle->action->status = JAPML_ACTION_STATUS_ABORTED;
         return 1;
     }
 }
@@ -169,4 +168,6 @@ int japml_action_commit(japml_handle_t* handle)
     {
         japml_remove_packages(handle, handle->action->targets);
     }
+
+    return 0;
 }
