@@ -18,7 +18,7 @@ void japml_exit(japml_handle_t *handle)
    
    while (log_files)
    {
-      fclose(log_files->data);
+      fclose((FILE*)(log_files->data));
       log_files = japml_list_next(log_files);
    }
 
@@ -29,7 +29,7 @@ void japml_exit(japml_handle_t *handle)
    
    while (error_log_files)
    {
-      fclose(log_files->data);
+      fclose((FILE*)(log_files->data));
       error_log_files = japml_list_next(log_files);
    }
 

@@ -9,6 +9,7 @@
 #include <libjapml/init.h>
 #include <libjapml/package.h>
 #include <libjapml/exit.h>
+#include <libjapml/log.h>
 
 #define TESTING false
 
@@ -22,9 +23,12 @@ void perform_action(japml_handle_t* handle, japml_parse_parameters_t* paramters)
 		return;
 	}
 
+    
+
 	switch(*(paramters->package_action))
 	{
 		case japml_package_install:
+            japml_log(handle, Information, "install");
 			break;
 		case japml_package_remove:
 			break;
@@ -56,9 +60,13 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+    system ("echo 1 > r1.txt");
 	perform_action(handle, parameters);
+    system ("echo 2 >> r1.txt");
 
     japml_exit(handle);
+
+    system("echo 3 >> r1.txt");
 
     return 0;
 }

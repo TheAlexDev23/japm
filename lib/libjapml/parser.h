@@ -36,11 +36,11 @@ struct _japml_parse_parameters
 /* Creates a parsed parameter strcuture according to the arguments */
 japml_parse_parameters_t* japml_parse_input(int argc, char** argv);
 
-/* Parses argument at argc */
-int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params);
+/* Parses argument at count */
+int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* params);
 
 /* Gets all the parameters until the next named parameter and returns a list */
-japml_list_t* japml_get_param_list(int argc, char** argv);
+japml_list_t* japml_get_param_list(int count, int argc, char** argv);
 
 /* Returns true if arg is a package action ex. install or remove. Also sets type to the type of action */
 bool japml_is_action(char* arg, japml_package_action_t* type);

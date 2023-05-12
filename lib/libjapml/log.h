@@ -21,7 +21,7 @@ struct _japml_log_message
     japml_log_level_t log_level;
 };
 
-void terminal_init(japml_handle_t* handle);
+void japml_terminal_init(japml_handle_t* handle);
 
 void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *message);
 
@@ -33,6 +33,6 @@ void japml_info_log(FILE *output, char *message, bool color);
 void japml_error_log(FILE *output, char *message, bool color);
 void japml_critical_log(FILE *output, char *message, bool color);
 
-void color_reset(FILE *output);
+void japml_color_reset(FILE *output);
 
 #endif

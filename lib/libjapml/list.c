@@ -10,7 +10,7 @@
 void japml_list_add(japml_handle_t *handle, japml_list_t **list, void* data)
 {
     japml_list_t* node = malloc(sizeof(japml_list_t));
-    if (!node && handle)
+    if (!node)
     {
         if (handle)
         {
@@ -82,7 +82,7 @@ japml_list_t* japml_list_get_element(japml_list_t *list, int n)
 
 japml_list_t* japml_list_create_empty(japml_handle_t* handle, int size)
 {
-    japml_list_t *list = malloc(sizeof(japml_list_t));
+    japml_list_t *list = NULL;
     
     if (!list)
     {

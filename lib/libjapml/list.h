@@ -18,7 +18,7 @@ japml_list_t* japml_list_create_empty(japml_handle_t* handle, int size);
 /* Frees list 'list' */
 void japml_list_free(japml_list_t* list);
 
-/* Adds a new node to the list. Requires handle to log in case of error */
+/* Adds a new node to the list. */
 void japml_list_add(japml_handle_t* handle, japml_list_t** list, void* data);
 
 /* Returns the amount of items in list */

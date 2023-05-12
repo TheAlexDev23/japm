@@ -16,7 +16,7 @@ japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
 
     for (int i = 1; i < argc; i++)
     {
-        if (japml_parse_arg(i, argv, params))
+        if (japml_parse_arg(i, argc, argv, params))
         {
             params->wrong_param = malloc(sizeof(bool));
             *(params->wrong_param) = true;
@@ -26,16 +26,15 @@ japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
     return params;
 }
 
-int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
+int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* params)
 {
-    char* arg = argv[argc];
+    char* arg = argv[count];
     japml_package_action_t* action_type = malloc(sizeof(japml_package_action_t));
-    printf("3\n");
 
     if (japml_is_action(arg, action_type))
     {
         params->package_action = action_type;
-        params->packages = japml_get_param_list(argc, argv);
+        params->packages = japml_get_param_list(count, argc, argv);
         return 0;
     }
 
@@ -44,7 +43,7 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
         return 0;
     }
 
-    japml_list_t* char_params = japml_get_param_list(argc, argv);
+    japml_list_t* char_params = japml_get_param_list(count, argc, argv);
 
     if (strcmp(arg, JAPML_DEVEL_ARG) == 0)
     {
@@ -112,14 +111,19 @@ int japml_parse_arg(int argc, char** argv, japml_parse_parameters_t* params)
     return 0;
 }
 
-japml_list_t* japml_get_param_list(int argc, char** argv)
+japml_list_t* japml_get_param_list(int count, int argc, char** argv)
 {
-    japml_list_t* list = malloc(sizeof(japml_list_t));
-    while (japml_input_is_param(argv[argc + 1]))
+    japml_list_t* list = NULL;
+    while (!japml_input_is_param(argv[count + 1]))
     {
-        // ! Potential segmentation fault if malloc fails
-        japml_list_add(NULL, &list, argv[argc + 1]);
-        argc++;
+        char* param = malloc(sizeof(char) * (strlen(argv[count + 1]) + 1));
+        strcpy(param, argv[count + 1]);
+        japml_list_add(NULL, &list, param);
+        count++;
+        if (count >= argc - 1)
+        {
+            break;
+        }
     }
 
     return list;
@@ -148,12 +152,18 @@ bool japml_is_action(char* arg, japml_package_action_t* type)
     }
     else if (strcmp(arg, "update") == 0)
     {
-        *type = japml_package_update;
+        if (type)
+        {
+            *type = japml_package_update;
+        }
         return true;
     }
     else if (strcmp(arg, "search") == 0)
     {
-        *type = japml_package_search;
+        if (type)
+        {
+            *type = japml_package_search;
+        }
         return true;
     }
     else

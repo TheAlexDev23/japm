@@ -42,8 +42,6 @@ japml_handle_t* japml_init_base()
 
     handle->log_message = malloc(10000);
 
-    // TODO: Parse comand line args and check if log files are provided
-
     // * CURL
 
     handle->curl = curl_easy_init();
@@ -65,7 +63,7 @@ japml_handle_t* japml_init_base()
     handle->ncurses_log_buffer_count  = 0;
     handle->ncurses_log_buffer_length = 0;
 
-    terminal_init(handle);
+    japml_terminal_init(handle);
 
     handle->exit_on_critical = true;
     return handle;
@@ -89,7 +87,7 @@ japml_handle_t* japml_init_devel()
     return handle;
 }
 
-void terminal_init(japml_handle_t* handle)
+void japml_terminal_init(japml_handle_t* handle)
 {
     if (handle->use_curses)
     {

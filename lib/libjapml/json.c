@@ -9,7 +9,7 @@
 /* A json list is converted into a japml list */
 japml_list_t* japml_json_to_list(japml_handle_t* handle, json_object* obj)
 {
-    japml_list_t* list = malloc(sizeof(japml_list_t));
+    japml_list_t* list = NULL;
 
     for (int i = 0; i < json_object_array_length(obj); i++)
     {
