@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install dependencies
-      run: sudo apt install libjson-c-dev libsqlite3-dev libncurses-dev
+      run: sudo apt install libjson-c-dev libsqlite3-dev libncurses-dev libcurl4-gnutls-dev
     - name: Run CMake
       run: cmake -B ${{github.workspace}}/build  -S .
     - name: Build Project
