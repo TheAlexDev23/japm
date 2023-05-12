@@ -17,20 +17,15 @@ int install_packages(japml_handle_t* handle, japml_list_t* targets)
         targets = japml_list_next(targets);
     }
 
-    if (japml_action_create(handle, packages, JAPML_ACTION_TYPE_INSTALL))
+    if (japml_action_create(handle, packages, JAPML_ACTION_TYPE_INSTALL) ||
+        japml_action_check(handle) ||
+        japml_action_commit(handle))
     {
-        return -1;
-    }
-    
-    if (japml_action_check(handle))
-    {
+        japml_free_package_list(packages);
         return -1;
     }
 
-    if (japml_action_commit(handle))
-    {
-        return -1;
-    }
+    japml_free_package_list(packages);
 
     return 0;
 }
