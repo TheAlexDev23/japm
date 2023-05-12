@@ -8,6 +8,24 @@
 #include "list.h"
 #include "file.h"
 
+bool japml_check_input(japml_parse_parameters_t* params)
+{
+    if (!params->package_action)
+    {
+        return false;
+    }
+
+    if (params->remove_recursive)
+    {
+        if (*(params->package_action) != japml_package_remove && *(params->remove_recursive) == false)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
 {
     japml_parse_parameters_t* params = malloc(sizeof(japml_parse_parameters_t));
@@ -23,6 +41,12 @@ japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
             return params;
         }
     }
+
+    if (!japml_check_input(params))
+    {
+        return NULL;
+    }
+
     return params;
 }
 
