@@ -1,5 +1,5 @@
-#ifndef _EXIT_H_INCLUDED
-#define _EXIT_H_INCLUDED
+#ifndef _JAPML_EXIT_H_INCLUDED
+#define _JAPML_EXIT_H_INCLUDED
 
 #include "japml.h"
 

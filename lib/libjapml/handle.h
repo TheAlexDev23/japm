@@ -1,5 +1,5 @@
-#ifndef _HANDLE_H_INCLUDED
-#define _HANDLE_H_INCLUDED
+#ifndef _JAPML_HANDLE_H_INCLUDED
+#define _JAPML_HANDLE_H_INCLUDED
 
 #include <stdio.h>
 #include <stdbool.h>

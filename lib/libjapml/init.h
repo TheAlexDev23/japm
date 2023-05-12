@@ -1,5 +1,5 @@
-#ifndef _INIT_H_INCLUDED
-#define _INIT_H_INCLUDED
+#ifndef _JAPML_INIT_H_INCLUDED
+#define _JAPML_INIT_H_INCLUDED
 
 #include "japml.h"
 #include "handle.h"

@@ -1,5 +1,5 @@
-#ifndef _JSON_H_INCLUDED
-#define _JSON_H_INCLUDED
+#ifndef _JAPML_JSON_H_INCLUDED
+#define _JAPML_JSON_H_INCLUDED
 
 #include <json-c/json.h>
 #include <stdio.h>

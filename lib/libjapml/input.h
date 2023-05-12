@@ -1,5 +1,5 @@
-#ifndef _INPUT_H_INCLUDED
-#define _INPUT_H_INCLUDED
+#ifndef _JAPML_INPUT_H_INCLUDED
+#define _JAPML_INPUT_H_INCLUDED
 
 enum _japml_arg_type {
     japml_arg_devel,

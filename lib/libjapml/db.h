@@ -1,5 +1,5 @@
-#ifndef _DB_H_INCLUDED
-#define _DB_H_INCLUDED
+#ifndef _JAPML_DB_H_INCLUDED
+#define _JAPML_DB_H_INCLUDED
 
 #include "japml.h"
 #include "handle.h"

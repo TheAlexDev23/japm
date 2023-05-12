@@ -1,5 +1,5 @@
-#ifndef _COLORS_H_INCLUDED
-#define _COLORS_H_INCLUDED
+#ifndef _JAPML_COLORS_H_INCLUDED
+#define _JAPML_COLORS_H_INCLUDED
 
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"

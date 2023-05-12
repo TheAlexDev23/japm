@@ -1,5 +1,5 @@
-#ifndef _SYSTEM_H_INCLUDED
-#define _SYSTEM_H_INCLUDED
+#ifndef _JAPML_SYSTEM_H_INCLUDED
+#define _JAPML_SYSTEM_H_INCLUDED
 
 #include "japml.h"
 

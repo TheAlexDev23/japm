@@ -1,5 +1,5 @@
-#ifndef _PARSER_H_INCLUDED
-#define _PARSER_H_INCLUDED
+#ifndef _JAPML_PARSER_H_INCLUDED
+#define _JAPML_PARSER_H_INCLUDED
 
 #include <stdbool.h>
 

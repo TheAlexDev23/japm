@@ -1,5 +1,5 @@
-#ifndef _ERROR_H_INCLUDED
-#define _ERROR_H_INCLUDED
+#ifndef _JAPML_ERROR_H_INCLUDED
+#define _JAPML_ERROR_H_INCLUDED
 
 #include "japml.h"
 

@@ -1,5 +1,5 @@
-#ifndef _FILE_H_INCLUDED
-#define _FILE_H_INCLUDED
+#ifndef _JAPML_FILE_H_INCLUDED
+#define _JAPML_FILE_H_INCLUDED
 
 #include "japml.h"
 #include "list.h"

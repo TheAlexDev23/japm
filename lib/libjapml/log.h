@@ -1,5 +1,5 @@
-#ifndef _LOG_H_INCLUDED
-#define _LOG_H_INCLUDED
+#ifndef _JAPML_LOG_H_INCLUDED
+#define _JAPML_LOG_H_INCLUDED
 
 #include <stdlib.h>
 #include <stdio.h>

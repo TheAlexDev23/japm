@@ -1,5 +1,5 @@
-#ifndef _ACTION_H_INCLUDED
-#define _ACTION_H_INCLUDED
+#ifndef _JAPML_ACTION_H_INCLUDED
+#define _JAPML_ACTION_H_INCLUDED
 
 #include <stdbool.h>
 

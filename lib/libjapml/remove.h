@@ -1,5 +1,5 @@
-#ifndef _REMOVE_H_INCLUDED
-#define _REMOVE_H_INCLUDED
+#ifndef _JAPML_REMOVE_H_INCLUDED
+#define _JAPML_REMOVE_H_INCLUDED
 
 #include "japml.h"
 #include "handle.h"
