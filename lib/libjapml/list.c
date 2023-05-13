@@ -99,6 +99,18 @@ japml_list_t* japml_list_create_empty(japml_handle_t* handle, int size)
     return list;
 }
 
+void japml_free_string_list(japml_list_t* list)
+{
+    japml_list_t* it = list;
+    while (it != NULL)
+    {
+        free(list->data);
+        it = japml_list_next(it);
+    }
+
+    japml_list_free(list);
+}
+
 void japml_list_free(japml_list_t* list)
 {
     while (list)
