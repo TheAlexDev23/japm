@@ -6,10 +6,13 @@
 #include "handle.h"
 #include "log.h"
 #include "db.h"
+#include "japmlcurses.h"
 
 int japml_remove_packages(japml_handle_t* handle, japml_list_t* packages)
 {
     japml_list_t* it = packages;
+
+    japml_ncurses_pb_set_lim(handle, handle->ncurses_pb_lim + japml_list_length(packages));
 
     while (it)
     {
@@ -20,6 +23,8 @@ int japml_remove_packages(japml_handle_t* handle, japml_list_t* packages)
             japml_throw_error(handle, install_error, "Error removing package");
             return 1;
         }
+
+        japml_ncurses_pb_add(handle, 1);
 
         it = japml_list_next(it);
     }

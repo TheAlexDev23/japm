@@ -219,7 +219,7 @@ void japml_ncurses_pb_refresh(japml_handle_t* handle)
     int x, y;
     getmaxyx(handle->progress_window, y, x);
 
-    japml_ncurses_draw_pb(handle, percentage * (float)x);
+    japml_ncurses_draw_pb(handle, percentage * (float)(x - 2));
 }
 
 void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit)
@@ -235,7 +235,7 @@ void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit)
 
 void japml_ncurses_pb_add(japml_handle_t* handle, int amnt)
 {
-    if (handle->ncurses_pb_progress < handle->ncurses_pb_lim - 1)
+    if (handle->ncurses_pb_progress < handle->ncurses_pb_lim)
     {
         handle->ncurses_pb_progress += amnt;
     }

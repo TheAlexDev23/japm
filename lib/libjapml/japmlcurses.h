@@ -32,7 +32,7 @@ void japml_ncurses_free_log_buffer(japml_handle_t* handle);
 void japml_ncurses_pb_refresh(japml_handle_t* handle);
 /* Sets the limit of the progress bar */
 void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit);
-/* Advances progress by 1 */
+/* Advances progress by amnt */
 void japml_ncurses_pb_add(japml_handle_t* handle, int amnt);
 
 // * Dialogues
