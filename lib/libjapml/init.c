@@ -112,7 +112,7 @@ japml_handle_t* japml_init(japml_parse_parameters_t* parameters)
 
     if (geteuid() != 0)
     {
-        fprintf(stderr, "Please run with loot priviligies.");
+        fprintf(stderr, "Please run with root priviligies.");
         return NULL;
     }
 

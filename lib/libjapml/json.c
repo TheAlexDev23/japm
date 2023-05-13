@@ -93,7 +93,7 @@ japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_locati
 
     free(buffer);
 
-    japml_package_t *pkg = malloc(sizeof(japml_package_t));
+    japml_package_t *pkg = japml_create_empty_package();
 
     pkg->name = (char *)json_object_get_string(name);
     pkg->version = (char *)json_object_get_string(version);

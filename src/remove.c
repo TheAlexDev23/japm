@@ -34,4 +34,5 @@ int remove_packages(japml_handle_t* handle, japml_list_t* targets, bool recursiv
     }
 
     japml_free_package_list(packages);
+    return 0;
 }

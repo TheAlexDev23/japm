@@ -16,28 +16,33 @@
 #include "devel.h"
 #include "install.h"
 #include "remove.h"
+#include "update.h"
 
 /* Unlike the name might sugest, it doesn't directly create a japml_action_t, rather call inidivdual install functions of JAPM */
-void perform_action(japml_handle_t* handle, japml_parse_parameters_t* parameters)
+int perform_action(japml_handle_t* handle, japml_parse_parameters_t* parameters)
 {
+    int err = 0;
 	if (parameters->package_action == NULL)
 	{
-		return;
+		return err;
 	}
 
 	switch(*(parameters->package_action))
 	{
 		case japml_package_install:
-            install_packages(handle, parameters->packages);
+            err = install_packages(handle, parameters->packages);
 			break;
 		case japml_package_remove:
-            remove_packages(handle, parameters->packages, parameters->remove_recursive);
+            err = remove_packages(handle, parameters->packages, parameters->remove_recursive);
 			break;
 		case japml_package_update:
+            err = update_packages(handle, parameters->packages);
 			break;
 		case japml_package_search:
 			break;
 	}
+
+    return err;
 }
 
 int main(int argc, char **argv)
@@ -61,7 +66,12 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	perform_action(handle, parameters);
+	if (perform_action(handle, parameters))
+    {
+        japml_throw_error(handle, custom_error_error, "Issue performing action, quiting now");
+    }
+
+    japml_log(handle, Information, "Press any key to exit");
 
     getch();
 

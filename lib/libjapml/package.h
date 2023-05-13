@@ -45,6 +45,8 @@ struct _japml_package
     japml_list_t* remove;
 };
 
+japml_package_t* japml_create_empty_package();
+
 // Fully frees a pacakge and it's children
 void japml_free_package(japml_package_t* package);
 

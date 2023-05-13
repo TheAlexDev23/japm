@@ -77,7 +77,7 @@ restart_type_removal_recursive: ;
         japml_get_depending_packages(handle, pkg);
 
         japml_list_t* depending_packages = pkg->depending_packages;
-        while(depending_packages)
+        while(depending_packages != NULL)
         {
             // In case a new dependant package needs to be removed, we need to rerun in case it has unremoved dependant_packages
             if (!japml_add_package_to_list_no_repeat(handle, &(handle->action->targets), (japml_package_t*)(depending_packages->data)))

@@ -7,6 +7,26 @@
 #include "list.h"
 #include "file.h"
 
+japml_package_t* japml_create_empty_package()
+{
+    japml_package_t* package = malloc(sizeof(japml_package_t));
+
+    package->name =
+    package->description =
+    package->version = NULL;
+
+    package->build_deps =
+    package->deps =
+    package->depending_packages =
+    package->pre_install =
+    package->install = 
+    package->files =
+    package->post_install =
+    package->remove = NULL;
+
+    return package;
+}
+
 char* japml_get_used_by_file(japml_package_t* pkg)
 {
     char* package_used_by_file = malloc(sizeof(char) * (strlen("/var/japml/packages/") + strlen(pkg->name) + strlen("/used_by") + 1));
@@ -93,6 +113,7 @@ void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* packa
     }
 
     char chunk[MAX_PACKAGE_NAME_LENGTH];
+    package->depending_packages = NULL;
     while(fgets(chunk, sizeof(chunk), f) != NULL) {
         chunk[strlen(chunk) - 1] = '\0';
         japml_package_t* package = japml_get_package_from_local_db(handle, chunk);

@@ -78,7 +78,13 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
 
     FILE *fp = fopen("/tmp/japml/sql_callback_temp_file", "r");
 
-    japml_package_t* package = malloc(sizeof(japml_package_t));
+    if (!fp)
+    {
+        japml_throw_error(handle, custom_error_error, "Cannot open sql callback temporary file");
+        return NULL;
+    }
+
+    japml_package_t* package = japml_create_empty_package();
 
     char** fields_to_modif[3] = {
         &package->name,

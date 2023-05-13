@@ -52,6 +52,8 @@ add_executable(${PROJECT_NAME}
     src/install.c
     src/remove.h
     src/remove.c
+    src/update.h
+    src/update.c
     )
 
 target_link_libraries(${PROJECT_NAME} ncurses japml curses curl sqlite3 json-c)
