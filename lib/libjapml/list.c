@@ -36,16 +36,18 @@ void japml_list_add(japml_handle_t *handle, japml_list_t **list, void* data)
 
 int japml_list_length(japml_list_t* list)
 {
-    if (!list)
+    if (list == NULL)
     {
         return 0;
     }
     
-    int i = 0;
+    int i = 1;
     while ((list = japml_list_next(list)) != NULL)
     {
         i++;
     }
+
+    return i;
 }
 
 japml_list_t* japml_list_last(japml_list_t *list)

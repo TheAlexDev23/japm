@@ -24,7 +24,6 @@ void curses_init(japml_handle_t *handle)
         init_pair(JAPML_CURSES_ERROR_COLOR,    COLOR_RED,     -1);
         init_pair(JAPML_CURSES_CRITICAL_COLOR, COLOR_MAGENTA, -1);
 
-
         clear();
     }
 
@@ -34,7 +33,7 @@ void curses_init(japml_handle_t *handle)
 
     // Splash screen
     char *msg_japm    = "JAPM version 2.1.0";
-    char *msg_japml   = "JAPML version 1.0.2";
+    char *msg_japml   = "JAPML version 1.0.3";
     char *msg_creator = "By TheAlexDev23 (https://github.com/thealexdev23)";
 
     mvprintw(maxY / 2 - 1, (maxX-strlen(msg_japm)) / 2, "%s", msg_japm);
@@ -43,7 +42,7 @@ void curses_init(japml_handle_t *handle)
 
     refresh();
 
-    sleep(2);
+    sleep(1);
 
     clear();
 
@@ -60,7 +59,6 @@ void curses_init(japml_handle_t *handle)
     wrefresh(handle->log_window);
     wrefresh(handle->progress_window);
     wrefresh(handle->package_list_window);
-
 }
 
 // * Logging
@@ -187,6 +185,11 @@ void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* me
 
 bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
 {
+    if (handle->default_to_all)
+    {
+        return true;
+    }
+
     Yn_dialogue_start_again:
     sprintf(handle->log_message, "%s [Y/n] ", message);
     japml_ncurses_log(handle, Information, handle->log_message);
@@ -208,6 +211,11 @@ bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
 
 bool japml_ncurses_yN_dialogue(japml_handle_t* handle, char* message)
 {
+    if (handle->default_to_all)
+    {
+        return false;
+    }
+
     yN_dialogue_start_again:
     sprintf(handle->log_message, "%s [y/N] ", message);
     japml_ncurses_log(handle, Information, handle->log_message);

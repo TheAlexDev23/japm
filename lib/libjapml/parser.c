@@ -26,9 +26,34 @@ bool japml_check_input(japml_parse_parameters_t* params)
     return true;
 }
 
-japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
+japml_parse_parameters_t* japml_create_parse_params()
 {
     japml_parse_parameters_t* params = malloc(sizeof(japml_parse_parameters_t));
+
+    params->wrong_param =
+    params->devel =
+    params->default_to_all =
+    params->exit_on_critical = NULL;
+
+    params->packages = NULL;
+    params->package_action = NULL;
+    params->remove_recursive = NULL;
+
+    params->log_level = NULL;
+
+    params->log_files = 
+    params->error_log_files = NULL;
+
+    params->curses =
+    params->color = NULL;
+
+    return params;
+}
+
+japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
+{
+    japml_parse_parameters_t* params = japml_create_parse_params();
+
     params->devel = malloc(sizeof(bool));
     *(params->devel) = false;
 
@@ -85,6 +110,7 @@ int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* 
     }
     else if (strcmp(arg, JAPML_LOG_LEVEL_ARG) == 0)
     {
+        int i = japml_list_length(char_params);
         if (japml_list_length(char_params) != 1)
         { goto break_if; }
 
