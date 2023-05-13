@@ -58,4 +58,4 @@ add_executable(${PROJECT_NAME}
     src/search.c
     )
 
-target_link_libraries(${PROJECT_NAME} ncurses japml curses curl sqlite3 json-c)
+target_link_libraries(${PROJECT_NAME} ncurses japml curl sqlite3 json-c)
