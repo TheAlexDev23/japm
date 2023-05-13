@@ -23,8 +23,8 @@ If you want to use the package manager the way it worked before you can either t
 - [x] Actions system => requires testing
 - [x] Package Installation => requires testing
 - [x] Package Removal => requries testing
-- [ ] Package Update
-- [ ] Package Search
+- [x] Package Update
+- [x] Package Search
 - [ ] Progress bar
 - [ ] Package list
 
