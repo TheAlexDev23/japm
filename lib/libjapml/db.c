@@ -28,7 +28,7 @@ void japml_create_local_db(japml_handle_t* handle)
                  \"name\" TEXT NOT NULL, \
                  \"description\" TEXT, \
                  \"version\" TEXT NOT NULL, \
-                 \"remove\" TEXT);",
+                 \"remove\" TEXT NOT NULL);",
                  NULL, NULL, NULL);
 }
 
@@ -78,22 +78,23 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
 
     FILE *fp = fopen("/tmp/japml/sql_callback_temp_file", "r");
 
-    japml_package_t* package = malloc(sizeof(package));
+    japml_package_t* package = malloc(sizeof(japml_package_t));
 
-    char* fields_to_modif[3] = {
-        package->name,
-        package->description,
-        package->version
+    char** fields_to_modif[3] = {
+        &package->name,
+        &package->description,
+        &package->version
     };
 
     int i = 0;
     char line[5000];
-    while(fgets(line, sizeof(line), fp))
+    while(fgets(line, sizeof(line), fp) && i <= 2)
     {
         // Remove newline character
         line[strlen(line) - 1] = '\0';
-        fields_to_modif[i] = malloc(sizeof(char) * strlen(line));
-        strcpy(fields_to_modif[i], line);
+        char* val = malloc(strlen(line) + 1);
+        strcpy(val, line);
+        *(fields_to_modif[i]) = val;
         i++;
     }
 
@@ -115,7 +116,7 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
 
     japml_create_file_recursive("/tmp/japml/packagefetch");
     FILE* f = fopen("/tmp/japml/packagefetch", "w");
-    
+
     if (!f)
     {
         japml_throw_error(handle, custom_error_error, "Error opening cURL temp file");
@@ -183,17 +184,16 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
 int japml_add_package_to_local_db(japml_handle_t* handle, japml_package_t* package)
 {
     char* remove = japml_list_to_string(handle, package->remove);
-    char *sql = malloc(sizeof(char) *
+    char *sql = malloc(sizeof(char) * (
         strlen("INSERT INTO packages (name, description, version, remove) VALUES ();") + 
         
             strlen(package->name) + strlen("'', ") +
             strlen(package->description) + strlen("'', ") +
             strlen(package->version) + strlen("'', ") +
-            strlen(remove) + strlen("'', ")
+            strlen(remove) + strlen("'', ") + 1)
     );
 
-    sprintf(sql, "INSERT INTO packages (name, description, verson, remove) VALUES ( \
-            '%s', '%s', '%s', '%s');",
+    sprintf(sql, "INSERT INTO packages (name, description, version, remove) VALUES ('%s', '%s', '%s', '%s');",
             package->name, package->description, package->version, remove);
 
     char *errMsg = 0;
@@ -211,10 +211,8 @@ int japml_add_package_to_local_db(japml_handle_t* handle, japml_package_t* packa
 
 int japml_remove_package_from_local_db(japml_handle_t* handle, japml_package_t* package)
 {
-    char *sql = malloc(sizeof(char) * 
-        strlen("DELETE FROM packages WHERE name = '';") +
-        strlen(package->name));
-    
+    char *sql = malloc(strlen("DELETE FROM packages WHERE name = '';") + strlen(package->name) + 1);
+
     sprintf(sql, "DELETE FROM packages WHERE name = '%s';", package->name);
 
     char* errMsg = 0;

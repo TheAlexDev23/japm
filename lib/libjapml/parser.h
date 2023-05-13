@@ -22,6 +22,7 @@ struct _japml_parse_parameters
     /* A list of strings each with a package name */
     japml_list_t* packages;
     japml_package_action_t* package_action;
+    bool* remove_recursive;
 
     // * Logging
     japml_log_level_t* log_level;

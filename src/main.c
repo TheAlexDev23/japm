@@ -15,22 +15,23 @@
 
 #include "devel.h"
 #include "install.h"
-
+#include "remove.h"
 
 /* Unlike the name might sugest, it doesn't directly create a japml_action_t, rather call inidivdual install functions of JAPM */
-void perform_action(japml_handle_t* handle, japml_parse_parameters_t* paramters)
+void perform_action(japml_handle_t* handle, japml_parse_parameters_t* parameters)
 {
-	if (paramters->package_action == NULL)
+	if (parameters->package_action == NULL)
 	{
 		return;
 	}
 
-	switch(*(paramters->package_action))
+	switch(*(parameters->package_action))
 	{
 		case japml_package_install:
-            install_packages(handle, paramters->packages);
+            install_packages(handle, parameters->packages);
 			break;
 		case japml_package_remove:
+            remove_packages(handle, parameters->packages, parameters->remove_recursive);
 			break;
 		case japml_package_update:
 			break;

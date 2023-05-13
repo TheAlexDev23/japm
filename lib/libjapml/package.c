@@ -9,7 +9,7 @@
 
 char* japml_get_used_by_file(japml_package_t* pkg)
 {
-    char* package_used_by_file = malloc(sizeof(strlen("/var/japml_packages/") + strlen(pkg->name) + "/used_by"));
+    char* package_used_by_file = malloc(sizeof(char) * (strlen("/var/japml/packages/") + strlen(pkg->name) + strlen("/used_by") + 1));
     sprintf(package_used_by_file, "/var/japml/packages/%s/used_by", pkg->name);
     return package_used_by_file;
 }
@@ -74,8 +74,23 @@ void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* dep
 
 void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package)
 {
+    if (!package)
+    {
+        return;
+    }
+
     char* file = japml_get_used_by_file(package);
+
+    int i = -1;
+    restart_open_used_by: ;
+    i++;
     FILE *f = fopen(file, "r");
+
+    if (!f && !i)
+    {
+        japml_create_file_recursive(file);
+        goto restart_open_used_by;
+    }
 
     char chunk[MAX_PACKAGE_NAME_LENGTH];
     while(fgets(chunk, sizeof(chunk), f) != NULL) {
@@ -104,6 +119,11 @@ int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** l
 
 void japml_free_package(japml_package_t* package)
 {
+    if (package == NULL)
+    {
+        return;
+    }
+
     japml_list_free(package->build_deps);
     japml_list_free(package->deps);
     japml_list_free(package->depending_packages);
@@ -118,7 +138,6 @@ void japml_free_package(japml_package_t* package)
 
 void japml_free_package_list(japml_list_t* packages)
 {
-    // ? Maybe move freeing to separate file since it's reused by remove and update and search
     while (packages)
     {
         japml_free_package((japml_package_t*)(packages->data));

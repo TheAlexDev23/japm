@@ -31,8 +31,12 @@ int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
 
 int japml_install_single_package(japml_handle_t* handle, japml_package_t* package)
 {
-    if (japml_get_package_from_local_db(handle, package->name))
+    japml_package_t* local_package = NULL;
+    if ((local_package = japml_get_package_from_local_db(handle, package->name)) != NULL)
     {
+        sprintf(handle->log_message, "Package %s is already installed. Run update if you want to reinstall it", package->name);
+        japml_log(handle, Information, handle->log_message);
+        free(local_package);
         return 0;
     }
 
@@ -72,8 +76,6 @@ int japml_pre_install(japml_handle_t* handle, japml_package_t* package)
     // * Run pre install script
     japml_list_t* it = package->pre_install;
 
-    if (!it) { return 0; }
-
     sprintf(handle->log_message, "Running pre-install script for %s", package->name);
     japml_log(handle, Debug, handle->log_message);
 
@@ -109,8 +111,6 @@ int japml_post_install(japml_handle_t* handle, japml_package_t* package)
     // * Execute post install script
     japml_list_t* it = package->post_install;
 
-    if (it) { return 0; }
-    
     sprintf(handle->log_message, "Running post install script for %s", package->name);
     japml_log(handle, Debug, handle->log_message);
     

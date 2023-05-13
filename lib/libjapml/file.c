@@ -29,7 +29,7 @@ japml_list_t* japml_create_file_list(japml_list_t* files)
 int japml_create_file_recursive(char* pathname)
 {
     // Copying since pathname might be readonly
-    char *path = malloc(sizeof(char) * strlen(pathname));
+    char *path = malloc(strlen(pathname) + 1);
     strcpy(path, pathname);
 
     for (char *p = path; (p = strchr(p ,'/')) != NULL; ++p) {

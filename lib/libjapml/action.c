@@ -41,6 +41,12 @@ void japml_action_check_type_remove(japml_handle_t* handle)
     while (it)
     {
         japml_package_t* pkg = (japml_package_t*)(it->data);
+        if (!pkg)
+        {
+            handle->action->status = JAPML_ACTION_STATUS_ABORTED;
+            return;
+        }
+
         japml_get_depending_packages(handle, pkg);
 
         if (pkg->depending_packages)
@@ -62,6 +68,12 @@ restart_type_removal_recursive: ;
     while (it)
     {
         japml_package_t* pkg = (japml_package_t*)(it->data);
+        if (!pkg)
+        {
+            handle->action->status = JAPML_ACTION_STATUS_ABORTED;
+            return;
+        }
+
         japml_get_depending_packages(handle, pkg);
 
         japml_list_t* depending_packages = pkg->depending_packages;
@@ -88,6 +100,11 @@ restart_type_install: ;
     while (it)
     {
         japml_package_t* pkg = (japml_package_t*)(it->data);
+        if (!pkg)
+        {
+            handle->action->status = JAPML_ACTION_STATUS_ABORTED;
+            return;
+        }
 
         japml_list_t* dependencies = pkg->deps;
         japml_list_t* build_deps = pkg->build_deps;
@@ -128,6 +145,11 @@ int japml_action_check(japml_handle_t* handle)
         case JAPML_ACTION_TYPE_INSTALL:
             japml_action_check_type_install(handle);
             break;
+    }
+
+    if (handle->action->status == JAPML_ACTION_STATUS_ABORTED)
+    {
+        return -1;
     }
 
     if (handle->action->action_type == JAPML_ACTION_TYPE_INSTALL)

@@ -1,34 +1,190 @@
-==36895== Memcheck, a memory error detector
-==36895== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
-==36895== Using Valgrind-3.20.0 and LibVEX; rerun with -h for copyright info
-==36895== Command: ./japm --log-files ../test/japm.log install test-pacakage1
-==36895== Parent PID: 36894
-==36895== 
-
-valgrind:  Fatal error at startup: a function redirection
-valgrind:  which is mandatory for this platform-tool combination
-valgrind:  cannot be set up.  Details of the redirection are:
-valgrind:  
-valgrind:  A must-be-redirected function
-valgrind:  whose name matches the pattern:      strlen
-valgrind:  in an object with soname matching:   ld-linux-x86-64.so.2
-valgrind:  was not found whilst processing
-valgrind:  symbols from the object with soname: ld-linux-x86-64.so.2
-valgrind:  
-valgrind:  Possible fixes: (1, short term): install glibc's debuginfo
-valgrind:  package on this machine.  (2, longer term): ask the packagers
-valgrind:  for your Linux distribution to please in future ship a non-
-valgrind:  stripped ld.so (or whatever the dynamic linker .so is called)
-valgrind:  that exports the above-named function using the standard
-valgrind:  calling conventions for this platform.  The package you need
-valgrind:  to install for fix (1) is called
-valgrind:  
-valgrind:    On Debian, Ubuntu:                 libc6-dbg
-valgrind:    On SuSE, openSuSE, Fedora, RHEL:   glibc-debuginfo
-valgrind:  
-valgrind:  Note that if you are debugging a 32 bit process on a
-valgrind:  64 bit system, you will need a corresponding 32 bit debuginfo
-valgrind:  package (e.g. libc6-dbg:i386).
-valgrind:  
-valgrind:  Cannot continue -- exiting now.  Sorry.
-
+==55651== Memcheck, a memory error detector
+==55651== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==55651== Using Valgrind-3.20.0 and LibVEX; rerun with -h for copyright info
+==55651== Command: ./japm remove test-package
+==55651== Parent PID: 8529
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10EB39: japml_check_input (parser.c:18)
+==55651==    by 0x10EC04: japml_parse_input (parser.c:45)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C45B: japml_init (init.c:107)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10DBB5: japml_list_add (list.c:26)
+==55651==    by 0x10C297: japml_init_base (init.c:30)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10C22C: japml_init_base (init.c:17)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C50F: japml_init (init.c:135)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C52E: japml_init (init.c:140)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C54D: japml_init (init.c:145)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C56B: japml_init (init.c:150)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C588: japml_init (init.c:155)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C5A5: japml_init (init.c:160)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10C5C4: japml_init (init.c:165)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10EB82: japml_parse_input (parser.c:31)
+==55651==    by 0x10A65C: main (main.c:50)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10E103: japml_log_error_files (log.c:61)
+==55651==    by 0x10DFD2: japml_log (log.c:26)
+==55651==    by 0x10BD5E: japml_throw_error (error.c:26)
+==55651==    by 0x10ABD3: remove_packages (remove.c:20)
+==55651==    by 0x10A631: perform_action (main.c:34)
+==55651==    by 0x10A69F: main (main.c:64)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10C22C: japml_init_base (init.c:17)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10DBB5: japml_list_add (list.c:26)
+==55651==    by 0x10D064: japml_ncurses_log (japmlcurses.c:101)
+==55651==    by 0x10DFF3: japml_log (log.c:31)
+==55651==    by 0x10BD5E: japml_throw_error (error.c:26)
+==55651==    by 0x10ABD3: remove_packages (remove.c:20)
+==55651==    by 0x10A631: perform_action (main.c:34)
+==55651==    by 0x10A69F: main (main.c:64)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10C22C: japml_init_base (init.c:17)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10BEC2: japml_exit (exit.c:19)
+==55651==    by 0x10BDA3: japml_throw_error (error.c:36)
+==55651==    by 0x10ABD3: remove_packages (remove.c:20)
+==55651==    by 0x10A631: perform_action (main.c:34)
+==55651==    by 0x10A69F: main (main.c:64)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10C22C: japml_init_base (init.c:17)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10DD8D: japml_list_free (list.c:102)
+==55651==    by 0x10BECF: japml_exit (exit.c:25)
+==55651==    by 0x10BDA3: japml_throw_error (error.c:36)
+==55651==    by 0x10ABD3: remove_packages (remove.c:20)
+==55651==    by 0x10A631: perform_action (main.c:34)
+==55651==    by 0x10A69F: main (main.c:64)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10C22C: japml_init_base (init.c:17)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10BF02: japml_exit (exit.c:30)
+==55651==    by 0x10BDA3: japml_throw_error (error.c:36)
+==55651==    by 0x10ABD3: remove_packages (remove.c:20)
+==55651==    by 0x10A631: perform_action (main.c:34)
+==55651==    by 0x10A69F: main (main.c:64)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10C22C: japml_init_base (init.c:17)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651== 
+==55651== Conditional jump or move depends on uninitialised value(s)
+==55651==    at 0x10DD8D: japml_list_free (list.c:102)
+==55651==    by 0x10BF0F: japml_exit (exit.c:36)
+==55651==    by 0x10BDA3: japml_throw_error (error.c:36)
+==55651==    by 0x10ABD3: remove_packages (remove.c:20)
+==55651==    by 0x10A631: perform_action (main.c:34)
+==55651==    by 0x10A69F: main (main.c:64)
+==55651==  Uninitialised value was created by a heap allocation
+==55651==    at 0x4841888: malloc (vg_replace_malloc.c:393)
+==55651==    by 0x10C22C: japml_init_base (init.c:17)
+==55651==    by 0x10C3D0: japml_init_default (init.c:76)
+==55651==    by 0x10C4FF: japml_init (init.c:132)
+==55651==    by 0x10A67A: main (main.c:57)
+==55651== 
+==55651== 
+==55651== HEAP SUMMARY:
+==55651==     in use at exit: 902,798 bytes in 290 blocks
+==55651==   total heap usage: 3,444 allocs, 3,154 frees, 1,182,561 bytes allocated
+==55651== 
+==55651== LEAK SUMMARY:
+==55651==    definitely lost: 12 bytes in 2 blocks
+==55651==    indirectly lost: 0 bytes in 0 blocks
+==55651==      possibly lost: 201 bytes in 3 blocks
+==55651==    still reachable: 902,585 bytes in 285 blocks
+==55651==         suppressed: 0 bytes in 0 blocks
+==55651== Rerun with --leak-check=full to see details of leaked memory
+==55651== 
+==55651== For lists of detected and suppressed errors, rerun with: -s
+==55651== ERROR SUMMARY: 16 errors from 16 contexts (suppressed: 0 from 0)
