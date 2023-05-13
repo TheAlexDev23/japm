@@ -26,6 +26,7 @@ A package is a .json file usually saved in a remote repository, by default it is
 - [x] Local DB CRUD
 - [x] Remote DB reading
 - [x] Actions system
+- [ ] Package file download
 - [x] Package Installation
 - [x] Package Removal
 - [x] Package Update
