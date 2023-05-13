@@ -177,3 +177,20 @@ void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages)
         packages = japml_list_next(packages);
     }
 }
+
+void japml_print_package_details(japml_handle_t* handle, japml_package_t* package)
+{
+    if (package == NULL)
+    {
+        return;
+    }
+
+    sprintf(handle->log_message, "Name: %s", package->name);
+    japml_log(handle, Information, handle->log_message);
+
+    sprintf(handle->log_message, "Version: %s", package->version);
+    japml_log(handle, Information, handle->log_message);
+
+    sprintf(handle->log_message, "Description: %s", package->description);
+    japml_log(handle, Information, handle->log_message);
+}

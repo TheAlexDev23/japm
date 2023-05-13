@@ -79,4 +79,7 @@ int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** l
 /* Will print a list of packages */
 void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages);
 
+/* Will print information about package */
+void japml_print_package_details(japml_handle_t* handle, japml_package_t* package);
+
 #endif

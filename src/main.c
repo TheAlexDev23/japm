@@ -17,6 +17,7 @@
 #include "install.h"
 #include "remove.h"
 #include "update.h"
+#include "search.h"
 
 /* Unlike the name might sugest, it doesn't directly create a japml_action_t, rather call inidivdual install functions of JAPM */
 int perform_action(japml_handle_t* handle, japml_parse_parameters_t* parameters)
@@ -39,6 +40,7 @@ int perform_action(japml_handle_t* handle, japml_parse_parameters_t* parameters)
             err = update_packages(handle, parameters->packages);
 			break;
 		case japml_package_search:
+            err = search_packages(handle, parameters->packages);
 			break;
 	}
 

@@ -33,8 +33,8 @@ void curses_init(japml_handle_t *handle)
     getmaxyx(stdscr, maxY, maxX);
 
     // Splash screen
-    char *msg_japm    = "JAPM version 2.0.1";
-    char *msg_japml   = "JAPML version 1.0.1";
+    char *msg_japm    = "JAPM version 2.1.0";
+    char *msg_japml   = "JAPML version 1.0.2";
     char *msg_creator = "By TheAlexDev23 (https://github.com/thealexdev23)";
 
     mvprintw(maxY / 2 - 1, (maxX-strlen(msg_japm)) / 2, "%s", msg_japm);

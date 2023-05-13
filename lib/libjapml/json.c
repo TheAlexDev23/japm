@@ -37,14 +37,11 @@ japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_locati
     struct stat st;
     if (stat(file_location, &st))
     {
-        japml_throw_error(handle, custom_error_error, "Cannot read file stat");
+        japml_throw_error(handle, custom_error_error, "Cannot read json file stat");
         return NULL;
     }
 
     int file_size = st.st_size;
-
-    sprintf(handle->log_message, "%i", file_size);
-    japml_log(handle, Information, handle->log_message);
 
     char *buffer = malloc(file_size + 1);
     buffer[file_size] = '\0';
