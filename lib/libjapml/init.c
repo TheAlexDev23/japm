@@ -18,7 +18,7 @@ japml_handle_t* japml_init_base()
     if (!handle)
     {
         // Log system is not initialized
-        fprintf(stderr, "Crit: Criticall error initializing JAPML, could not alloc enough memory for handle\n");
+        fprintf(stderr, "Crit: Critical error initializing JAPML, could not alloc enough memory for handle\n");
         return NULL;
     }
 
@@ -37,7 +37,7 @@ japml_handle_t* japml_init_base()
     if (sqlite3_open("/var/japml/local.db", &handle->sqlite))
     {
         sqlite3_close(handle->sqlite);
-        fprintf(stderr, "Crit: criticall error initialazing JAPML, could not open local database");
+        fprintf(stderr, "Crit: critical error initialazing JAPML, could not open local database");
     }
     
     // * Logging
@@ -54,6 +54,7 @@ japml_handle_t* japml_init_base()
     }
 
     // * TUI
+
     handle->use_colors = true;
     handle->use_ncurses = true;
     handle->default_to_all = false;

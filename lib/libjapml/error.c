@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #include "error.h"
-#include "japml.h" // japml_error_t
+#include "japml.h"
 #include "handle.h"
 #include "log.h"
 #include "exit.h"

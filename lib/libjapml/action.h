@@ -31,16 +31,12 @@ struct _japml_action
     japml_action_status_t status;
 };
 
-/* Creats an action and initializes it with the values provided */
+/* Creates an action and initializes it with the values provided */
 int japml_action_create(japml_handle_t* handle, japml_list_t* package_list, japml_action_type_t action_type);
 
-/* 
-Checks the action:
-- Checks for dependency breaks errors
-- Adds dependencies to the install list
-*/
+/* Checks the action, making sure no dependency break happens. Also adds dependencies in case of install */
 int japml_action_check(japml_handle_t* handle);
-/* Realizes the action*/
+/* Performs the action*/
 int japml_action_commit(japml_handle_t* handle);
 
 #endif

@@ -1,19 +1,21 @@
 #ifndef _JAPML_H_INCLUDED_
 #define _JAPML_H_INCLUDED_
 
-/* A handle is a instance of JAMPL */
+/* A handle is an instance of JAMPL, with all the information required for the library to work. */
 typedef struct _japml_handle japml_handle_t;
 
+/* Type of comand line argument */
 typedef enum _japml_arg_type japml_arg_type_t;
+/* Structure representing comand line parameters */
 typedef struct _japml_parse_parameters japml_parse_parameters_t;
 
 /* A linked list */
 typedef struct _japml_list japml_list_t;
 
 /* 
-An action is a way that the frontend can use to make JAPML install/remove packages.
-An action is a struct that stores the packages JAPML will remove/install.
-An action can only either remove or install packages.
+* Actions are used to represent packages that need to be installed/removed
+* They are used by the JAPML API to perform package management.
+* A pacakge can only either install or remove packages.
 */
 typedef struct _japml_action japml_action_t;
 typedef enum _japml_action_type japml_action_type_t;

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h> // strtok for list manipulation
+#include <string.h>
 
 #include "list.h"
 #include "japml.h"
@@ -22,7 +22,7 @@ void japml_list_add(japml_handle_t *handle, japml_list_t **list, void* data)
     node->data = data;
     node->next = NULL;
 
-    // the list already has nodes so go to the last node
+    // The list already has nodes so go to the last node
     if (*list)
     {
         japml_list_t *last_node = japml_list_last(*list);

@@ -72,10 +72,6 @@ int japml_install_single_package(japml_handle_t* handle, japml_package_t* packag
     sprintf(handle->log_message, "Package %s installed succesfully", package->name);
     japml_log(handle, Information, handle->log_message);
 
-    // TODO: call progress bar
-
-    // TODO: update package_list ncurses window
-
     return 0;
 }
 
@@ -116,7 +112,7 @@ void japml_mark_depending_packages(japml_handle_t* handle, japml_package_t* pack
 
 int japml_post_install(japml_handle_t* handle, japml_package_t* package)
 {
-    // * Execute post install script
+    // Execute post install script
     japml_list_t* it = package->post_install;
 
     sprintf(handle->log_message, "Running post install script for %s", package->name);

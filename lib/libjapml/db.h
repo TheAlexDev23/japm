@@ -4,7 +4,7 @@
 #include "japml.h"
 #include "handle.h"
 
-// If othe parameters except for url will not be needed, remove this
+// TODO: If other parameters except for url will not be needed, remove this
 struct _japml_db_remote
 {
 	char *url;

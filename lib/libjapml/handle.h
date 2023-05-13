@@ -18,6 +18,7 @@
 struct _japml_handle
 {
     // * DBs
+
     japml_list_t *remote_dbs; // list of japml_db_remote_t
 
     // * Logging
@@ -29,6 +30,7 @@ struct _japml_handle
     japml_list_t *error_log_files; // Place where errors would be written
 
     // * SQLite3
+
     sqlite3* sqlite;
 
     // * CURL

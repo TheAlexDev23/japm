@@ -21,7 +21,6 @@ japml_list_t *japml_json_to_list(japml_handle_t *handle, json_object *obj)
     return list;
 }
 
-/* Allocates memory for and creates a japml package from the json file provided */
 japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_location)
 {
     // Open the file

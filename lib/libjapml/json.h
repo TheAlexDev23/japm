@@ -8,6 +8,7 @@
 #include "package.h"
 #include "handle.h"
 
+/* Allocates memory for and creates a japml package from the json file provided */
 japml_package_t* japml_parse_json_file(japml_handle_t* handle, char* file_location);
 
 #endif

@@ -92,12 +92,11 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
         japml_throw_error(handle, malloc_error, NULL);
     }
 
-    // We want to malloc it to the heap so we can acces it later when printing logs
-    char *message_struct_message = malloc(strlen(message) + 1);
-    strcpy(message_struct_message, message);
+    char *msg = malloc(strlen(message) + 1);
+    strcpy(msg, message);
 
     message_struct->log_level = log_level;
-    message_struct->message = message_struct_message;
+    message_struct->message = msg;
 
     japml_list_add(handle, &handle->ncurses_lb, message_struct);
 
@@ -111,19 +110,17 @@ void japml_ncurses_log_win_update(japml_handle_t *handle)
     wclear(handle->log_window);
     wmove(handle->log_window, 1, 1);
 
+    int i;
+
     if (handle->ncurses_lb_count > handle->ncurses_lb_length)
     {
-        for (int i = handle->ncurses_lb_count - handle->ncurses_lb_length; i < handle->ncurses_lb_count; i++)
-        {
-            japml_ncurses_log_win_print(handle, (japml_log_message_t*)(japml_list_get_element(handle->ncurses_lb, i)->data));
-        }
+        i = handle->ncurses_lb_count - handle->ncurses_lb_length;
     }
-    else
+    else { i = 0; }
+
+    for (; i < handle->ncurses_lb_count; i++)
     {
-        for (int i = 0; i < handle->ncurses_lb_count; i++)
-        {
-            japml_ncurses_log_win_print(handle, (japml_log_message_t*)(japml_list_get_element(handle->ncurses_lb, i)->data));
-        }
+        japml_ncurses_log_win_print(handle, (japml_log_message_t*)(japml_list_get_element(handle->ncurses_lb, i)->data));
     }
 
     box(handle->log_window, ACS_VLINE, ACS_HLINE);
@@ -298,7 +295,6 @@ void japml_ncurses_pl_refresh(japml_handle_t* handle)
         char* msg = (char*)(japml_list_get_element(handle->ncurses_pl_buffer, i)->data);
         wprintw(handle->package_list_window, "%s\n", msg);
         wmove(handle->package_list_window, getcury(handle->package_list_window), 1);
-        wrefresh(handle->package_list_window);
     }
 
     box(handle->package_list_window, ACS_VLINE, ACS_HLINE);

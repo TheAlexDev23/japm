@@ -64,7 +64,7 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
     char* errMsg = 0;
     if (sqlite3_exec(handle->sqlite, sql, callback, NULL, &errMsg))
     {
-        sprintf(handle->log_message, "Canont execute sql (%s)", errMsg);
+        sprintf(handle->log_message, "Cannot execute sql (%s)", errMsg);
         japml_throw_error(handle, sql_command_fail_error, handle->log_message);
         return NULL;
     }
@@ -142,12 +142,6 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
         sprintf(handle->log_message, "Fetching %s", url);
         japml_log(handle, Information, handle->log_message);
 
-        if (!handle->curl)
-        {
-            japml_throw_error(handle, custom_error_error, "JAPML handle does not contain a reference to cURL");
-            return NULL;
-        }
-
         curl_easy_setopt(handle->curl, CURLOPT_URL, url);
         curl_easy_setopt(handle->curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(handle->curl, CURLOPT_WRITEDATA, f);
@@ -207,7 +201,7 @@ int japml_add_package_to_local_db(japml_handle_t* handle, japml_package_t* packa
     char *errMsg = 0;
     if (sqlite3_exec(handle->sqlite, sql, NULL, NULL, &errMsg))
     {
-        sprintf(handle->log_message, "Canont execute sql (%s)", errMsg);
+        sprintf(handle->log_message, "Cannot execute sql (%s)", errMsg);
         japml_throw_error(handle, sql_command_fail_error, handle->log_message);
         return 1;
     }
@@ -226,7 +220,7 @@ int japml_remove_package_from_local_db(japml_handle_t* handle, japml_package_t* 
     char* errMsg = 0;
     if (sqlite3_exec(handle->sqlite, sql, NULL, NULL, &errMsg))
     {
-        sprintf(handle->log_message, "Canont execute sql (%s)", errMsg);
+        sprintf(handle->log_message, "Cannot execute sql (%s)", errMsg);
         japml_throw_error(handle, sql_command_fail_error, handle->log_message);
         return 1;
     }

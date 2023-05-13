@@ -20,14 +20,14 @@ void curses_init(japml_handle_t* handle);
 
 /* Logs a message into the ncurses log screen */
 void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char *message);
-/* Refreshes the log screen (by clearing and re-printing everything) and doesn't allow messages to overflow the screen */
+/* Updates log screen */
 void japml_ncurses_log_win_update(japml_handle_t* handle);
-/* Prints the actual message into the log screen. It is not recomended to call it manually. */
+/* Prints message into the log screen. Does not refresh. */
 void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* message);
 void japml_ncurses_free_log_buffer(japml_handle_t* handle);
 
 // * Progress bar
-/* Re-dras progress bar with current progress */
+/* Re-draws progress bar with current progress */
 void japml_ncurses_pb_refresh(japml_handle_t* handle);
 /* Sets the limit of the progress bar */
 void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit);

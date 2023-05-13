@@ -11,7 +11,7 @@ int japml_run_instructions(japml_list_t* instructions)
         char *cmd = (char*)(instructions->data);
         if (system(cmd) == -1)
         {
-            return 1;
+            return -1;
         }
 
         instructions = japml_list_next(instructions);
