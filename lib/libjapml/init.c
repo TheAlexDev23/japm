@@ -55,13 +55,13 @@ japml_handle_t* japml_init_base()
 
     // * TUI
     handle->use_colors = true;
-    handle->use_curses = true;
+    handle->use_ncurses = true;
     handle->default_to_all = false;
 
     // * Curses
 
-    handle->ncurses_log_buffer_count  = 0;
-    handle->ncurses_log_buffer_length = 0;
+    handle->ncurses_lb_count  = 0;
+    handle->ncurses_lb_length = 0;
 
     handle->ncurses_pb_lim = 0;
     handle->ncurses_pb_progress = 0;
@@ -92,7 +92,7 @@ japml_handle_t* japml_init_devel()
 
 void japml_terminal_init(japml_handle_t* handle)
 {
-    if (handle->use_curses)
+    if (handle->use_ncurses)
     {
         curses_init(handle);
     }
@@ -160,7 +160,7 @@ japml_handle_t* japml_init(japml_parse_parameters_t* parameters)
 
     if (parameters->curses != NULL)
     {
-        handle->use_curses = *(parameters->curses);
+        handle->use_ncurses = *(parameters->curses);
     }
 
     if (parameters->color != NULL)

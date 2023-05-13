@@ -24,7 +24,6 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
 void japml_ncurses_log_win_update(japml_handle_t* handle);
 /* Prints the actual message into the log screen. It is not recomended to call it manually. */
 void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* message);
-/* Since the log buffer is a list of japml_log_message_t we need to first free whatever the data pointer is pointing at and then the list itself */
 void japml_ncurses_free_log_buffer(japml_handle_t* handle);
 
 // * Progress bar
@@ -34,6 +33,12 @@ void japml_ncurses_pb_refresh(japml_handle_t* handle);
 void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit);
 /* Advances progress by amnt */
 void japml_ncurses_pb_add(japml_handle_t* handle, int amnt);
+
+// * Packages window
+/* Adds a package to package list */
+void japml_ncurses_pl_add(japml_handle_t* handle, japml_package_t* package, japml_package_action_t action);
+/* Refreshes pl window */
+void japml_ncurses_pl_refresh(japml_handle_t* handle);
 
 // * Dialogues
 

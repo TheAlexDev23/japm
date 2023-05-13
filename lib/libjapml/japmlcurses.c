@@ -1,5 +1,5 @@
 #include <ncurses.h>
-#include <string.h> // strlen
+#include <string.h>
 #include <unistd.h> // sleep
 #include <stdio.h>
 #include <ctype.h> // tolower
@@ -9,6 +9,7 @@
 #include "error.h"
 #include "japmlcurses.h"
 #include "log.h"
+#include "package.h" // japml_package_action_t
 
 void curses_init(japml_handle_t *handle)
 {
@@ -59,6 +60,9 @@ void curses_init(japml_handle_t *handle)
     wrefresh(handle->log_window);
     wrefresh(handle->progress_window);
     wrefresh(handle->package_list_window);
+
+    handle->ncurses_lb_length = getmaxy(handle->log_window) - 2;
+    handle->ncurses_pl_length = getmaxy(handle->package_list_window) -2;
 }
 
 // * Logging
@@ -66,7 +70,7 @@ void curses_init(japml_handle_t *handle)
 void japml_ncurses_free_log_buffer(japml_handle_t* handle)
 {
     // Free the malloc'd japml_log_message_t structs first
-    japml_list_t* it = handle->ncurses_log_buffer;
+    japml_list_t* it = handle->ncurses_lb;
     while (it)
     {
         // Since we malloc'd the message we need to free it to
@@ -76,12 +80,11 @@ void japml_ncurses_free_log_buffer(japml_handle_t* handle)
     }
 
     // Free the list itself
-    japml_list_free(handle->ncurses_log_buffer);
+    japml_list_free(handle->ncurses_lb);
 }
 
 void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char *message)
 {
-    handle->ncurses_log_buffer_length = getmaxy(handle->log_window) - 2;
     japml_log_message_t* message_struct = malloc(sizeof(japml_log_message_t));
     
     if (!message_struct)
@@ -96,9 +99,9 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
     message_struct->log_level = log_level;
     message_struct->message = message_struct_message;
 
-    japml_list_add(handle, &handle->ncurses_log_buffer, message_struct);
+    japml_list_add(handle, &handle->ncurses_lb, message_struct);
 
-    handle->ncurses_log_buffer_count++;
+    handle->ncurses_lb_count++;
 
     japml_ncurses_log_win_update(handle);
 }
@@ -108,18 +111,18 @@ void japml_ncurses_log_win_update(japml_handle_t *handle)
     wclear(handle->log_window);
     wmove(handle->log_window, 1, 1);
 
-    if (handle->ncurses_log_buffer_count > handle->ncurses_log_buffer_length)
+    if (handle->ncurses_lb_count > handle->ncurses_lb_length)
     {
-        for (int i = handle->ncurses_log_buffer_count - handle->ncurses_log_buffer_length; i < handle->ncurses_log_buffer_count; i++)
+        for (int i = handle->ncurses_lb_count - handle->ncurses_lb_length; i < handle->ncurses_lb_count; i++)
         {
-            japml_ncurses_log_win_print(handle, (japml_log_message_t*)(japml_list_get_element(handle->ncurses_log_buffer, i)->data));
+            japml_ncurses_log_win_print(handle, (japml_log_message_t*)(japml_list_get_element(handle->ncurses_lb, i)->data));
         }
     }
     else
     {
-        for (int i = 0; i < handle->ncurses_log_buffer_count; i++)
+        for (int i = 0; i < handle->ncurses_lb_count; i++)
         {
-            japml_ncurses_log_win_print(handle, (japml_log_message_t*)(japml_list_get_element(handle->ncurses_log_buffer, i)->data));
+            japml_ncurses_log_win_print(handle, (japml_log_message_t*)(japml_list_get_element(handle->ncurses_lb, i)->data));
         }
     }
 
@@ -210,6 +213,7 @@ void japml_ncurses_draw_pb(japml_handle_t* handle, int amnt)
 
 void japml_ncurses_pb_refresh(japml_handle_t* handle)
 {
+    if (!handle->use_ncurses) { return; }
     if (handle->ncurses_pb_lim == 0)
     {
         japml_ncurses_draw_pb(handle, 0);
@@ -224,6 +228,8 @@ void japml_ncurses_pb_refresh(japml_handle_t* handle)
 
 void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit)
 {
+    if (!handle->use_ncurses) { return; }
+
     if (limit < 0)
     {
         return;
@@ -235,12 +241,67 @@ void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit)
 
 void japml_ncurses_pb_add(japml_handle_t* handle, int amnt)
 {
+    if (!handle->use_ncurses) { return; }
+
     if (handle->ncurses_pb_progress < handle->ncurses_pb_lim)
     {
         handle->ncurses_pb_progress += amnt;
     }
 
     japml_ncurses_pb_refresh(handle);
+}
+
+void japml_ncurses_pl_add(japml_handle_t* handle, japml_package_t* package, japml_package_action_t action)
+{
+    if (package == NULL)
+    {
+        return;
+    }
+
+    if (action == japml_package_install)
+    {
+        char* msg = malloc(strlen(package->name) + strlen(" => installed") + 1);
+        sprintf(msg, "%s => installed", package->name);
+        japml_list_add(handle, &handle->ncurses_pl_buffer, msg);
+    }
+    else if (action == japml_package_remove)
+    {
+        char* msg = malloc(strlen(package->name) + strlen(" => removed") + 1);
+        sprintf(msg, "%s => removed", package->name);
+        japml_list_add(handle, &handle->ncurses_pl_buffer, msg);
+    }
+    else if (action == japml_package_search)
+    {
+        char* msg = malloc(strlen(package->name) + strlen(" => searched") + 1);
+        sprintf(msg, "%s => searched", package->name);
+        japml_list_add(handle, &handle->ncurses_pl_buffer, msg);
+    }
+
+    handle->ncurses_pl_count++;
+
+    japml_ncurses_pl_refresh(handle);
+}
+
+void japml_ncurses_pl_refresh(japml_handle_t* handle)
+{
+    wclear(handle->package_list_window);
+
+    int i = 0;
+    if (handle->ncurses_pl_count > handle->ncurses_pl_length)
+    {
+        i = handle->ncurses_pl_count - handle->ncurses_pl_length;
+    }
+
+    for (; i < handle->ncurses_pl_count; i++)
+    {
+        char* msg = (char*)(japml_list_get_element(handle->ncurses_pl_buffer, i)->data);
+        wprintw(handle->package_list_window, "%s\n", msg);
+        wmove(handle->package_list_window, getcury(handle->package_list_window), 1);
+        wrefresh(handle->package_list_window);
+    }
+
+    box(handle->package_list_window, ACS_VLINE, ACS_HLINE);
+    wrefresh(handle->package_list_window);
 }
 
 bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)

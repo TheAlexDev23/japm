@@ -39,23 +39,38 @@ struct _japml_handle
     // * TUI
 
     bool use_colors;
-    bool use_curses;
+    bool use_ncurses;
 
     /* If true, in cases where JAPML asks the user for something, JAPML will automatically chose the default option (if available) */
     bool default_to_all;
 
-    // * Curses
-
+    // * Ncurses windows
+    
     WINDOW *log_window;
     WINDOW *progress_window;
     WINDOW *package_list_window;
 
-    japml_list_t* ncurses_log_buffer;
-    int ncurses_log_buffer_count;
-    int ncurses_log_buffer_length; // Max length of the buffer
+    // * Ncurses logging
+    /* Log buffer of ncurses log window */
+    japml_list_t* ncurses_lb;
+    /* Current index of ncurses_lb */
+    int ncurses_lb_count;
+    /* Max length of ncurses_lb */
+    int ncurses_lb_length;
 
+    // * Ncurses progress bar
+    /* Progress in pb is between 0 and ncurses_pb_lim */
     int ncurses_pb_lim;
+    /* Current pb progress */
     int ncurses_pb_progress;
+
+    // * Ncurses package list
+    /* Buffer of package list ncurses window */
+    japml_list_t* ncurses_pl_buffer;
+    /* Current index of ncurses_pl_buffer */
+    int ncurses_pl_count;
+    /* Length of ncurses_pl_buffer */
+    int ncurses_pl_length;
 
     // * Errors
     /* True if JAPML should exit when the error passed to japml_throw_error is critical */

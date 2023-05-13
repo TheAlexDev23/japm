@@ -26,7 +26,7 @@ void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *messag
             japml_log_error_files(handle, log_level, message);
         }
 
-        if (handle->use_curses)
+        if (handle->use_ncurses)
         {
             japml_ncurses_log(handle, log_level, message);
         }

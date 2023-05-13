@@ -6,6 +6,7 @@
 #include <libjapml/exit.h>
 #include <libjapml/error.h>
 #include <libjapml/init.h>
+#include <libjapml/package.h>
 
 void test_japml()
 {
@@ -15,13 +16,9 @@ void test_japml()
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
 
-    japml_ncurses_pb_set_lim(handle, 10);
+    japml_package_t* package = japml_get_package_from_local_db(handle, "test-package");
 
-    for (int i = 0; i < 10; i++)
-    {
-        japml_ncurses_pb_add(handle, 1);
-        usleep(100000);
-    }
+    free(package);
 
     japml_throw_error(handle, malloc_error, NULL);
 	
