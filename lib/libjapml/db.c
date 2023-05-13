@@ -16,6 +16,7 @@
 #include "list.h"
 #include "json.h"
 #include "file.h" // japml_create_file_recursive
+#include "japmlcurses.h" // japml_ncurses_pl_add
 
 // Creates local.db and the packages table
 void japml_create_local_db(japml_handle_t* handle)
@@ -183,6 +184,7 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
     }
 
     japml_package_t* package = japml_parse_json_file(handle, "/tmp/japml/packagefetch");
+    japml_ncurses_pl_add(handle, package, japml_package_search);
 
     return package;
 }

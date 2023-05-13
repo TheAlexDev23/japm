@@ -285,6 +285,7 @@ void japml_ncurses_pl_add(japml_handle_t* handle, japml_package_t* package, japm
 void japml_ncurses_pl_refresh(japml_handle_t* handle)
 {
     wclear(handle->package_list_window);
+    wmove(handle->package_list_window, 1, 1);
 
     int i = 0;
     if (handle->ncurses_pl_count > handle->ncurses_pl_length)

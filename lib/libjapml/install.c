@@ -28,6 +28,7 @@ int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
             return 1;
         }
 
+        japml_ncurses_pl_add(handle, pkg, japml_package_install);
         japml_ncurses_pb_add(handle, 1);
 
         it = japml_list_next(it);
