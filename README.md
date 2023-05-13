@@ -31,7 +31,7 @@ A package is a .json file usually saved in a remote repository, by default it is
 - [x] Package Update
 - [x] Package Search
 - [x] Progress bar 
-- [ ] Package list
+- [x] Package list
 
 # Dependencies:
 
