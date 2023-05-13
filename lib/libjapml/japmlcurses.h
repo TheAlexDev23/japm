@@ -27,6 +27,16 @@ void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* me
 /* Since the log buffer is a list of japml_log_message_t we need to first free whatever the data pointer is pointing at and then the list itself */
 void japml_ncurses_free_log_buffer(japml_handle_t* handle);
 
+// * Progress bar
+/* Re-dras progress bar with current progress */
+void japml_ncurses_pb_refresh(japml_handle_t* handle);
+/* Sets the limit of the progress bar */
+void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit);
+/* Advances progress by 1 */
+void japml_ncurses_pb_add(japml_handle_t* handle, int amnt);
+
+// * Dialogues
+
 /* A yes / no dialgoe where yes is the default option */ 
 bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message);
 /* A yes / no dialogue where no is the default option */

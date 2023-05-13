@@ -58,10 +58,13 @@ japml_handle_t* japml_init_base()
     handle->use_curses = true;
     handle->default_to_all = false;
 
-    // * Logging
+    // * Curses
 
     handle->ncurses_log_buffer_count  = 0;
     handle->ncurses_log_buffer_length = 0;
+
+    handle->ncurses_pb_lim = 0;
+    handle->ncurses_pb_progress = 0;
 
     japml_terminal_init(handle);
 

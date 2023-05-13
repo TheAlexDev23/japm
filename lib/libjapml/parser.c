@@ -110,7 +110,6 @@ int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* 
     }
     else if (strcmp(arg, JAPML_LOG_LEVEL_ARG) == 0)
     {
-        int i = japml_list_length(char_params);
         if (japml_list_length(char_params) != 1)
         { goto break_if; }
 

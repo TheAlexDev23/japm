@@ -33,7 +33,7 @@ void curses_init(japml_handle_t *handle)
 
     // Splash screen
     char *msg_japm    = "JAPM version 2.1.0";
-    char *msg_japml   = "JAPML version 1.0.3";
+    char *msg_japml   = "JAPML version 1.1.0";
     char *msg_creator = "By TheAlexDev23 (https://github.com/thealexdev23)";
 
     mvprintw(maxY / 2 - 1, (maxX-strlen(msg_japm)) / 2, "%s", msg_japm);
@@ -173,7 +173,6 @@ void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* me
             break;
     }
 
-
     wprintw(handle->log_window, "%s\n", message->message);
     wmove(handle->log_window, getcury(handle->log_window), 1);
 
@@ -181,6 +180,67 @@ void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* me
     {
         wattroff(handle->log_window, COLOR_PAIR(color));
     }
+}
+
+void japml_ncurses_draw_pb(japml_handle_t* handle, int amnt)
+{
+    wclear(handle->progress_window);
+    box(handle->progress_window, ACS_VLINE, ACS_HLINE);
+
+    wrefresh(handle->progress_window);
+
+    if (amnt == 0)
+    {
+        return;
+    }
+
+    wmove(handle->progress_window, 1, 1);
+
+    for (int i = 0; i < amnt - 1; i++)
+    {
+        wprintw(handle->progress_window, "-");
+        wmove(handle->progress_window, getcury(handle->log_window), 1);
+    }
+
+    wmove(handle->progress_window, getcury(handle->log_window), 1);
+    wprintw(handle->progress_window, ">");
+
+    wrefresh(handle->progress_window);
+}
+
+void japml_ncurses_pb_refresh(japml_handle_t* handle)
+{
+    if (handle->ncurses_pb_lim == 0)
+    {
+        japml_ncurses_draw_pb(handle, 0);
+    }
+
+    float percentage = (float)handle->ncurses_pb_progress / (float)handle->ncurses_pb_lim;
+    int x, y;
+    getmaxyx(handle->progress_window, y, x);
+
+    japml_ncurses_draw_pb(handle, percentage * (float)x);
+}
+
+void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit)
+{
+    if (limit < 0)
+    {
+        return;
+    }
+    
+    handle->ncurses_pb_lim = limit;
+    japml_ncurses_pb_refresh(handle);
+}
+
+void japml_ncurses_pb_add(japml_handle_t* handle, int amnt)
+{
+    if (handle->ncurses_pb_progress < handle->ncurses_pb_lim - 1)
+    {
+        handle->ncurses_pb_progress += amnt;
+    }
+
+    japml_ncurses_pb_refresh(handle);
 }
 
 bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)

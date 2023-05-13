@@ -44,7 +44,7 @@ struct _japml_handle
     /* If true, in cases where JAPML asks the user for something, JAPML will automatically chose the default option (if available) */
     bool default_to_all;
 
-    // * Logging
+    // * Curses
 
     WINDOW *log_window;
     WINDOW *progress_window;
@@ -53,6 +53,9 @@ struct _japml_handle
     japml_list_t* ncurses_log_buffer;
     int ncurses_log_buffer_count;
     int ncurses_log_buffer_length; // Max length of the buffer
+
+    int ncurses_pb_lim;
+    int ncurses_pb_progress;
 
     // * Errors
     /* True if JAPML should exit when the error passed to japml_throw_error is critical */
