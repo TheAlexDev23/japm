@@ -142,6 +142,11 @@ int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* 
         params->exit_on_critical = malloc(sizeof(bool));
         *(params->exit_on_critical) = false;
     }
+    else if (strcmp(arg, JAPML_REMOVE_RECURSIVE_ARG) == 0)
+    {
+        params->remove_recursive = malloc(sizeof(bool));
+        *(params->remove_recursive) = true;
+    }
     else if (strcmp(arg, JAPML_LOG_LEVEL_ARG) == 0)
     {
         if (japml_list_length(char_params) != 1)
@@ -213,7 +218,7 @@ japml_list_t* japml_get_param_list(int count, int argc, char** argv)
 }
 
 bool japml_input_is_param(char* arg)
-{ return (arg[1] == '-' || japml_is_action(arg, NULL)); }
+{ return (arg[0] == '-' || japml_is_action(arg, NULL)); }
 
 bool japml_is_action(char* arg, japml_package_action_t* type)
 {

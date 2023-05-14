@@ -60,7 +60,6 @@ void japml_action_check_type_remove(japml_handle_t* handle)
 
 void japml_action_check_type_remove_recursive(japml_handle_t* handle)
 {
-restart_type_removal_recursive: ;
     japml_list_t* it = handle->action->targets;
     // Iterate through all targets checking if they have pacakages depending on them
     while (it)
@@ -77,11 +76,7 @@ restart_type_removal_recursive: ;
         japml_list_t* depending_packages = pkg->depending_packages;
         while(depending_packages != NULL)
         {
-            // In case a new dependant package needs to be removed, we need to re-run in case it might also have unremoved dependant_packages
-            if (!japml_add_package_to_list_no_repeat(handle, &(handle->action->targets), (japml_package_t*)(depending_packages->data)))
-            {
-                goto restart_type_removal_recursive;
-            }
+            japml_add_package_to_list_no_repeat(handle, &(handle->action->targets), (japml_package_t*)(depending_packages->data));
 
             depending_packages = japml_list_next(depending_packages);
         }
