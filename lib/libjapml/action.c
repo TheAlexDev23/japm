@@ -47,7 +47,7 @@ void japml_action_check_type_remove(japml_handle_t* handle)
 
         japml_get_depending_packages(handle, pkg);
 
-        if (pkg->depending_packages)
+        if (pkg->depending_packages != NULL)
         {
             handle->action->status = JAPML_ACTION_STATUS_ABORTED;
             sprintf(handle->log_message, "Removing package breaks dependency: %s", ((japml_package_t*)(pkg->depending_packages->data))->name);

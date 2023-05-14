@@ -124,8 +124,8 @@ void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* packa
     package->depending_packages = NULL;
     while(fgets(chunk, sizeof(chunk), f) != NULL) {
         chunk[strlen(chunk) - 1] = '\0';
-        japml_package_t* package = japml_get_package_from_local_db(handle, chunk);
-        japml_list_add(handle, &package->depending_packages, package);
+        japml_package_t* pkg = japml_get_package_from_local_db(handle, chunk);
+        japml_list_add(handle, &package->depending_packages, pkg);
     }
 
     free(file);
