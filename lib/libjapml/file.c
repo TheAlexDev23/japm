@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 500 // access to ntfw
+
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -5,8 +7,19 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <ftw.h>
 
 #include "file.h"
+#include "log.h"
+#include "package.h"
+
+
+char* japml_get_package_directory(japml_package_t* package)
+{
+    char* dir = malloc(strlen("/var/japml/packages//") + strlen(package->name) + 1);
+    sprintf(dir, "/var/japml/packages/%s/", package->name);
+    return dir;
+}
 
 japml_list_t* japml_create_file_list(japml_list_t* files)
 {
@@ -66,4 +79,16 @@ void japml_copy_file(char* source, char* dest)
 
     fclose(tmp);
     fclose(f);
+}
+
+int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
+{
+    int rv = remove(fpath);
+
+    return rv;
+}
+
+int japml_delete_dir_rf(char *path)
+{
+    return nftw(path, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
 }

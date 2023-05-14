@@ -29,8 +29,11 @@ japml_package_t* japml_create_empty_package()
 
 char* japml_get_used_by_file(japml_package_t* pkg)
 {
-    char* package_used_by_file = malloc(sizeof(char) * (strlen("/var/japml/packages/") + strlen(pkg->name) + strlen("/used_by") + 1));
-    sprintf(package_used_by_file, "/var/japml/packages/%s/used_by", pkg->name);
+    char* dir = japml_get_package_directory(pkg);
+
+    char* package_used_by_file = malloc(strlen(dir) + strlen(pkg->name));
+    sprintf(package_used_by_file, "%s%s", dir, pkg->name);
+    free(dir);
     return package_used_by_file;
 }
 
