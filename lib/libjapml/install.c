@@ -13,9 +13,6 @@
 int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
 {
     japml_list_t* it = packages;
-    sprintf(handle->log_message, "%i", japml_list_length(packages));
-    japml_log(handle, Information, handle->log_message);
-
     japml_ncurses_pb_set_lim(handle, handle->ncurses_pb_lim + japml_list_length(packages));
 
     while (it)

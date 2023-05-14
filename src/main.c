@@ -63,8 +63,10 @@ int main(int argc, char **argv)
 
 	japml_handle_t* handle = japml_init(parameters);
 
+
 	if (handle == NULL)
 	{
+        japml_free_parse_params(parameters);
 		return -1;
 	}
 
@@ -72,6 +74,9 @@ int main(int argc, char **argv)
     {
         japml_throw_error(handle, custom_error_error, "Issue performing action, quiting now");
     }
+
+    // ? Maybe add reference to parse parameters in handle and free upon exit
+    japml_free_parse_params(parameters);
 
     japml_log(handle, Information, "Press any key to exit");
 

@@ -34,6 +34,8 @@ struct _japml_parse_parameters
     bool* color;
 };
 
+void japml_free_parse_params(japml_parse_parameters_t* params);
+
 /* Creates a parsed parameter strcture according to the arguments */
 japml_parse_parameters_t* japml_parse_input(int argc, char** argv);
 

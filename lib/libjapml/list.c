@@ -104,7 +104,7 @@ void japml_free_string_list(japml_list_t* list)
     japml_list_t* it = list;
     while (it != NULL)
     {
-        free(list->data);
+        free(it->data);
         it = japml_list_next(it);
     }
 

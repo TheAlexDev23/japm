@@ -220,3 +220,25 @@ bool japml_is_action(char* arg, japml_package_action_t* type)
         return false;
     }
 }
+
+void japml_free_parse_params(japml_parse_parameters_t* params)
+{
+    free(params->wrong_param);
+    free(params->devel);
+    free(params->default_to_all);
+    free(params->exit_on_critical);
+
+    japml_free_string_list(params->packages);
+    free(params->package_action);
+    free(params->remove_recursive);
+
+    free(params->log_level);
+
+    /* 
+    * Lists of files are referenced by the handle, and are both closed and freed upon exit.
+    * Therefore there's no need to free and/or close log_files and error_log_files
+    */
+
+   free(params->curses);
+   free(params->color);
+}
