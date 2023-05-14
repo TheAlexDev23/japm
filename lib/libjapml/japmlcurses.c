@@ -11,59 +11,6 @@
 #include "log.h"
 #include "package.h" // japml_package_action_t
 
-void curses_init(japml_handle_t *handle)
-{
-    initscr();
-    
-    if (handle->use_colors && has_colors())
-    {
-        start_color();
-        use_default_colors();
-
-        init_pair(JAPML_CURSES_DEBUG_COLOR,    COLOR_YELLOW,  -1);
-        init_pair(JAPML_CURSES_INFO_COLOR,     COLOR_GREEN,   -1);
-        init_pair(JAPML_CURSES_ERROR_COLOR,    COLOR_RED,     -1);
-        init_pair(JAPML_CURSES_CRITICAL_COLOR, COLOR_MAGENTA, -1);
-
-        clear();
-    }
-
-    int maxX, maxY;
-
-    getmaxyx(stdscr, maxY, maxX);
-
-    // Splash screen
-    char *msg_japm    = "JAPM version 2.1.0";
-    char *msg_japml   = "JAPML version 1.2.1";
-    char *msg_creator = "By TheAlexDev23 (https://github.com/thealexdev23)";
-
-    mvprintw(maxY / 2 - 1, (maxX-strlen(msg_japm)) / 2, "%s", msg_japm);
-    mvprintw(maxY / 2, (maxX-strlen(msg_japml)) / 2, "%s", msg_japml);
-    mvprintw(maxY / 2 + 1, (maxX-strlen(msg_creator)) / 2, "%s", msg_creator);
-
-    refresh();
-
-    sleep(1);
-
-    clear();
-
-    handle->log_window          = newwin(maxY - PROGRESS_BAR_WINDOW_HEIGHT, maxX - PACKAGE_LIST_WINDOW_WIDTH, 0, 0);
-    handle->progress_window     = newwin(PROGRESS_BAR_WINDOW_HEIGHT, maxX - PACKAGE_LIST_WINDOW_WIDTH, maxY - PROGRESS_BAR_WINDOW_HEIGHT, 0);
-    handle->package_list_window = newwin(maxY, PACKAGE_LIST_WINDOW_WIDTH, 0, maxX - PACKAGE_LIST_WINDOW_WIDTH);
-
-    refresh();
-
-    box(handle->log_window,          ACS_VLINE, ACS_HLINE);
-    box(handle->progress_window,     ACS_VLINE, ACS_HLINE);
-    box(handle->package_list_window, ACS_VLINE, ACS_HLINE);
-
-    wrefresh(handle->log_window);
-    wrefresh(handle->progress_window);
-    wrefresh(handle->package_list_window);
-
-    handle->ncurses_lb_length = getmaxy(handle->log_window) - 2;
-    handle->ncurses_pl_length = getmaxy(handle->package_list_window) -2;
-}
 
 // * Logging
 
@@ -102,10 +49,10 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
 
     handle->ncurses_lb_count++;
 
-    japml_ncurses_log_win_update(handle);
+    japml_ncurses_log_win_refresh(handle);
 }
 
-void japml_ncurses_log_win_update(japml_handle_t *handle)
+void japml_ncurses_log_win_refresh(japml_handle_t *handle)
 {
     wclear(handle->log_window);
     wmove(handle->log_window, 1, 1);
@@ -182,6 +129,46 @@ void japml_ncurses_log_win_print(japml_handle_t* handle, japml_log_message_t* me
     }
 }
 
+void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit)
+{
+    if (!handle->use_ncurses) { return; }
+
+    if (limit < 0)
+    {
+        return;
+    }
+    
+    handle->ncurses_pb_lim = limit;
+    japml_ncurses_pb_refresh(handle);
+}
+
+void japml_ncurses_pb_add(japml_handle_t* handle, int amnt)
+{
+    if (!handle->use_ncurses) { return; }
+
+    if (handle->ncurses_pb_progress < handle->ncurses_pb_lim)
+    {
+        handle->ncurses_pb_progress += amnt;
+    }
+
+    japml_ncurses_pb_refresh(handle);
+}
+
+void japml_ncurses_pb_refresh(japml_handle_t* handle)
+{
+    if (!handle->use_ncurses) { return; }
+    if (handle->ncurses_pb_lim == 0)
+    {
+        japml_ncurses_draw_pb(handle, 0);
+    }
+
+    float percentage = (float)handle->ncurses_pb_progress / (float)handle->ncurses_pb_lim;
+    int x, y;
+    getmaxyx(handle->progress_window, y, x);
+
+    japml_ncurses_draw_pb(handle, percentage * (float)(x - 2));
+}
+
 void japml_ncurses_draw_pb(japml_handle_t* handle, int amnt)
 {
     wclear(handle->progress_window);
@@ -206,46 +193,6 @@ void japml_ncurses_draw_pb(japml_handle_t* handle, int amnt)
     wprintw(handle->progress_window, ">");
 
     wrefresh(handle->progress_window);
-}
-
-void japml_ncurses_pb_refresh(japml_handle_t* handle)
-{
-    if (!handle->use_ncurses) { return; }
-    if (handle->ncurses_pb_lim == 0)
-    {
-        japml_ncurses_draw_pb(handle, 0);
-    }
-
-    float percentage = (float)handle->ncurses_pb_progress / (float)handle->ncurses_pb_lim;
-    int x, y;
-    getmaxyx(handle->progress_window, y, x);
-
-    japml_ncurses_draw_pb(handle, percentage * (float)(x - 2));
-}
-
-void japml_ncurses_pb_set_lim(japml_handle_t* handle, int limit)
-{
-    if (!handle->use_ncurses) { return; }
-
-    if (limit < 0)
-    {
-        return;
-    }
-    
-    handle->ncurses_pb_lim = limit;
-    japml_ncurses_pb_refresh(handle);
-}
-
-void japml_ncurses_pb_add(japml_handle_t* handle, int amnt)
-{
-    if (!handle->use_ncurses) { return; }
-
-    if (handle->ncurses_pb_progress < handle->ncurses_pb_lim)
-    {
-        handle->ncurses_pb_progress += amnt;
-    }
-
-    japml_ncurses_pb_refresh(handle);
 }
 
 void japml_ncurses_pl_add(japml_handle_t* handle, japml_package_t* package, japml_package_action_t action)
@@ -372,4 +319,58 @@ bool japml_ncurses_yn_dialogue(japml_handle_t* handle, char* message)
     {
         goto yN_dialogue_start_again;
     }
+}
+
+void curses_init(japml_handle_t *handle)
+{
+    initscr();
+    
+    if (handle->use_colors && has_colors())
+    {
+        start_color();
+        use_default_colors();
+
+        init_pair(JAPML_CURSES_DEBUG_COLOR,    COLOR_YELLOW,  -1);
+        init_pair(JAPML_CURSES_INFO_COLOR,     COLOR_GREEN,   -1);
+        init_pair(JAPML_CURSES_ERROR_COLOR,    COLOR_RED,     -1);
+        init_pair(JAPML_CURSES_CRITICAL_COLOR, COLOR_MAGENTA, -1);
+
+        clear();
+    }
+
+    int maxX, maxY;
+
+    getmaxyx(stdscr, maxY, maxX);
+
+    // Splash screen
+    char *msg_japm    = "JAPM version 2.1.0";
+    char *msg_japml   = "JAPML version 1.2.1";
+    char *msg_creator = "By TheAlexDev23 (https://github.com/thealexdev23)";
+
+    mvprintw(maxY / 2 - 1, (maxX-strlen(msg_japm)) / 2, "%s", msg_japm);
+    mvprintw(maxY / 2, (maxX-strlen(msg_japml)) / 2, "%s", msg_japml);
+    mvprintw(maxY / 2 + 1, (maxX-strlen(msg_creator)) / 2, "%s", msg_creator);
+
+    refresh();
+
+    sleep(1);
+
+    clear();
+
+    handle->log_window          = newwin(maxY - PROGRESS_BAR_WINDOW_HEIGHT, maxX - PACKAGE_LIST_WINDOW_WIDTH, 0, 0);
+    handle->progress_window     = newwin(PROGRESS_BAR_WINDOW_HEIGHT, maxX - PACKAGE_LIST_WINDOW_WIDTH, maxY - PROGRESS_BAR_WINDOW_HEIGHT, 0);
+    handle->package_list_window = newwin(maxY, PACKAGE_LIST_WINDOW_WIDTH, 0, maxX - PACKAGE_LIST_WINDOW_WIDTH);
+
+    refresh();
+
+    box(handle->log_window,          ACS_VLINE, ACS_HLINE);
+    box(handle->progress_window,     ACS_VLINE, ACS_HLINE);
+    box(handle->package_list_window, ACS_VLINE, ACS_HLINE);
+
+    wrefresh(handle->log_window);
+    wrefresh(handle->progress_window);
+    wrefresh(handle->package_list_window);
+
+    handle->ncurses_lb_length = getmaxy(handle->log_window) - 2;
+    handle->ncurses_pl_length = getmaxy(handle->package_list_window) -2;
 }
