@@ -12,6 +12,8 @@ enum _japml_arg_type {
     japml_arg_no_color
 };
 
+#define JAPML_HELP_ARG "--help"
+
 #define JAPML_INSTALL_ARG "install"
 #define JAPML_REMOVE_ARG "remove"
 #define JAPML_UPDATE_ARG "update"

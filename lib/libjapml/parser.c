@@ -8,6 +8,33 @@
 #include "list.h"
 #include "file.h"
 
+void japml_print_program_usage(int argc, char** argv)
+{
+    printf("Usage: %s [options] <action> {packages} \n", argv[0]);
+    printf("\nPackage management: \n");
+    printf("    Install package: " JAPML_INSTALL_ARG " {packages}\n");
+    printf("    Remove package: " JAPML_REMOVE_ARG " {packages}\n");
+    printf("    Update package: " JAPML_UPDATE_ARG " {packages}\n");
+    printf("    Search for package: " JAPML_SEARCH_ARG " {packages}\n");
+
+    printf("\nFlags and parameters\n");
+
+    printf("\nGeneral:\n");
+    printf("    Developer mode: " JAPML_DEVEL_ARG "\n");
+    printf("    Default to all: " JAPML_DEFAULT_TO_ALL_ARG "\n");
+    printf("    Don't quit upon critical errors: " JAPML_STAY_ON_CRITICAL_ARG "\n");
+    printf("    Remove a package recursively: " JAPML_REMOVE_RECURSIVE_ARG "\n");
+
+    printf("\nLogging:\n");
+    printf("    Modify log level:" JAPML_LOG_LEVEL_ARG " [level]\n");
+    printf("    Provide log files: " JAPML_LOG_FILES_ARG " {log_files}\n");
+    printf("    Provide error log files: " JAPML_ERROR_LOG_FILES_ARG " {error_log_files}\n");
+
+    printf("\nNcurses/TUI:\n");
+    printf("    Disable ncurses mode: " JAPML_NO_CURSES_ARG "\n");
+    printf("    Disable color: " JAPML_NO_COLOR_ARG "\n");
+}
+
 bool japml_check_input(japml_parse_parameters_t* params)
 {
     if (!params->package_action)
@@ -52,6 +79,13 @@ japml_parse_parameters_t* japml_create_parse_params()
 
 japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
 {
+    // Shortcut if we want to print usage
+    if (argc == 2 && strcmp(argv[1], JAPML_HELP_ARG) == 0)
+    {
+        japml_print_program_usage(argc, argv);
+        return NULL;
+    }
+
     japml_parse_parameters_t* params = japml_create_parse_params();
 
     params->devel = malloc(sizeof(bool));

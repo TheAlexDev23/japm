@@ -36,6 +36,9 @@ struct _japml_parse_parameters
 
 void japml_free_parse_params(japml_parse_parameters_t* params);
 
+/* Prints the available options and parameters to run JAPML */
+void japml_print_program_usage(int argc, char** argv);
+
 /* Creates a parsed parameter strcture according to the arguments */
 japml_parse_parameters_t* japml_parse_input(int argc, char** argv);
 

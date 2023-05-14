@@ -11,6 +11,7 @@
 #include "japmlcurses.h"
 #include "log.h"
 #include "handle.h"
+#include "input.h"
 
 japml_handle_t* japml_init_base()
 {
@@ -108,7 +109,7 @@ japml_handle_t* japml_init(japml_parse_parameters_t* parameters)
     
     if (parameters->wrong_param)
     {
-        fprintf(stderr, "Wrong parameters. Refer to --help for proper usage.");
+        fprintf(stderr, "Wrong parameters. Refer to " JAPML_HELP_ARG "for proper usage.");
         return NULL;
     }
 
