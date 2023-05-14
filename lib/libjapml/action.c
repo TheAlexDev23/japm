@@ -16,6 +16,7 @@
 
 int japml_action_create(japml_handle_t* handle, japml_list_t* package_list, japml_action_type_t action_type)
 {
+    japml_log(handle, Debug, "JAPML: Action create");
     japml_action_t* action = malloc(sizeof(japml_action_t));
     if (!action)
     {
@@ -23,13 +24,10 @@ int japml_action_create(japml_handle_t* handle, japml_list_t* package_list, japm
         return -1;
     }
 
-    japml_log(handle, Debug, "JAPML: Creating new action");
-
     action->targets     = package_list;
     action->action_type = action_type;
     action->status      = JAPML_ACTION_STATUS_INITIALIZED;
 
-    japml_log(handle, Debug, "JAPML: Created new action");
     handle->action = action;
     return 0;
 }
@@ -94,7 +92,6 @@ restart_type_removal_recursive: ;
 
 void japml_action_check_type_install(japml_handle_t* handle)
 {
-restart_type_install: ;
     japml_list_t* it = handle->action->targets;
     // Iterate through all targets checking if they have pacakages dependencies
     while (it)
@@ -110,11 +107,13 @@ restart_type_install: ;
         japml_list_t* build_deps = pkg->build_deps;
         while(dependencies)
         {
-            // In a case a new dependency needs to be added to install list we will need to rerun in case it also has uninstalled dependencies
-            if (!japml_add_package_to_list_no_repeat(handle, 
-                &(handle->action->targets), (japml_package_t*)(dependencies->data)))
+            japml_package_t* dependency = japml_get_package_from_remote_db(handle, (char*)(dependencies->data));
+
+            // If package is not in list it's dependencies will still be checked in the next iteration
+            if (japml_add_package_to_list_no_repeat(handle, 
+                &(handle->action->targets), dependency))
             {
-                goto restart_type_install;
+                japml_free_package(dependency);
             }
 
             dependencies = japml_list_next(dependencies);
@@ -122,10 +121,11 @@ restart_type_install: ;
 
         while (build_deps)
         {
-            if (!japml_add_package_to_list_no_repeat(handle, 
-                &(handle->action->targets), (japml_package_t*)(build_deps->data)))
+            japml_package_t* build_dep = japml_get_package_from_remote_db(handle, (char*)(build_deps->data));
+            if (japml_add_package_to_list_no_repeat(handle, 
+                &(handle->action->targets), build_dep))
             {
-                goto restart_type_install;
+                japml_free_package(build_dep);
             }
 
             build_deps = japml_list_next(build_deps);
@@ -137,6 +137,8 @@ restart_type_install: ;
 
 int japml_action_check(japml_handle_t* handle)
 {
+    japml_log(handle, Debug, "JAPML: Checking action");
+
     switch (handle->action->action_type)
     {
         case JAPML_ACTION_TYPE_REMOVE:
@@ -169,17 +171,20 @@ int japml_action_check(japml_handle_t* handle)
     if (japml_ncurses_Yn_dialogue(handle, "Do you wish to continue? "))
     {
         handle->action->status = JAPML_ACTION_STATUS_APPROVED;
+        japml_log(handle, Debug, "JAPML: Action approved");
         return 0;
     }
     else
     {
         handle->action->status = JAPML_ACTION_STATUS_ABORTED;
+        japml_log(handle, Debug, "JAPML: Action Denied");
         return -1;
     }
 }
 
 int japml_action_commit(japml_handle_t* handle)
 {
+    japml_log(handle, Debug, "JAPML: Action commit");
     if (handle->action->status != JAPML_ACTION_STATUS_APPROVED)
     {
         japml_throw_error(handle, action_not_accepted_error, "Action is not approved. Cannot commit");

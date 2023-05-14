@@ -34,16 +34,24 @@ char* japml_get_used_by_file(japml_package_t* pkg)
     return package_used_by_file;
 }
 
-void japml_append_depenending_package(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender)
+void japml_append_depenending_package(japml_handle_t* handle, char* pkg, char* depender)
 {
-    char* file = japml_get_used_by_file(pkg);
+    japml_package_t* temp_pkg = japml_create_empty_package();
+    temp_pkg->name = pkg;
+    char* file = japml_get_used_by_file(temp_pkg);
+    japml_free_package(temp_pkg);
+
     FILE *f = fopen(file, "r");
+    if (f == NULL)
+    {
+        japml_throw_error(handle, custom_error_critical, "Could not open used_by file");
+    }
 
     // Esentially if depender->name is found already don't add to list
     char pkg_name[MAX_PACKAGE_NAME_LENGTH];
     while (fscanf(f, "%s", pkg_name) != EOF)
     {
-        if (strcmp(pkg_name, depender->name) == 0)
+        if (strcmp(pkg_name, depender) == 0)
         {
             return;
         }
@@ -52,7 +60,7 @@ void japml_append_depenending_package(japml_handle_t* handle, japml_package_t* p
     fclose(f);
     f = fopen(file, "a");
 
-    fprintf(f, "%s\n", depender->name);
+    fprintf(f, "%s\n", depender);
 
     free(file);
     fclose(f);
@@ -132,6 +140,8 @@ int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** l
         {
             return 1;
         }
+
+        it = japml_list_next(it);
     }
 
     japml_list_add(handle, list, package);

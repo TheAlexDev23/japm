@@ -56,7 +56,7 @@ void japml_free_package_list(japml_list_t* packages);
 #define PACKAGE_USED_BY_TMP "/tmp/japml/depending_pkg_tmp"
 
 /* Sets depender as a package that depends on pkg */
-void japml_append_depenending_package(japml_handle_t* handle, japml_package_t* pkg, japml_package_t* depender);
+void japml_append_depenending_package(japml_handle_t* handle, char* pkg, char* depender);
 
 /* 
 * Generally, if a package is deleted, we should also remove the "dependency link" between the package and the packages it depends on

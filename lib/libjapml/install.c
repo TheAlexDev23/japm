@@ -101,8 +101,8 @@ void japml_mark_depending_packages(japml_handle_t* handle, japml_package_t* pack
     japml_list_t* dep = package->deps;
     while (dep)
     {
-        // Sicne it will not append if it's already in used_by there's no need to check that here
-        japml_append_depenending_package(handle, package, (japml_package_t*)(dep->data));
+        // Since it will not append if it's already in used_by there's no need to check that here
+        japml_append_depenending_package(handle, (char*)(dep->data), package->name);
         dep = japml_list_next(dep);
     }
 }
