@@ -207,6 +207,7 @@ japml_package_t* japml_db_remote_get_package(japml_handle_t* handle, char* packa
 
 int japml_db_local_add_package(japml_handle_t* handle, japml_package_t* package)
 {
+    japml_log(handle, Debug, "Adding single package to local db");
     char* remove = japml_list_to_string(handle, package->remove);
     char *sql = malloc(sizeof(char) * (
         strlen("INSERT INTO packages (name, description, version, remove) VALUES ();") + 
@@ -219,6 +220,8 @@ int japml_db_local_add_package(japml_handle_t* handle, japml_package_t* package)
 
     sprintf(sql, "INSERT INTO packages (name, description, version, remove) VALUES ('%s', '%s', '%s', '%s');",
             package->name, package->description, package->version, remove);
+
+    japml_log(handle, Debug, sql);
 
     char *errMsg = 0;
     if (sqlite3_exec(handle->sqlite, sql, NULL, NULL, &errMsg))

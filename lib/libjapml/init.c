@@ -68,7 +68,6 @@ japml_handle_t* japml_init_base()
     handle->ncurses_pb_lim = 0;
     handle->ncurses_pb_progress = 0;
 
-    japml_init_terminal(handle);
 
     handle->exit_on_critical = true;
     return handle;
@@ -97,6 +96,11 @@ void japml_init_terminal(japml_handle_t* handle)
     if (handle->use_ncurses)
     {
         curses_init(handle);
+    }
+    else
+    {
+        japml_list_add(handle, &handle->log_files, stdout);
+        japml_list_add(handle, &handle->error_log_files, stderr);
     }
 }
 
@@ -169,6 +173,8 @@ japml_handle_t* japml_init(japml_parse_parameters_t* parameters)
     {
         handle->use_colors = *(parameters->color);
     }
+
+    japml_init_terminal(handle);
 
     return handle;
 }

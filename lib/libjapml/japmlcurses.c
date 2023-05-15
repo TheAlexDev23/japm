@@ -254,8 +254,20 @@ bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
 
     Yn_dialogue_start_again:
     sprintf(handle->log_message, "%s [Y/n] ", message);
-    japml_ncurses_log(handle, Information, handle->log_message);
-    char ch = getch();
+    japml_log(handle, Information, handle->log_message);
+
+    char ch;
+    if (handle->use_ncurses)
+    {
+        ch = getch();
+    }
+    else
+    {
+        char line[2];
+        if (fgets(line, sizeof(line), stdin)) {
+            sscanf(line, "%c", &ch);
+        }
+    }
     
     if (tolower(ch) == 'y' || ch == '\n')
     {
@@ -280,8 +292,20 @@ bool japml_ncurses_yN_dialogue(japml_handle_t* handle, char* message)
 
     yN_dialogue_start_again:
     sprintf(handle->log_message, "%s [y/N] ", message);
-    japml_ncurses_log(handle, Information, handle->log_message);
-    char ch = getch();
+    japml_log(handle, Information, handle->log_message);
+
+    char ch;
+    if (handle->use_ncurses)
+    {
+        ch = getch();
+    }
+    else
+    {
+        char line[2];
+        if (fgets(line, sizeof(line), stdin)) {
+            sscanf(line, "%c", &ch);
+        }
+    }
     
     if (tolower(ch) == 'n' || ch == '\n')
     {
@@ -301,8 +325,19 @@ bool japml_ncurses_yn_dialogue(japml_handle_t* handle, char* message)
 {
     yN_dialogue_start_again:
     sprintf(handle->log_message, "%s [y/n] ", message);
-    japml_ncurses_log(handle, Information, handle->log_message);
-    char ch = getch();
+    char ch;
+    if (handle->use_ncurses)
+    {
+        ch = getch();
+    }
+    else
+    {
+        char line[2];
+        if (fgets(line, sizeof(line), stdin)) {
+            sscanf(line, "%c", &ch);
+        }
+    }
+    
     
     if (tolower(ch) == 'y')
     {

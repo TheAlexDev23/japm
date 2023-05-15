@@ -90,9 +90,12 @@ int main(int argc, char **argv)
     // ? Maybe add reference to parse parameters in handle and free upon exit
     japml_pars_params_free(parameters);
 
-    japml_log(handle, Information, "Press any key to exit");
+    if (handle->use_ncurses)
+    {
+        japml_log(handle, Information, "Press any key to exit");
 
-    getch();
+        getch();
+    }
 
     japml_exit(handle);
 
