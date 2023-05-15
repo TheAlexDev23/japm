@@ -122,20 +122,6 @@ int japml_pre_install(japml_handle_t* handle, japml_package_t* package)
     return 0;
 }
 
-/* 
-* Essentially will mark all the packages that package depends on in each's used_by file
-*/
-void japml_mark_depending_packages(japml_handle_t* handle, japml_package_t* package)
-{
-    japml_list_t* dep = package->deps;
-    while (dep)
-    {
-        // Since it will not append if it's already in used_by there's no need to check that here
-        japml_package_append_depender(handle, (char*)(dep->data), package->name);
-        dep = japml_list_next(dep);
-    }
-}
-
 int japml_post_install(japml_handle_t* handle, japml_package_t* package)
 {
     // Execute post install script
@@ -158,7 +144,7 @@ int japml_post_install(japml_handle_t* handle, japml_package_t* package)
 
     japml_log(handle, Information, "Updating local db...");
     japml_db_local_add_package(handle, package);
-    japml_mark_depending_packages(handle, package);
+    japml_package_mark_dependencies(handle, package);
     japml_log(handle, Information, "Done");
 
     return 0;

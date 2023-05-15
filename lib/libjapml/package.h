@@ -57,6 +57,11 @@ void japml_package_free_list(japml_list_t* packages);
 
 #define PACKAGE_USED_BY_TMP "/tmp/japml/depending_pkg_tmp"
 
+/* 
+* Essentially will mark all the packages that package depends on in each's used_by file
+*/
+void japml_package_mark_dependencies(japml_handle_t* handle, japml_package_t* package);
+
 /* Sets depender as a package that depends on pkg */
 void japml_package_append_depender(japml_handle_t* handle, char* pkg, char* depender);
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "japml.h"
 #include "package.h"
@@ -33,8 +34,24 @@ char* japml_get_used_by_file(japml_package_t* pkg)
 
     char* package_used_by_file = malloc(strlen(dir) + strlen(pkg->name));
     sprintf(package_used_by_file, "%s%s", dir, pkg->name);
+
+    if(access(package_used_by_file, F_OK) != 0)
+    {
+        japml_file_create_recursive(package_used_by_file);
+    }
+
     free(dir);
     return package_used_by_file;
+}
+
+void japml_package_mark_dependencies(japml_handle_t* handle, japml_package_t* package)
+{
+    japml_list_t* dep = package->deps;
+    while (dep)
+    {
+        japml_package_append_depender(handle, (char*)(dep->data), package->name);
+        dep = japml_list_next(dep);
+    }
 }
 
 void japml_package_append_depender(japml_handle_t* handle, char* pkg, char* depender)
