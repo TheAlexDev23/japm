@@ -208,7 +208,7 @@ int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* 
 japml_list_t* japml_get_param_list(int count, int argc, char** argv)
 {
     japml_list_t* list = NULL;
-    while (!japml_input_is_param(argv[count + 1]))
+    while (argv[count + 1] != NULL && !japml_input_is_param(argv[count + 1]))
     {
         char* param = malloc(sizeof(char) * (strlen(argv[count + 1]) + 1));
         strcpy(param, argv[count + 1]);
@@ -224,7 +224,9 @@ japml_list_t* japml_get_param_list(int count, int argc, char** argv)
 }
 
 bool japml_input_is_param(char* arg)
-{ return (arg[0] == '-' || japml_is_action(arg, NULL)); }
+{ 
+    return arg[0] == '-' || japml_is_action(arg, NULL);
+}
 
 bool japml_is_action(char* arg, japml_package_action_t* type)
 {

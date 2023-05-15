@@ -24,6 +24,12 @@ int install_packages(japml_handle_t* handle, japml_list_t* targets)
         targets = japml_list_next(targets);
     }
 
+    if (packages == NULL)
+    {
+        japml_log(handle, Information, "There's nothing to do");
+        return 0;
+    }
+
     if (japml_action_create(handle, packages, JAPML_ACTION_TYPE_INSTALL) ||
         japml_action_check(handle) ||
         japml_action_commit(handle))

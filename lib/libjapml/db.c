@@ -88,15 +88,13 @@ japml_list_t* japml_db_local_get_all_packages_name(japml_handle_t* handle)
 
     japml_list_t* package_names = NULL;
 
-    ret = sqlite3_step(stmt);
-    while (ret == SQLITE_ROW)
+    while ((ret = sqlite3_step(stmt)) == SQLITE_ROW)
     {
         char* name = (char*)sqlite3_column_text(stmt, 0);
         char* pkg_name = malloc(strlen(name) + 1);
         strcpy(pkg_name, name);
 
         japml_list_add(handle, &package_names, pkg_name);
-        ret = sqlite3_step(stmt);
     }
 
     return package_names;

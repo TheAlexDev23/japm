@@ -15,6 +15,12 @@ int update_packages(japml_handle_t* handle, japml_list_t* targets, bool systemwi
         targets = japml_db_local_get_all_packages_name(handle);
     }
 
+    if (targets == NULL)
+    {
+        japml_log(handle, Information, "There's nothing to do");
+        return 0;
+    }
+
     if (remove_packages(handle, targets, true))
     {
         return -1;

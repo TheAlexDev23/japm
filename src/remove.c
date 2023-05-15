@@ -25,6 +25,12 @@ int remove_packages(japml_handle_t* handle, japml_list_t* targets, bool recursiv
         targets = japml_list_next(targets);
     }
 
+    if (packages == NULL)
+    {
+        japml_log(handle, Information, "There's nothing to do");
+        return 0;
+    }
+
     japml_action_type_t type;
 
     if (recursive)
