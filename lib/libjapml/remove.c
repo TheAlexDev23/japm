@@ -37,7 +37,7 @@ int japml_remove_single_package(japml_handle_t* handle, japml_package_t* package
     sprintf(handle->log_message, "Removing package %s", package->name);
     japml_log(handle, Information, handle->log_message);
 
-    japml_run_instructions(package->remove);
+    japml_run_instructions(package->remove, japml_get_package_directory(package));
 
     sprintf(handle->log_message, "Package %s removed succesfully", package->name);
     japml_log(handle, Information, handle->log_message);

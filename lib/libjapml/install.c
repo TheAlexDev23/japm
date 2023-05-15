@@ -57,7 +57,7 @@ int japml_install_single_package(japml_handle_t* handle, japml_package_t* packag
     sprintf(handle->log_message, "Installing package %s", package->name);
     japml_log(handle, Information, handle->log_message);
 
-    if (japml_run_instructions(package->install))
+    if (japml_run_instructions(package->install, japml_get_package_directory(package)))
     {
         japml_throw_error(handle, install_error, "Error running install instructions");
         return 1;

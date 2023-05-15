@@ -20,6 +20,8 @@ add_library(
     lib/libjapml/file.h
     lib/libjapml/file.c
     lib/libjapml/handle.h
+    lib/libjapml/helper.c
+    lib/libjapml/helper.h
     lib/libjapml/init.c
     lib/libjapml/init.h
     lib/libjapml/input.h

@@ -8,6 +8,8 @@
 #define MAX_PACKAGE_NAME_LENGTH 128
 #define MAX_PACKAGE_DESCRIPTION_LENGTH 1042
 
+#define JAPML_PACKAGE_DIR_VAR "${package_dir}"
+
 enum _japml_package_action
 {
     japml_package_search,
