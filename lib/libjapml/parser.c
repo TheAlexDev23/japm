@@ -11,19 +11,20 @@
 void japml_print_program_usage(int argc, char** argv)
 {
     printf("Usage: %s [options] <action> {packages} \n", argv[0]);
-    printf("\nPackage management: \n");
+    printf("\nPackage management aka actions: \n");
     printf("    Install package: " JAPML_INSTALL_ARG " {packages}\n");
     printf("    Remove package: " JAPML_REMOVE_ARG " {packages}\n");
     printf("    Update package: " JAPML_UPDATE_ARG " {packages}\n");
     printf("    Search for package: " JAPML_SEARCH_ARG " {packages}\n");
 
-    printf("\nFlags and parameters\n");
+    printf("\nFlags and parameters aka options\n");
 
     printf("\nGeneral:\n");
     printf("    Developer mode: " JAPML_DEVEL_ARG "\n");
     printf("    Default to all: " JAPML_DEFAULT_TO_ALL_ARG "\n");
     printf("    Don't quit upon critical errors: " JAPML_STAY_ON_CRITICAL_ARG "\n");
     printf("    Remove a package recursively: " JAPML_REMOVE_RECURSIVE_ARG "\n");
+    printf("    Update all insalled packages: " JAPML_SYSTEMWIDE_ARG "\n");
 
     printf("\nLogging:\n");
     printf("    Modify log level:" JAPML_LOG_LEVEL_ARG " [level]\n");
