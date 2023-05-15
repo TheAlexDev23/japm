@@ -20,7 +20,7 @@
 #include "internet.h"
 
 // Creates local.db and the packages table
-void japml_create_local_db(japml_handle_t* handle)
+void japml_db_local_create(japml_handle_t* handle)
 {
     japml_log(handle, Information, "Creating local database ...");
     japml_file_create_recursive("/var/japml/local.db");
@@ -40,31 +40,80 @@ void japml_db_error(japml_handle_t* handle)
     japml_throw_error(handle, sql_command_fail_error, handle->log_message);
 }
 
-int callback(void *ptr, int column_num, char **values, char **rows)
+japml_list_t* japml_db_local_get_all_packages(japml_handle_t* handle)
 {
-    char *temp_file = "/tmp/japml/sql_callback_temp_file";
-    japml_file_create_recursive(temp_file);
-    // Basically empties the file
-    fclose(fopen(temp_file, "w"));
+    japml_log(handle, Debug, "Querying all package structs from local db");
 
-    FILE *fp = fopen(temp_file, "a");
-
-    for (int i = 0; i < column_num; i++)
+    japml_list_t* package_names = japml_db_local_get_all_packages_name(handle);
+    if (package_names == NULL)
     {
-        fprintf(fp, "%s\n", values[i]);
+        // No need to throw error since it was probably already thrown
+        return NULL;
     }
 
-    fclose(fp);
-    return 0;
+    japml_list_t* packages = NULL;
+
+    japml_list_t* it = package_names;
+    while (it)
+    {
+        japml_package_t* package = japml_db_local_get_package(handle, (char*)(it->data));
+        if (package == NULL)
+        {
+            continue;
+        }
+
+        japml_list_add(handle, &packages, package);
+        it = japml_list_next(it);
+    }
+
+    japml_list_free_string(package_names);
+
+    return packages;
+}
+
+japml_list_t* japml_db_local_get_all_packages_name(japml_handle_t* handle)
+{
+    japml_log(handle, Debug, "Querying all packages names from local db");
+
+    sqlite3_stmt* stmt;
+    char* sql = "SELECT name FROM packages;";
+    int ret = sqlite3_prepare_v2(handle->sqlite, sql, -1, &stmt, NULL);
+
+    if (ret)
+    {
+        japml_log(handle, Error, "Error during sqlite prepare");
+        japml_db_error(handle);
+        return NULL;
+    }
+
+    japml_list_t* package_names = NULL;
+
+    ret = sqlite3_step(stmt);
+    while (ret == SQLITE_ROW)
+    {
+        char* name = (char*)sqlite3_column_text(stmt, 0);
+        char* pkg_name = malloc(strlen(name) + 1);
+        strcpy(pkg_name, name);
+
+        japml_list_add(handle, &package_names, pkg_name);
+        ret = sqlite3_step(stmt);
+    }
+
+    return package_names;
 }
 
 japml_package_t* japml_db_local_get_package(japml_handle_t* handle, char* package_name)
 {
+    japml_log(handle, Debug, "Querying single package from local db");
+    japml_log(handle, Debug, package_name);
+
     char *sql = malloc(sizeof(char) *
         (strlen("SELECT * FROM packages WHERE name = ''") 
         + strlen(package_name) + strlen(";") + 1));
 
     sprintf(sql, "SELECT * FROM packages WHERE name ='%s';", package_name);
+
+    japml_log(handle, Debug, sql);
 
     remove("/tmp/japml/sql_callback_temp_file");
     
@@ -75,14 +124,15 @@ japml_package_t* japml_db_local_get_package(japml_handle_t* handle, char* packag
     
     if (ret)
     {
+        japml_log(handle, Error, "Fail during sqlite prepare");
         japml_db_error(handle);
     }
 
     ret = sqlite3_step(stmt);
     if (ret != SQLITE_ROW)
     {
-        japml_log(handle, Error, "SQL error or potentially package not found. Details below:");
-        japml_db_error(handle);
+        sqlite3_finalize(stmt);
+        japml_log(handle, Debug, "SQL failed or package was not found in local db");
         return NULL;
     }
 
@@ -102,6 +152,8 @@ japml_package_t* japml_db_local_get_package(japml_handle_t* handle, char* packag
     strcpy(package->version, pkg_version);
 
     package->remove = japml_string_to_list(handle, pkg_remove);
+
+    sqlite3_finalize(stmt);
 
     return package;
 }
@@ -185,9 +237,13 @@ int japml_db_local_add_package(japml_handle_t* handle, japml_package_t* package)
 
 int japml_db_local_remove_package(japml_handle_t* handle, japml_package_t* package)
 {
+    japml_log(handle, Debug, "Removing single package from local db");
+
     char *sql = malloc(strlen("DELETE FROM packages WHERE name = '';") + strlen(package->name) + 1);
 
     sprintf(sql, "DELETE FROM packages WHERE name = '%s';", package->name);
+
+    japml_log(handle, Debug, sql);
 
     char* errMsg = 0;
     if (sqlite3_exec(handle->sqlite, sql, NULL, NULL, &errMsg))

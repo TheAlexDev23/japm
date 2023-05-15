@@ -65,6 +65,7 @@ japml_parse_parameters_t* japml_create_parse_params()
     params->packages = NULL;
     params->package_action = NULL;
     params->remove_recursive = NULL;
+    params->update_systemwide = NULL;
 
     params->log_level = NULL;
 
@@ -146,6 +147,11 @@ int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* 
     {
         params->remove_recursive = malloc(sizeof(bool));
         *(params->remove_recursive) = true;
+    }
+    else if (strcmp(arg, JAPML_SYSTEMWIDE_ARG) == 0)
+    {
+        params->update_systemwide = malloc(sizeof(bool));
+        *(params->update_systemwide) = true;
     }
     else if (strcmp(arg, JAPML_LOG_LEVEL_ARG) == 0)
     {

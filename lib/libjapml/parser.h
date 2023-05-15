@@ -23,6 +23,7 @@ struct _japml_parse_parameters
     japml_list_t* packages;
     japml_package_action_t* package_action;
     bool* remove_recursive;
+    bool* update_systemwide;
 
     // * Logging
     japml_log_level_t* log_level;

@@ -28,16 +28,28 @@ int perform_action(japml_handle_t* handle, japml_parse_parameters_t* parameters)
 		return err;
 	}
 
+    bool sw = false;
+    if (parameters->update_systemwide != NULL && *(parameters->update_systemwide))
+    {
+        sw = true;
+    }
+
+    bool rr = false;
+    if (parameters->remove_recursive != NULL && *(parameters->remove_recursive))
+    {
+        rr = true;
+    }
+
 	switch(*(parameters->package_action))
 	{
 		case japml_package_install:
             err = install_packages(handle, parameters->packages);
 			break;
 		case japml_package_remove:
-            err = remove_packages(handle, parameters->packages, parameters->remove_recursive);
+            err = remove_packages(handle, parameters->packages, rr);
 			break;
 		case japml_package_update:
-            err = update_packages(handle, parameters->packages);
+            err = update_packages(handle, parameters->packages, sw);
 			break;
 		case japml_package_search:
             err = search_packages(handle, parameters->packages);

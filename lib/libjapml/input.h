@@ -20,6 +20,7 @@ enum _japml_arg_type {
 #define JAPML_SEARCH_ARG "search"
 
 #define JAPML_DEVEL_ARG "-d"
+#define JAPML_SYSTEMWIDE_ARG "-all"
 #define JAPML_DEFAULT_TO_ALL_ARG "-Y"
 #define JAPML_STAY_ON_CRITICAL_ARG "-critstay"
 #define JAPML_REMOVE_RECURSIVE_ARG "-rec"

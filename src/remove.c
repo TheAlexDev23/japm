@@ -25,6 +25,17 @@ int remove_packages(japml_handle_t* handle, japml_list_t* targets, bool recursiv
         targets = japml_list_next(targets);
     }
 
+    japml_action_type_t type;
+
+    if (recursive)
+    {
+        type = JAPML_ACTION_TYPE_REMOVE_RECURSIVE;
+    }
+    else
+    {
+        type = JAPML_ACTION_TYPE_REMOVE;
+    }
+
     if (japml_action_create(handle, packages, recursive ? JAPML_ACTION_TYPE_REMOVE_RECURSIVE : JAPML_ACTION_TYPE_REMOVE) ||
         japml_action_check(handle) ||
         japml_action_commit(handle))

@@ -39,6 +39,8 @@ int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
 
 int japml_install_single_package(japml_handle_t* handle, japml_package_t* package)
 {
+    japml_log(handle, Debug, "Installing single package");
+
     japml_package_t* local_package = NULL;
     if ((local_package = japml_db_local_get_package(handle, package->name)) != NULL)
     {

@@ -5,6 +5,6 @@
 #include <libjapml/handle.h>
 #include <libjapml/list.h>
 
-int update_packages(japml_handle_t* handle, japml_list_t* targets);
+int update_packages(japml_handle_t* handle, japml_list_t* targets, bool systemwide);
 
 #endif

@@ -10,7 +10,7 @@ struct _japml_db_remote
 	char *url;
 };
 
-void japml_create_local_db(japml_handle_t* handle);
+void japml_db_local_create(japml_handle_t* handle);
 
 #define MAX_CHAR_LIST_LENGTH 5000
 
@@ -18,6 +18,8 @@ void japml_create_local_db(japml_handle_t* handle);
 void japml_db_error(japml_handle_t* handle);
 
 japml_list_t* japml_db_local_get_all_packages(japml_handle_t* handle);
+/* Returns a list of strings each being the name of a package */
+japml_list_t* japml_db_local_get_all_packages_name(japml_handle_t* handle);
 
 /* Allocates and returns a japml_package_t* fetched from the local database */
 japml_package_t* japml_db_local_get_package(japml_handle_t* handle, char* package_name);

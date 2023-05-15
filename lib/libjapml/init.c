@@ -32,7 +32,7 @@ japml_handle_t* japml_init_base()
 
     if (access("/var/japml/local.db", F_OK) != 0)
     {
-        japml_create_local_db(handle);
+        japml_db_local_create(handle);
     }
 
     if (sqlite3_open("/var/japml/local.db", &handle->sqlite))
