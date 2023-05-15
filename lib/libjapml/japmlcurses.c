@@ -71,7 +71,6 @@ void japml_ncurses_log_win_refresh(japml_handle_t *handle)
     }
 
     box(handle->log_window, ACS_VLINE, ACS_HLINE);
-    refresh();
     wrefresh(handle->log_window);
 }
 
@@ -172,9 +171,6 @@ void japml_ncurses_pb_refresh(japml_handle_t* handle)
 void japml_ncurses_draw_pb(japml_handle_t* handle, int amnt)
 {
     wclear(handle->progress_window);
-    box(handle->progress_window, ACS_VLINE, ACS_HLINE);
-
-    wrefresh(handle->progress_window);
 
     if (amnt == 0)
     {
@@ -192,6 +188,7 @@ void japml_ncurses_draw_pb(japml_handle_t* handle, int amnt)
     wmove(handle->progress_window, getcury(handle->log_window), 1);
     wprintw(handle->progress_window, ">");
 
+    box(handle->progress_window, ACS_VLINE, ACS_HLINE);
     wrefresh(handle->progress_window);
 }
 
@@ -357,11 +354,11 @@ void curses_init(japml_handle_t *handle)
 
     clear();
 
+    refresh();
+
     handle->log_window          = newwin(maxY - PROGRESS_BAR_WINDOW_HEIGHT, maxX - PACKAGE_LIST_WINDOW_WIDTH, 0, 0);
     handle->progress_window     = newwin(PROGRESS_BAR_WINDOW_HEIGHT, maxX - PACKAGE_LIST_WINDOW_WIDTH, maxY - PROGRESS_BAR_WINDOW_HEIGHT, 0);
     handle->package_list_window = newwin(maxY, PACKAGE_LIST_WINDOW_WIDTH, 0, maxX - PACKAGE_LIST_WINDOW_WIDTH);
-
-    refresh();
 
     box(handle->log_window,          ACS_VLINE, ACS_HLINE);
     box(handle->progress_window,     ACS_VLINE, ACS_HLINE);
