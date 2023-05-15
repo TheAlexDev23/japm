@@ -4,6 +4,12 @@
 #include "japml.h"
 #include "list.h"
 
+struct _japml_package_file
+{
+    char* url;
+    char* rel_file_loc;
+};
+
 /* Returns directory of package */
 char* japml_get_package_directory(japml_package_t* package);
 

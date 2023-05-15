@@ -25,6 +25,8 @@ typedef enum _japml_action_status japml_action_status_t;
 typedef enum _japml_package_action japml_package_action_t;
 /* Represents a JAPML package */
 typedef struct _japml_package japml_package_t;
+/* Represents a file that is referenced by package metadata and is downloaded during pre-install */
+typedef struct _japml_package_file japml_package_file_t;
 
 /* A structure representing a remote databse */
 typedef struct _japml_db_remote japml_db_remote_t;

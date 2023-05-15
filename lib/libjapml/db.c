@@ -17,6 +17,7 @@
 #include "json.h"
 #include "file.h" // japml_create_file_recursive
 #include "japmlcurses.h" // japml_ncurses_pl_add
+#include "internet.h"
 
 // Creates local.db and the packages table
 void japml_create_local_db(japml_handle_t* handle)
@@ -110,24 +111,10 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
     return package;
 }
 
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
-    size_t written = fwrite(ptr, size, nmemb, stream);
-    return written;
-}
-
 japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* package_name)
 {
     if (!handle->curl) {
         japml_throw_error(handle, custom_error_critical, "No instance of cURL found on handle");
-    }
-
-    japml_create_file_recursive("/tmp/japml/packagefetch");
-    FILE* f = fopen("/tmp/japml/packagefetch", "w");
-
-    if (!f)
-    {
-        japml_throw_error(handle, custom_error_error, "Error opening cURL temp file");
-        return NULL;
     }
 
     japml_list_t* remote_dbs = handle->remote_dbs;
@@ -142,34 +129,24 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
         sprintf(handle->log_message, "Fetching %s", url);
         japml_log(handle, Information, handle->log_message);
 
-        curl_easy_setopt(handle->curl, CURLOPT_URL, url);
-        curl_easy_setopt(handle->curl, CURLOPT_WRITEFUNCTION, write_data);
-        curl_easy_setopt(handle->curl, CURLOPT_WRITEDATA, f);
-        int res = curl_easy_perform(handle->curl);
-        if (res != 0)
+        int res = japml_web_download_file(handle, url, "/tmp/japml/packagefetch");
+        free(url);
+
+        if (res)
         {
-            japml_throw_error(handle, unknown_error, "Unkown error. cURL action performed with unsuccesful output");
+            japml_log(handle, Information, "Not found");
         }
-
-        int http_code = 0;
-        curl_easy_getinfo(handle->curl, CURLINFO_RESPONSE_CODE, &http_code);
-
-        // Package found, no need to search other repos.
-        if (http_code == 200)
+        else
         {
             japml_log(handle, Information, "Found");
             found = true;
             break;
         }
 
-        japml_log(handle, Information, "Not found");
-
         free(url);
 
         remote_dbs = japml_list_next(remote_dbs);
     }
-
-    fclose(f);
 
     if (!found)
     {

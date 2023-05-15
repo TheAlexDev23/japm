@@ -344,7 +344,7 @@ void curses_init(japml_handle_t *handle)
 
     // Splash screen
     char *msg_japm    = "JAPM version 2.1.0";
-    char *msg_japml   = "JAPML version 1.2.1";
+    char *msg_japml   = "JAPML version 1.3.0";
     char *msg_creator = "By TheAlexDev23 (https://github.com/thealexdev23)";
 
     mvprintw(maxY / 2 - 1, (maxX-strlen(msg_japm)) / 2, "%s", msg_japm);

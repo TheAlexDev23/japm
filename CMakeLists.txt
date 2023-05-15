@@ -25,6 +25,8 @@ add_library(
     lib/libjapml/input.h
     lib/libjapml/install.c
     lib/libjapml/install.h
+    lib/libjapml/internet.c
+    lib/libjapml/internet.h
     lib/libjapml/japmlcurses.c
     lib/libjapml/japmlcurses.h
     lib/libjapml/japml.h

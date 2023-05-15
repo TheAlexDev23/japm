@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "japml.h"
 #include "log.h"
@@ -9,6 +10,8 @@
 #include "handle.h"
 #include "system.h" // japml_run_instructions
 #include "japmlcurses.h"
+#include "internet.h"
+#include "file.h"
 
 int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
 {
@@ -74,8 +77,32 @@ int japml_install_single_package(japml_handle_t* handle, japml_package_t* packag
 
 int japml_pre_install(japml_handle_t* handle, japml_package_t* package)
 {
+    // * Download files
+    japml_list_t* it = package->files;
+
+    while (it)
+    {
+        japml_package_file_t* file = it->data;
+        char* pkg_dir = japml_get_package_directory(package);
+        char* file_dir = malloc(strlen(pkg_dir) + strlen(file->rel_file_loc) + 1);
+        sprintf(file_dir, "%s%s", pkg_dir, file->rel_file_loc);
+
+        free(pkg_dir);
+
+        if (japml_web_download_file(handle, file->url, file_dir))
+        {
+            free(file_dir);
+            japml_throw_error(handle, custom_error_critical, "Cannot download package file");
+            return -1;
+        }
+        
+        free(file_dir);
+    
+        it = japml_list_next(it);
+    }
+
     // * Run pre install script
-    japml_list_t* it = package->pre_install;
+    it = package->pre_install;
 
     sprintf(handle->log_message, "Running pre-install script for %s", package->name);
     japml_log(handle, Debug, handle->log_message);

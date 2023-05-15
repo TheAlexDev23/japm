@@ -132,7 +132,7 @@ void japml_action_check_type_install(japml_handle_t* handle)
 
 int japml_action_check(japml_handle_t* handle)
 {
-    japml_log(handle, Debug, "JAPML: Checking action");
+    japml_log(handle, Debug, "JAPML: Action check");
 
     switch (handle->action->action_type)
     {

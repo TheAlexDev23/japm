@@ -6,8 +6,9 @@
 #include "list.h"
 #include "package.h"
 #include "json.h"
+#include "file.h"
 
-/* A json list is converted into a japml list */
+
 japml_list_t *japml_json_to_list(japml_handle_t *handle, json_object *obj)
 {
     japml_list_t *list = NULL;
@@ -21,7 +22,28 @@ japml_list_t *japml_json_to_list(japml_handle_t *handle, json_object *obj)
     return list;
 }
 
-japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_location)
+japml_list_t* japml_json_to_pkg_file(japml_handle_t* handle, json_object *obj)
+{
+    japml_list_t* files = NULL;
+    
+    for (int i = 0; i < json_object_array_length(obj); i++)
+    {
+        json_object *item = json_object_array_get_idx(obj, i);
+        japml_package_file_t* pkg_file = malloc(sizeof(japml_package_file_t));
+        
+        json_object* url_obj = json_object_object_get(item, "url");
+        json_object* file_loc_obj = json_object_object_get(item, "file name");
+
+        pkg_file->url = (char*)json_object_get_string(url_obj);
+        pkg_file->rel_file_loc = (char*)json_object_get_string(file_loc_obj);
+
+        japml_list_add(handle, &files, pkg_file);
+    }
+
+    return files;
+}
+
+japml_package_t* japml_parse_json_file(japml_handle_t *handle, char *file_location)
 {
     // Open the file
     FILE *fp = fopen(file_location, "r");
@@ -45,7 +67,7 @@ japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_locati
     char *buffer = malloc(file_size + 1);
     buffer[file_size] = '\0';
 
-    fread(buffer, 1, file_size, fp);
+    fread(buffer, file_size, 1, fp);
 
     json_object *json_obj = json_tokener_parse(buffer);
 
@@ -64,6 +86,8 @@ japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_locati
 
     json_object *remove;
 
+    json_bool filebool;
+
     if (!(
             json_object_object_get_ex(json_obj, "name", &name) &&
 
@@ -81,9 +105,9 @@ japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_locati
 
             json_object_object_get_ex(json_obj, "remove", &remove)))
     {
-        // Package corrupted
-        sprintf(handle->log_message, "Package (file location: %s) json file is corrupted. Some of the fields are missing. \n %s", file_location, buffer);
+        sprintf(handle->log_message, "Package (file location: %s) json file is corrupted. Some of the fields are missing.\n", file_location);
         japml_throw_error(handle, package_corrupted_error, handle->log_message);
+
         free(buffer);
     }
 
@@ -97,6 +121,8 @@ japml_package_t *japml_parse_json_file(japml_handle_t *handle, char *file_locati
 
     pkg->deps = japml_json_to_list(handle, dependencies);
     pkg->build_deps = japml_json_to_list(handle, build_dependencies);
+
+    pkg->files = japml_json_to_pkg_file(handle, files);
 
     pkg->pre_install = japml_json_to_list(handle, pre_install);
     pkg->install = japml_json_to_list(handle, install);
