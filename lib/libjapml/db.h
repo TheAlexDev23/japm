@@ -17,6 +17,9 @@ void japml_create_local_db(japml_handle_t* handle);
 japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list);
 char* japml_list_to_string(japml_handle_t* handle, japml_list_t* list);
 
+/* Throws an error and mentions the sql error */
+void japml_db_error(japml_handle_t* handle);
+
 /* Allocates and returns a japml_package_t* fetched from the local database */
 japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* package_name);
 /* Allocates and returns a japml_package_t* fetched from the remote database */

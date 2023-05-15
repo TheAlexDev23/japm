@@ -34,6 +34,12 @@ void japml_create_local_db(japml_handle_t* handle)
                  NULL, NULL, NULL);
 }
 
+void japml_db_error(japml_handle_t* handle)
+{
+    sprintf(handle->log_message, "Error running sql (%s)", sqlite3_errmsg(handle->sqlite));
+    japml_throw_error(handle, sql_command_fail_error, handle->log_message);
+}
+
 int callback(void *ptr, int column_num, char **values, char **rows)
 {
     char *temp_file = "/tmp/japml/sql_callback_temp_file";
@@ -62,51 +68,40 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
 
     remove("/tmp/japml/sql_callback_temp_file");
     
-    char* errMsg = 0;
-    if (sqlite3_exec(handle->sqlite, sql, callback, NULL, &errMsg))
-    {
-        sprintf(handle->log_message, "Cannot execute sql (%s)", errMsg);
-        japml_throw_error(handle, sql_command_fail_error, handle->log_message);
-        return NULL;
-    }
-
+    sqlite3_stmt* stmt;
+    int ret = sqlite3_prepare_v2(handle->sqlite, sql, -1, &stmt, NULL);
+    
     free(sql);
-
-    // Absence of callback file means such package was not found in db
-    if (access("/tmp/japml/sql_callback_temp_file", F_OK) != 0) 
+    
+    if (ret)
     {
-        return NULL;
+        japml_db_error(handle);
     }
 
-    FILE *fp = fopen("/tmp/japml/sql_callback_temp_file", "r");
-
-    if (!fp)
+    ret = sqlite3_step(stmt);
+    if (ret != SQLITE_ROW)
     {
-        japml_throw_error(handle, custom_error_error, "Cannot open sql callback temporary file");
+        japml_log(handle, Error, "SQL error or potentially package not found. Details below:");
+        japml_db_error(handle);
         return NULL;
     }
 
     japml_package_t* package = japml_create_empty_package();
 
-    char** fields_to_modif[3] = {
-        &package->name,
-        &package->description,
-        &package->version
-    };
+    char* pkg_name = (char*)sqlite3_column_text(stmt, 0);
+    char* pkg_description = (char*)sqlite3_column_text(stmt, 1);
+    char* pkg_version = (char*)sqlite3_column_text(stmt, 2);
+    char* pkg_remove = (char*)sqlite3_column_text(stmt, 3);
 
-    int i = 0;
-    char line[5000];
-    while(fgets(line, sizeof(line), fp) && i <= 2)
-    {
-        // Remove newline character
-        line[strlen(line) - 1] = '\0';
-        char* val = malloc(strlen(line) + 1);
-        strcpy(val, line);
-        *(fields_to_modif[i]) = val;
-        i++;
-    }
+    package->name = malloc(strlen(pkg_name) + 1);
+    package->description = malloc(strlen(pkg_description) + 1);
+    package->version = malloc(strlen(pkg_version) + 1);
 
-    package->remove = japml_string_to_list(handle, line);
+    strcpy(package->name, pkg_name);
+    strcpy(package->description, pkg_description);
+    strcpy(package->version, pkg_version);
+
+    package->remove = japml_string_to_list(handle, pkg_remove);
 
     return package;
 }
