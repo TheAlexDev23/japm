@@ -1,5 +1,8 @@
 <div align="center">
   <div>
+    <img src="/static/japmgif.gif"/>
+  </div>
+  <div>
     <h1>JAPM</h1>
     <b>Just-Another-Package-Manager</b>
   </div>
