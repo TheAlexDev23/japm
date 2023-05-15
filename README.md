@@ -16,6 +16,8 @@ I've seen many people trying to build their own package manager recently, so I a
 
 JAPM is different from other package managers in the sense that it uses ncurses to create a TUI and represent information in a more organized and better looking way.
 
+However if you want to use it without ncurses it can also work as a normal comand-line package manager.
+
 A package is a .json file usually saved in a remote repository, by default it is [Japm Official Packages](https://github.com/TheAlexDev23/japm-official-packages)
 
 # JAPM necessary milestones
