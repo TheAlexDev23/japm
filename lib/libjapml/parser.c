@@ -260,14 +260,14 @@ bool japml_is_action(char* arg, japml_package_action_t* type)
     }
 }
 
-void japml_free_parse_params(japml_parse_parameters_t* params)
+void japml_pars_params_free(japml_parse_parameters_t* params)
 {
     free(params->wrong_param);
     free(params->devel);
     free(params->default_to_all);
     free(params->exit_on_critical);
 
-    japml_free_string_list(params->packages);
+    japml_list_free_string(params->packages);
     free(params->package_action);
     free(params->remove_recursive);
 

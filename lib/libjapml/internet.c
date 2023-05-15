@@ -13,7 +13,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 
 int japml_web_download_file(japml_handle_t* handle, char* url, char* file_location)
 {
-    japml_create_file_recursive(file_location);
+    japml_file_create_recursive(file_location);
     FILE* f = fopen(file_location, "w");
     if (f == NULL)
     {

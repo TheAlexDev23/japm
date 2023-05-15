@@ -47,41 +47,41 @@ struct _japml_package
     japml_list_t* remove;
 };
 
-japml_package_t* japml_create_empty_package();
+japml_package_t* japml_package_create_empty();
 
 // Fully frees a pacakge and it's children
-void japml_free_package(japml_package_t* package);
+void japml_package_free(japml_package_t* package);
 
 // Frees all the packages in packages and the list itself
-void japml_free_package_list(japml_list_t* packages);
+void japml_package_free_list(japml_list_t* packages);
 
 #define PACKAGE_USED_BY_TMP "/tmp/japml/depending_pkg_tmp"
 
 /* Sets depender as a package that depends on pkg */
-void japml_append_depenending_package(japml_handle_t* handle, char* pkg, char* depender);
+void japml_package_append_depender(japml_handle_t* handle, char* pkg, char* depender);
 
 /* 
 * Generally, if a package is deleted, we should also remove the "dependency link" between the package and the packages it depends on
-* This will cycle thorugh all deps of depender and remove depender->name from their used_by
+* This will unlink depender from each of depender's dependency
 */
-void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* depender);
+void japml_package_remove_depender(japml_handle_t* handle, japml_package_t* depender);
 
 /* 
 * Sets depending_packages of package to the packages that depend on it.
 * This function should be called every time dpeneding_packages are updated and/or need to be accessed.
 */
-void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package);
+void japml_package_get_depending(japml_handle_t* handle, japml_package_t* package);
 
 /* 
 * Will ensure that package does not exist in the list before adding it
 * Returns 1 if package is already in list, 0 otherwise
  */
-int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** list, japml_package_t* package);
+int japml_package_add_to_list_no_rep(japml_handle_t* handle, japml_list_t** list, japml_package_t* package);
 
 /* Will print a list of packages */
-void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages);
+void japml_package_print_list(japml_handle_t* handle, japml_list_t* packages);
 
 /* Will print information about package */
-void japml_print_package_details(japml_handle_t* handle, japml_package_t* package);
+void japml_package_print_details(japml_handle_t* handle, japml_package_t* package);
 
 #endif

@@ -34,7 +34,7 @@ struct _japml_parse_parameters
     bool* color;
 };
 
-void japml_free_parse_params(japml_parse_parameters_t* params);
+void japml_pars_params_free(japml_parse_parameters_t* params);
 
 /* Prints the available options and parameters to run JAPML */
 void japml_print_program_usage(int argc, char** argv);

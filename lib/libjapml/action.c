@@ -45,7 +45,7 @@ void japml_action_check_type_remove(japml_handle_t* handle)
             return;
         }
 
-        japml_get_depending_packages(handle, pkg);
+        japml_package_get_depending(handle, pkg);
 
         if (pkg->depending_packages != NULL)
         {
@@ -71,12 +71,12 @@ void japml_action_check_type_remove_recursive(japml_handle_t* handle)
             return;
         }
 
-        japml_get_depending_packages(handle, pkg);
+        japml_package_get_depending(handle, pkg);
 
         japml_list_t* depending_packages = pkg->depending_packages;
         while(depending_packages != NULL)
         {
-            japml_add_package_to_list_no_repeat(handle, &(handle->action->targets), (japml_package_t*)(depending_packages->data));
+            japml_package_add_to_list_no_rep(handle, &(handle->action->targets), (japml_package_t*)(depending_packages->data));
 
             depending_packages = japml_list_next(depending_packages);
         }
@@ -102,13 +102,13 @@ void japml_action_check_type_install(japml_handle_t* handle)
         japml_list_t* build_deps = pkg->build_deps;
         while(dependencies)
         {
-            japml_package_t* dependency = japml_get_package_from_remote_db(handle, (char*)(dependencies->data));
+            japml_package_t* dependency = japml_db_remote_get_package(handle, (char*)(dependencies->data));
 
             // If package is not in list it's dependencies will still be checked in the next iteration
-            if (japml_add_package_to_list_no_repeat(handle, 
+            if (japml_package_add_to_list_no_rep(handle, 
                 &(handle->action->targets), dependency))
             {
-                japml_free_package(dependency);
+                japml_package_free(dependency);
             }
 
             dependencies = japml_list_next(dependencies);
@@ -116,11 +116,11 @@ void japml_action_check_type_install(japml_handle_t* handle)
 
         while (build_deps)
         {
-            japml_package_t* build_dep = japml_get_package_from_remote_db(handle, (char*)(build_deps->data));
-            if (japml_add_package_to_list_no_repeat(handle, 
+            japml_package_t* build_dep = japml_db_remote_get_package(handle, (char*)(build_deps->data));
+            if (japml_package_add_to_list_no_rep(handle, 
                 &(handle->action->targets), build_dep))
             {
-                japml_free_package(build_dep);
+                japml_package_free(build_dep);
             }
 
             build_deps = japml_list_next(build_deps);
@@ -161,7 +161,7 @@ int japml_action_check(japml_handle_t* handle)
         japml_log(handle, Information, "The following packages will be removed:");
     }
 
-    japml_print_package_list(handle, handle->action->targets);
+    japml_package_print_list(handle, handle->action->targets);
 
     if (japml_ncurses_Yn_dialogue(handle, "Do you wish to continue? "))
     {

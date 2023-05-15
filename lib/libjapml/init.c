@@ -68,7 +68,7 @@ japml_handle_t* japml_init_base()
     handle->ncurses_pb_lim = 0;
     handle->ncurses_pb_progress = 0;
 
-    japml_terminal_init(handle);
+    japml_init_terminal(handle);
 
     handle->exit_on_critical = true;
     return handle;
@@ -92,7 +92,7 @@ japml_handle_t* japml_init_devel()
     return handle;
 }
 
-void japml_terminal_init(japml_handle_t* handle)
+void japml_init_terminal(japml_handle_t* handle)
 {
     if (handle->use_ncurses)
     {

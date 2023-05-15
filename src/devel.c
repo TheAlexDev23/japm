@@ -16,7 +16,7 @@ void test_japml()
     japml_log(handle, Error, "This is a error log");
     japml_log(handle, Critical, "This is a critical log");
 
-    japml_package_t* package = japml_get_package_from_local_db(handle, "test-package");
+    japml_package_t* package = japml_db_local_get_package(handle, "test-package");
 
     free(package);
 

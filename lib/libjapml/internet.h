@@ -6,5 +6,4 @@
 /* Performs web request to url and downloads file to file_location */
 int japml_web_download_file(japml_handle_t* handle, char* url, char* file_location);
 
-
 #endif

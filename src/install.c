@@ -12,7 +12,7 @@ int install_packages(japml_handle_t* handle, japml_list_t* targets)
     japml_list_t* packages = NULL;
     while (targets)
     {
-        japml_package_t* package = japml_get_package_from_remote_db(handle, (char*)(targets->data));
+        japml_package_t* package = japml_db_remote_get_package(handle, (char*)(targets->data));
         if (!package)
         {
             sprintf(handle->log_message, "Cannot find package %s in remote database.", (char*)(targets->data));
@@ -28,11 +28,11 @@ int install_packages(japml_handle_t* handle, japml_list_t* targets)
         japml_action_check(handle) ||
         japml_action_commit(handle))
     {
-        japml_free_package_list(packages);
+        japml_package_free_list(packages);
         return -1;
     }
 
-    japml_free_package_list(packages);
+    japml_package_free_list(packages);
 
     return 0;
 }

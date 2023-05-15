@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
 	if (handle == NULL)
 	{
-        japml_free_parse_params(parameters);
+        japml_pars_params_free(parameters);
 		return -1;
 	}
 
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
     }
 
     // ? Maybe add reference to parse parameters in handle and free upon exit
-    japml_free_parse_params(parameters);
+    japml_pars_params_free(parameters);
 
     japml_log(handle, Information, "Press any key to exit");
 

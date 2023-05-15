@@ -7,7 +7,7 @@
 #include "list.h"
 #include "file.h"
 
-japml_package_t* japml_create_empty_package()
+japml_package_t* japml_package_create_empty()
 {
     japml_package_t* package = malloc(sizeof(japml_package_t));
 
@@ -37,12 +37,12 @@ char* japml_get_used_by_file(japml_package_t* pkg)
     return package_used_by_file;
 }
 
-void japml_append_depenending_package(japml_handle_t* handle, char* pkg, char* depender)
+void japml_package_append_depender(japml_handle_t* handle, char* pkg, char* depender)
 {
-    japml_package_t* temp_pkg = japml_create_empty_package();
+    japml_package_t* temp_pkg = japml_package_create_empty();
     temp_pkg->name = pkg;
     char* file = japml_get_used_by_file(temp_pkg);
-    japml_free_package(temp_pkg);
+    japml_package_free(temp_pkg);
 
     FILE *f = fopen(file, "r");
     if (f == NULL)
@@ -69,7 +69,7 @@ void japml_append_depenending_package(japml_handle_t* handle, char* pkg, char* d
     fclose(f);
 }
 
-void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* depender)
+void japml_package_remove_depender(japml_handle_t* handle, japml_package_t* depender)
 {
     japml_list_t* it = depender->deps;
 
@@ -80,7 +80,7 @@ void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* dep
 
         FILE *f = fopen(file, "r");
         
-        japml_create_file_recursive(PACKAGE_USED_BY_TMP);
+        japml_file_create_recursive(PACKAGE_USED_BY_TMP);
         FILE *tmp = fopen(PACKAGE_USED_BY_TMP, "w");
 
         // Essentially copy into tmp all packages except depender->name
@@ -97,13 +97,13 @@ void japml_remove_depending_package(japml_handle_t* handle, japml_package_t* dep
         fclose(tmp);
         fclose(f);
 
-        japml_copy_file(PACKAGE_USED_BY_TMP, file);
+        japml_file_copy(PACKAGE_USED_BY_TMP, file);
 
         it = japml_list_next(it);
     }
 }
 
-void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* package)
+void japml_package_get_depending(japml_handle_t* handle, japml_package_t* package)
 {
     if (!package)
     {
@@ -119,7 +119,7 @@ void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* packa
 
     if (!f && !i)
     {
-        japml_create_file_recursive(file);
+        japml_file_create_recursive(file);
         goto restart_open_used_by;
     }
 
@@ -127,14 +127,14 @@ void japml_get_depending_packages(japml_handle_t* handle, japml_package_t* packa
     package->depending_packages = NULL;
     while(fgets(chunk, sizeof(chunk), f) != NULL) {
         chunk[strlen(chunk) - 1] = '\0';
-        japml_package_t* pkg = japml_get_package_from_local_db(handle, chunk);
+        japml_package_t* pkg = japml_db_local_get_package(handle, chunk);
         japml_list_add(handle, &package->depending_packages, pkg);
     }
 
     free(file);
 }
 
-int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** list, japml_package_t* package)
+int japml_package_add_to_list_no_rep(japml_handle_t* handle, japml_list_t** list, japml_package_t* package)
 {
     japml_list_t* it = *list;
     while (it)
@@ -151,7 +151,7 @@ int japml_add_package_to_list_no_repeat(japml_handle_t* handle, japml_list_t** l
     return 0;
 }
 
-void japml_free_package(japml_package_t* package)
+void japml_package_free(japml_package_t* package)
 {
     if (package == NULL)
     {
@@ -170,18 +170,18 @@ void japml_free_package(japml_package_t* package)
     free(package);
 }
 
-void japml_free_package_list(japml_list_t* packages)
+void japml_package_free_list(japml_list_t* packages)
 {
     while (packages)
     {
-        japml_free_package((japml_package_t*)(packages->data));
+        japml_package_free((japml_package_t*)(packages->data));
         packages = japml_list_next(packages);
     }
 
     japml_list_free(packages);
 }
 
-void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages)
+void japml_package_print_list(japml_handle_t* handle, japml_list_t* packages)
 {
     while (packages)
     {
@@ -191,7 +191,7 @@ void japml_print_package_list(japml_handle_t* handle, japml_list_t* packages)
     }
 }
 
-void japml_print_package_details(japml_handle_t* handle, japml_package_t* package)
+void japml_package_print_details(japml_handle_t* handle, japml_package_t* package)
 {
     if (package == NULL)
     {

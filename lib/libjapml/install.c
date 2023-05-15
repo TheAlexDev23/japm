@@ -40,7 +40,7 @@ int japml_install_packages(japml_handle_t* handle, japml_list_t* packages)
 int japml_install_single_package(japml_handle_t* handle, japml_package_t* package)
 {
     japml_package_t* local_package = NULL;
-    if ((local_package = japml_get_package_from_local_db(handle, package->name)) != NULL)
+    if ((local_package = japml_db_local_get_package(handle, package->name)) != NULL)
     {
         sprintf(handle->log_message, "Package %s is already installed. Run update if you want to reinstall it", package->name);
         japml_log(handle, Information, handle->log_message);
@@ -129,7 +129,7 @@ void japml_mark_depending_packages(japml_handle_t* handle, japml_package_t* pack
     while (dep)
     {
         // Since it will not append if it's already in used_by there's no need to check that here
-        japml_append_depenending_package(handle, (char*)(dep->data), package->name);
+        japml_package_append_depender(handle, (char*)(dep->data), package->name);
         dep = japml_list_next(dep);
     }
 }
@@ -155,7 +155,7 @@ int japml_post_install(japml_handle_t* handle, japml_package_t* package)
     }
 
     japml_log(handle, Information, "Updating local db...");
-    japml_add_package_to_local_db(handle, package);
+    japml_db_local_add_package(handle, package);
     japml_mark_depending_packages(handle, package);
     japml_log(handle, Information, "Done");
 

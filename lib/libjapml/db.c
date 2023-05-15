@@ -23,7 +23,7 @@
 void japml_create_local_db(japml_handle_t* handle)
 {
     japml_log(handle, Information, "Creating local database ...");
-    japml_create_file_recursive("/var/japml/local.db");
+    japml_file_create_recursive("/var/japml/local.db");
     sqlite3_open("/var/japml/local.db", &handle->sqlite);
     sqlite3_exec(handle->sqlite,
                  "CREATE TABLE packages ( \
@@ -43,7 +43,7 @@ void japml_db_error(japml_handle_t* handle)
 int callback(void *ptr, int column_num, char **values, char **rows)
 {
     char *temp_file = "/tmp/japml/sql_callback_temp_file";
-    japml_create_file_recursive(temp_file);
+    japml_file_create_recursive(temp_file);
     // Basically empties the file
     fclose(fopen(temp_file, "w"));
 
@@ -58,7 +58,7 @@ int callback(void *ptr, int column_num, char **values, char **rows)
     return 0;
 }
 
-japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* package_name)
+japml_package_t* japml_db_local_get_package(japml_handle_t* handle, char* package_name)
 {
     char *sql = malloc(sizeof(char) *
         (strlen("SELECT * FROM packages WHERE name = ''") 
@@ -86,7 +86,7 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
         return NULL;
     }
 
-    japml_package_t* package = japml_create_empty_package();
+    japml_package_t* package = japml_package_create_empty();
 
     char* pkg_name = (char*)sqlite3_column_text(stmt, 0);
     char* pkg_description = (char*)sqlite3_column_text(stmt, 1);
@@ -106,7 +106,7 @@ japml_package_t* japml_get_package_from_local_db(japml_handle_t* handle, char* p
     return package;
 }
 
-japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* package_name)
+japml_package_t* japml_db_remote_get_package(japml_handle_t* handle, char* package_name)
 {
     if (!handle->curl) {
         japml_throw_error(handle, custom_error_critical, "No instance of cURL found on handle");
@@ -149,13 +149,13 @@ japml_package_t* japml_get_package_from_remote_db(japml_handle_t* handle, char* 
         return NULL;
     }
 
-    japml_package_t* package = japml_parse_json_file(handle, "/tmp/japml/packagefetch");
+    japml_package_t* package = japml_json_parse_file(handle, "/tmp/japml/packagefetch");
     japml_ncurses_pl_add(handle, package, japml_package_search);
 
     return package;
 }
 
-int japml_add_package_to_local_db(japml_handle_t* handle, japml_package_t* package)
+int japml_db_local_add_package(japml_handle_t* handle, japml_package_t* package)
 {
     char* remove = japml_list_to_string(handle, package->remove);
     char *sql = malloc(sizeof(char) * (
@@ -183,7 +183,7 @@ int japml_add_package_to_local_db(japml_handle_t* handle, japml_package_t* packa
     return 0;
 }
 
-int japml_remove_package_from_local_db(japml_handle_t* handle, japml_package_t* package)
+int japml_db_local_remove_package(japml_handle_t* handle, japml_package_t* package)
 {
     char *sql = malloc(strlen("DELETE FROM packages WHERE name = '';") + strlen(package->name) + 1);
 

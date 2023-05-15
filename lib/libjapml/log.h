@@ -21,7 +21,7 @@ struct _japml_log_message
     japml_log_level_t log_level;
 };
 
-void japml_terminal_init(japml_handle_t* handle);
+void japml_init_terminal(japml_handle_t* handle);
 
 void japml_log(japml_handle_t* handle, japml_log_level_t log_level, char *message);
 

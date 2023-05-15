@@ -39,7 +39,7 @@ japml_list_t* japml_create_file_list(japml_list_t* files)
     return list;
 }
 
-int japml_create_file_recursive(char* pathname)
+int japml_file_create_recursive(char* pathname)
 {
     // Copying since pathname might be readonly
     char *path = malloc(strlen(pathname) + 1);
@@ -61,7 +61,7 @@ int japml_create_file_recursive(char* pathname)
     return fd;
 }
 
-void japml_copy_file(char* source, char* dest)
+void japml_file_copy(char* source, char* dest)
 {
     FILE *f = fopen(dest, "w");
     FILE *tmp = fopen(source, "r");

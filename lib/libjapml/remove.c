@@ -43,8 +43,8 @@ int japml_remove_single_package(japml_handle_t* handle, japml_package_t* package
     japml_log(handle, Information, handle->log_message);
 
     japml_log(handle, Information, "Updating local db...");
-    japml_remove_package_from_local_db(handle, package);
-    japml_remove_depending_package(handle, package);
+    japml_db_local_remove_package(handle, package);
+    japml_package_remove_depender(handle, package);
 
     char* pkg_dir = japml_get_package_directory(package);
     japml_delete_dir_rf(pkg_dir);

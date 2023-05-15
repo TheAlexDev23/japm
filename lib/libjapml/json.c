@@ -43,7 +43,7 @@ japml_list_t* japml_json_to_pkg_file(japml_handle_t* handle, json_object *obj)
     return files;
 }
 
-japml_package_t* japml_parse_json_file(japml_handle_t *handle, char *file_location)
+japml_package_t* japml_json_parse_file(japml_handle_t *handle, char *file_location)
 {
     // Open the file
     FILE *fp = fopen(file_location, "r");
@@ -113,7 +113,7 @@ japml_package_t* japml_parse_json_file(japml_handle_t *handle, char *file_locati
 
     free(buffer);
 
-    japml_package_t *pkg = japml_create_empty_package();
+    japml_package_t *pkg = japml_package_create_empty();
 
     pkg->name = (char *)json_object_get_string(name);
     pkg->version = (char *)json_object_get_string(version);
