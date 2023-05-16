@@ -60,7 +60,7 @@ int japml_install_single_package(japml_handle_t* handle, japml_package_t* packag
     japml_log(handle, Information, handle->log_message);
 
     char* pkg_dir = japml_get_package_directory(package);
-    if (japml_run_instructions(package->install, pkg_dir))
+    if (japml_run_instructions_silent( package->install, pkg_dir))
     {
         japml_throw_error(handle, install_error, "Error running install instructions");
         return 1;
@@ -111,7 +111,7 @@ int japml_pre_install(japml_handle_t* handle, japml_package_t* package)
 
 
     char* pkg_dir = japml_get_package_directory(package);
-    if (japml_run_instructions(package->pre_install, pkg_dir))
+    if (japml_run_instructions_silent( package->pre_install, pkg_dir))
     {
         japml_throw_error(handle, install_error, "Pre install instructions cannot be executed successfully");
         return -1;
@@ -127,7 +127,7 @@ int japml_post_install(japml_handle_t* handle, japml_package_t* package)
     japml_log(handle, Debug, handle->log_message);
 
     char* pkg_dir = japml_get_package_directory(package);
-    if (japml_run_instructions(package->post_install, pkg_dir))
+    if (japml_run_instructions_silent( package->post_install, pkg_dir))
     {
         japml_throw_error(handle, install_error, "Post install instructions cannot be executed successfully");
         return -1;

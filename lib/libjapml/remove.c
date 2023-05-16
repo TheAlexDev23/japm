@@ -40,7 +40,7 @@ int japml_remove_single_package(japml_handle_t* handle, japml_package_t* package
     japml_log(handle, Information, handle->log_message);
 
     char* pkg_dir = japml_get_package_directory(package);
-    if (japml_run_instructions(package->remove, pkg_dir))
+    if (japml_run_instructions_silent( package->remove, pkg_dir))
     {
         japml_throw_error(handle, install_error, "Remove instructions cannot be executed successfully");
         return -1;
