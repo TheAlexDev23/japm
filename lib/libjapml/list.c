@@ -99,7 +99,22 @@ japml_list_t* japml_list_create_empty(japml_handle_t* handle, int size)
     return list;
 }
 
-void japml_list_free_string(japml_list_t* list)
+void japml_list_free_recursive(japml_list_t* list, void (*cb)(void*))
+{
+    japml_list_t* it = list;
+    while (it)
+    {
+        if (cb != NULL)
+        {
+            cb(it->data);
+        }
+        it = japml_list_next(it);
+    }
+
+    japml_list_free(list);
+}
+
+void japml_list_free_data(japml_list_t* list)
 {
     japml_list_t* it = list;
     while (it != NULL)
@@ -107,7 +122,10 @@ void japml_list_free_string(japml_list_t* list)
         if (it->data != NULL)
         {
             free(it->data);
+            // Will prevent invalid frees if reruning on same list/pointer
+            it->data = NULL;
         }
+
         it = japml_list_next(it);
     }
 

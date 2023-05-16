@@ -66,7 +66,7 @@ japml_list_t* japml_db_local_get_all_packages(japml_handle_t* handle)
         it = japml_list_next(it);
     }
 
-    japml_list_free_string(package_names);
+    japml_list_free_data(package_names);
 
     return packages;
 }

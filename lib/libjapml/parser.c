@@ -122,6 +122,10 @@ int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* 
         params->packages = japml_get_param_list(count, argc, argv);
         return 0;
     }
+    else
+    {
+        free(action_type);
+    }
 
     if (!japml_input_is_param(arg))
     {
@@ -275,8 +279,9 @@ void japml_pars_params_free(japml_parse_parameters_t* params)
     free(params->devel);
     free(params->default_to_all);
     free(params->exit_on_critical);
+    free(params->update_systemwide);
 
-    japml_list_free_string(params->packages);
+    japml_list_free_data(params->packages);
     free(params->package_action);
     free(params->remove_recursive);
 
@@ -289,4 +294,6 @@ void japml_pars_params_free(japml_parse_parameters_t* params)
 
    free(params->curses);
    free(params->color);
+
+   free(params);
 }

@@ -9,7 +9,7 @@
 
 void japml_exit(japml_handle_t *handle)
 {
-    japml_list_free(handle->remote_dbs);
+    japml_list_free_data(handle->remote_dbs);
     
     sqlite3_close(handle->sqlite);
    
@@ -41,7 +41,7 @@ void japml_exit(japml_handle_t *handle)
     }
 
     japml_ncurses_free_log_buffer(handle);
-    japml_list_free_string(handle->ncurses_pl_buffer);
+    japml_list_free_data(handle->ncurses_pl_buffer);
 
     free(handle->log_message);
     curl_easy_cleanup(handle->curl);

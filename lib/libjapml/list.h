@@ -18,7 +18,7 @@ japml_list_t* japml_list_create_empty(japml_handle_t* handle, int size);
 /* Frees list 'list' */
 void japml_list_free(japml_list_t* list);
 /* Frees list 'list' and the value pointed by data on each element. */
-void japml_list_free_string(japml_list_t* list);
+void japml_list_free_data(japml_list_t* list);
 
 /* Adds a new node to the list. */
 void japml_list_add(japml_handle_t* handle, japml_list_t** list, void* data);
@@ -50,5 +50,7 @@ japml_list_t* japml_list_get_element(japml_list_t *list, int n);
 japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list);
 /* Retuns a string with all items of a list each sepparated by a semicolon */
 char* japml_list_to_string(japml_handle_t* handle, japml_list_t* list);
+/* Frees list and calls cb every item */
+void japml_list_free_recursive(japml_list_t* list, void (*cb)(void*));
 
 #endif

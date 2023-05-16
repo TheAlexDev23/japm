@@ -37,7 +37,12 @@ int japml_remove_single_package(japml_handle_t* handle, japml_package_t* package
     sprintf(handle->log_message, "Removing package %s", package->name);
     japml_log(handle, Information, handle->log_message);
 
-    japml_run_instructions(package->remove, japml_get_package_directory(package));
+    char* pkg_dir = japml_get_package_directory(package);
+    if (japml_run_instructions(package->remove, pkg_dir))
+    {
+        japml_throw_error(handle, install_error, "Remove instructions cannot be executed successfully");
+        return -1;
+    }
 
     sprintf(handle->log_message, "Package %s removed succesfully", package->name);
     japml_log(handle, Information, handle->log_message);
@@ -46,7 +51,6 @@ int japml_remove_single_package(japml_handle_t* handle, japml_package_t* package
     japml_db_local_remove_package(handle, package);
     japml_package_remove_depender(handle, package);
 
-    char* pkg_dir = japml_get_package_directory(package);
     japml_delete_dir_rf(pkg_dir);
     free(pkg_dir);
 

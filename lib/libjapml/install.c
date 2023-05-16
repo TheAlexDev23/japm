@@ -59,11 +59,14 @@ int japml_install_single_package(japml_handle_t* handle, japml_package_t* packag
     sprintf(handle->log_message, "Installing package %s", package->name);
     japml_log(handle, Information, handle->log_message);
 
-    if (japml_run_instructions(package->install, japml_get_package_directory(package)))
+    char* pkg_dir = japml_get_package_directory(package);
+    if (japml_run_instructions(package->install, pkg_dir))
     {
         japml_throw_error(handle, install_error, "Error running install instructions");
         return 1;
     }
+
+    free(pkg_dir);
 
     if (japml_post_install(handle, package))
     {
@@ -103,22 +106,18 @@ int japml_pre_install(japml_handle_t* handle, japml_package_t* package)
         it = japml_list_next(it);
     }
 
-    // * Run pre install script
-    it = package->pre_install;
-
     sprintf(handle->log_message, "Running pre-install script for %s", package->name);
     japml_log(handle, Debug, handle->log_message);
 
-    while (it)
+
+    char* pkg_dir = japml_get_package_directory(package);
+    if (japml_run_instructions(package->pre_install, pkg_dir))
     {
-        if (system((char*)it->data) == -1)
-        {
-            sprintf(handle->log_message, "Command failed in pre-install script for %s", package->name);
-            japml_throw_error(handle, install_error, handle->log_message);
-            return 1;
-        }
-        it = japml_list_next(it);
+        japml_throw_error(handle, install_error, "Pre install instructions cannot be executed successfully");
+        return -1;
     }
+    free(pkg_dir);
+
     return 0;
 }
 
@@ -129,18 +128,14 @@ int japml_post_install(japml_handle_t* handle, japml_package_t* package)
 
     sprintf(handle->log_message, "Running post install script for %s", package->name);
     japml_log(handle, Debug, handle->log_message);
-    
-    while (it)
-    {
-        if (system((char*)it->data) == -1)
-        {
-            sprintf(handle->log_message, "Command failed in post-install script for %s", package->name);
-            japml_throw_error(handle, install_error, handle->log_message);
-            return 1;
-        }
 
-        it = japml_list_next(it);
+    char* pkg_dir = japml_get_package_directory(package);
+    if (japml_run_instructions(package->post_install, pkg_dir))
+    {
+        japml_throw_error(handle, install_error, "Post install instructions cannot be executed successfully");
+        return -1;
     }
+    free(pkg_dir);
 
     japml_log(handle, Information, "Updating local db...");
     japml_db_local_add_package(handle, package);

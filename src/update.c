@@ -23,13 +23,17 @@ int update_packages(japml_handle_t* handle, japml_list_t* targets, bool systemwi
 
     if (remove_packages(handle, targets, true))
     {
+        japml_list_free_data(targets);
         return -1;
     }
 
     if (install_packages(handle, targets))
     {
+        japml_list_free_data(targets);
         return -1;
     }
+
+    japml_list_free_data(targets);
 
     return 0;
 }

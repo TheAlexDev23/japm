@@ -196,5 +196,7 @@ int japml_action_commit(japml_handle_t* handle)
         japml_remove_packages(handle, handle->action->targets);
     }
 
+    free(handle->action);
+
     return 0;
 }

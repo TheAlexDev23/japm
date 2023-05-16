@@ -1,6 +1,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <json-c/json.h>
+#include <string.h>
 
 #include "japml.h"
 #include "list.h"
@@ -8,6 +9,14 @@
 #include "json.h"
 #include "file.h"
 
+char* japml_json_obj_to_string(json_object* obj)
+{
+    char* json_string = (char*)json_object_get_string(obj);
+    char* string = malloc(strlen(json_string) + 1);
+    strcpy(string, json_string);
+
+    return string;
+}
 
 japml_list_t *japml_json_to_list(japml_handle_t *handle, json_object *obj)
 {
@@ -16,7 +25,7 @@ japml_list_t *japml_json_to_list(japml_handle_t *handle, json_object *obj)
     for (int i = 0; i < json_object_array_length(obj); i++)
     {
         json_object *item = json_object_array_get_idx(obj, i);
-        japml_list_add(handle, &list, (char *)json_object_get_string(item));
+        japml_list_add(handle, &list, japml_json_obj_to_string(item));
     }
 
     return list;
@@ -69,6 +78,8 @@ japml_package_t* japml_json_parse_file(japml_handle_t *handle, char *file_locati
 
     fread(buffer, file_size, 1, fp);
 
+    fclose(fp);
+
     json_object *json_obj = json_tokener_parse(buffer);
 
     json_object *name;
@@ -115,9 +126,9 @@ japml_package_t* japml_json_parse_file(japml_handle_t *handle, char *file_locati
 
     japml_package_t *pkg = japml_package_create_empty();
 
-    pkg->name = (char *)json_object_get_string(name);
-    pkg->version = (char *)json_object_get_string(version);
-    pkg->description = (char *)json_object_get_string(description);
+    pkg->name = japml_json_obj_to_string(name);
+    pkg->version = japml_json_obj_to_string(version);
+    pkg->description = japml_json_obj_to_string(description);
 
     pkg->deps = japml_json_to_list(handle, dependencies);
     pkg->build_deps = japml_json_to_list(handle, build_dependencies);
