@@ -14,14 +14,13 @@
 </div>
 </br>
 
+JAPM is not intended to be the *"next package manger"* nor a large and powerfull package manager like apt or pacman. It is, rather, a small and light-weight package manager that can allow you to install small programs. These programs are usually made by indie open source developers. Having a separate package manager allows managing packages in a more organized way. From one side you will have large software that is installed by your main package manager and from the other you have small tools you found on github that make your day-to-day easier. Having all those packages managed by a single package manager can be uncomfortable, and JAPM tries to bring a solution to this.
 
-I've seen many people trying to build their own package manager recently, so I also decided to try it out.
-
-JAPM is different from other package managers in the sense that it uses ncurses to create a TUI and represent information in a more organized and better looking way.
+JAPM is also different from other package managers in the sense that it uses ncurses to create a TUI and represent information in a more organized and better looking way.
 
 However if you want to use it without ncurses it can also work as a normal comand-line package manager.
 
-A package is a .json file usually saved in a remote repository, by default it is [Japm Official Packages](https://github.com/TheAlexDev23/japm-official-packages)
+A package is a .json file usually saved in a remote repository, by default it is [Japm Official Packages](https://github.com/TheAlexDev23/japm-official-packages). If you want to create a package, said repository has the instructions.
 
 # JAPM necessary milestones
 - [x] Logging system
