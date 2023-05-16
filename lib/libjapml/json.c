@@ -43,8 +43,8 @@ japml_list_t* japml_json_to_pkg_file(json_object *obj)
         json_object* url_obj = json_object_object_get(item, "url");
         json_object* file_loc_obj = json_object_object_get(item, "file name");
 
-        pkg_file->url = (char*)json_object_get_string(url_obj);
-        pkg_file->rel_file_loc = (char*)json_object_get_string(file_loc_obj);
+        pkg_file->url = japml_json_obj_to_string(url_obj);
+        pkg_file->rel_file_loc = japml_json_obj_to_string(file_loc_obj);
 
         japml_list_add(&files, pkg_file);
     }

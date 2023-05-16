@@ -179,6 +179,11 @@ int japml_package_add_to_list_no_rep(japml_list_t** list, japml_package_t* packa
 void japml_package_free_f(void* ptr)
 {
     japml_package_file_t* file = (japml_package_file_t*)ptr;
+    if (file == NULL)
+    {
+        return;
+    }
+
     free(file->url);
     free(file->rel_file_loc);
     free(file);

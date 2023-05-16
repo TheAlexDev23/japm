@@ -215,7 +215,7 @@ japml_list_t* japml_get_param_list(int count, int argc, char** argv)
     japml_list_t* list = NULL;
     while (argv[count + 1] != NULL && !japml_input_is_param(argv[count + 1]))
     {
-        char* param = malloc(sizeof(char) * (strlen(argv[count + 1]) + 1));
+        char* param = malloc(strlen(argv[count + 1]) + 1);
         strcpy(param, argv[count + 1]);
         japml_list_add(&list, param);
         count++;

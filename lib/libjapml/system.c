@@ -11,14 +11,17 @@
 
 int japml_run_single_instruction(char* instruction, char* dir)
 {
-    char* cmd = japml_str_replace(instruction, JAPML_PACKAGE_DIR_VAR, dir);
+    char* cmd1 = japml_str_replace(instruction, JAPML_PACKAGE_DIR_VAR "/", dir);
+    char* cmd2 = japml_str_replace(cmd1, JAPML_PACKAGE_DIR_VAR, dir);
 
-    char* surpressed_cmd = malloc(strlen(cmd) + strlen(" 1>  2> ") 
+    free(cmd1);
+
+    char* surpressed_cmd = malloc(strlen(cmd2) + strlen(" 1>>  2>> ") 
         + strlen(JAPML_SYSTEM_OUT_STDIO) + strlen(JAPML_SYSTEM_OUT_ERR) + 1);
 
-    sprintf(surpressed_cmd, "%s 1> " JAPML_SYSTEM_OUT_STDIO " 2> " JAPML_SYSTEM_OUT_ERR, cmd);
+    sprintf(surpressed_cmd, "%s 1>> " JAPML_SYSTEM_OUT_STDIO " 2>> " JAPML_SYSTEM_OUT_ERR, cmd2);
 
-    free(cmd);
+    free(cmd2);
 
     if (system(surpressed_cmd) == -1)
     {
