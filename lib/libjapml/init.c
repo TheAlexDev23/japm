@@ -15,7 +15,7 @@
 
 japml_handle_t* japml_init_base()
 {
-    japml_handle_t* handle = malloc(sizeof(japml_handle_t));
+    japml_handle_t* handle = calloc(sizeof(japml_handle_t), 1);
     if (!handle)
     {
         // Log system is not initialized
@@ -28,7 +28,7 @@ japml_handle_t* japml_init_base()
     japml_db_remote_t* remotedb = malloc(sizeof(japml_db_remote_t));
     remotedb->url = "https://raw.githubusercontent.com/TheAlexDev23/japm-official-packages/main/packages/";
 
-    japml_list_add(handle, &handle->remote_dbs, remotedb);
+    japml_list_add(&handle->remote_dbs, remotedb);
 
     if (access("/var/japml/local.db", F_OK) != 0)
     {
@@ -99,8 +99,8 @@ void japml_init_terminal(japml_handle_t* handle)
     }
     else
     {
-        japml_list_add(handle, &handle->log_files, stdout);
-        japml_list_add(handle, &handle->error_log_files, stderr);
+        japml_list_add(&handle->log_files, stdout);
+        japml_list_add(&handle->error_log_files, stderr);
     }
 }
 

@@ -123,9 +123,6 @@ int japml_pre_install(japml_handle_t* handle, japml_package_t* package)
 
 int japml_post_install(japml_handle_t* handle, japml_package_t* package)
 {
-    // Execute post install script
-    japml_list_t* it = package->post_install;
-
     sprintf(handle->log_message, "Running post install script for %s", package->name);
     japml_log(handle, Debug, handle->log_message);
 

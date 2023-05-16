@@ -7,16 +7,12 @@
 #include "log.h"
 #include "error.h"
 
-void japml_list_add(japml_handle_t *handle, japml_list_t **list, void* data)
+int japml_list_add(japml_list_t **list, void* data)
 {
     japml_list_t* node = malloc(sizeof(japml_list_t));
     if (!node)
     {
-        if (handle)
-        {
-            japml_throw_error(handle, malloc_error, NULL);
-        }
-        return;
+        return -1;
     }
 
     node->data = data;
@@ -32,6 +28,8 @@ void japml_list_add(japml_handle_t *handle, japml_list_t **list, void* data)
     {
         *list = node;
     }
+
+    return 0;
 }
 
 int japml_list_length(japml_list_t* list)
@@ -93,7 +91,7 @@ japml_list_t* japml_list_create_empty(japml_handle_t* handle, int size)
 
     for (int i = 0; i < size; i++)
     {
-        japml_list_add(handle, &list, NULL);
+        japml_list_add(&list, NULL);
     }
 
     return list;
@@ -142,7 +140,7 @@ void japml_list_free(japml_list_t* list)
     }
 }
 
-japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list) 
+japml_list_t* japml_string_to_list(char* string_list) 
 {
     japml_list_t* list = NULL;
 
@@ -151,14 +149,14 @@ japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list)
     {
         char* value = malloc(strlen(token) + 1);
         strcpy(value, token);
-        japml_list_add(handle, &list, value);
+        japml_list_add(&list, value);
         token = strtok(NULL, ";");
     }
 
     return list;
 }
 
-char* japml_list_to_string(japml_handle_t* handle, japml_list_t* list)
+char* japml_list_to_string(japml_list_t* list)
 {
     char* string_list = calloc(MAX_CHAR_LIST_LENGTH + 1, sizeof(char));
     while (list)

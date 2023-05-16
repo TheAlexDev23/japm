@@ -69,7 +69,7 @@ void japml_package_append_depender(japml_handle_t* handle, char* pkg, char* depe
 * Generally, if a package is deleted, we should also remove the "dependency link" between the package and the packages it depends on
 * This will unlink depender from each of depender's dependency
 */
-void japml_package_remove_depender(japml_handle_t* handle, japml_package_t* depender);
+void japml_package_remove_depender(japml_package_t* depender);
 
 /* 
 * Sets depending_packages of package to the packages that depend on it.
@@ -81,7 +81,7 @@ void japml_package_get_depending(japml_handle_t* handle, japml_package_t* packag
 * Will ensure that package does not exist in the list before adding it
 * Returns 1 if package is already in list, 0 otherwise
  */
-int japml_package_add_to_list_no_rep(japml_handle_t* handle, japml_list_t** list, japml_package_t* package);
+int japml_package_add_to_list_no_rep(japml_list_t** list, japml_package_t* package);
 
 /* Will print a list of packages */
 void japml_package_print_list(japml_handle_t* handle, japml_list_t* packages);

@@ -21,7 +21,7 @@ int remove_packages(japml_handle_t* handle, japml_list_t* targets, bool recursiv
             return -1;
         }
 
-        japml_list_add(handle, &packages, package);
+        japml_list_add(&packages, package);
         targets = japml_list_next(targets);
     }
 
@@ -29,17 +29,6 @@ int remove_packages(japml_handle_t* handle, japml_list_t* targets, bool recursiv
     {
         japml_log(handle, Information, "There's nothing to do");
         return 0;
-    }
-
-    japml_action_type_t type;
-
-    if (recursive)
-    {
-        type = JAPML_ACTION_TYPE_REMOVE_RECURSIVE;
-    }
-    else
-    {
-        type = JAPML_ACTION_TYPE_REMOVE;
     }
 
     if (japml_action_create(handle, packages, recursive ? JAPML_ACTION_TYPE_REMOVE_RECURSIVE : JAPML_ACTION_TYPE_REMOVE) ||

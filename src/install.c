@@ -20,7 +20,7 @@ int install_packages(japml_handle_t* handle, japml_list_t* targets)
             return -1;
         }
 
-        japml_list_add(handle, &packages, package);
+        japml_list_add(&packages, package);
         targets = japml_list_next(targets);
     }
 

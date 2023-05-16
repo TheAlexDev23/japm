@@ -22,7 +22,6 @@
 // Creates local.db and the packages table
 void japml_db_local_create(japml_handle_t* handle)
 {
-    japml_log(handle, Information, "Creating local database ...");
     japml_file_create_recursive("/var/japml/local.db");
     sqlite3_open("/var/japml/local.db", &handle->sqlite);
     sqlite3_exec(handle->sqlite,
@@ -62,7 +61,7 @@ japml_list_t* japml_db_local_get_all_packages(japml_handle_t* handle)
             continue;
         }
 
-        japml_list_add(handle, &packages, package);
+        japml_list_add(&packages, package);
         it = japml_list_next(it);
     }
 
@@ -94,7 +93,7 @@ japml_list_t* japml_db_local_get_all_packages_name(japml_handle_t* handle)
         char* pkg_name = malloc(strlen(name) + 1);
         strcpy(pkg_name, name);
 
-        japml_list_add(handle, &package_names, pkg_name);
+        japml_list_add(&package_names, pkg_name);
     }
 
     return package_names;
@@ -149,7 +148,7 @@ japml_package_t* japml_db_local_get_package(japml_handle_t* handle, char* packag
     strcpy(package->description, pkg_description);
     strcpy(package->version, pkg_version);
 
-    package->remove = japml_string_to_list(handle, pkg_remove);
+    package->remove = japml_string_to_list(pkg_remove);
 
     sqlite3_finalize(stmt);
 
@@ -188,8 +187,6 @@ japml_package_t* japml_db_remote_get_package(japml_handle_t* handle, char* packa
             break;
         }
 
-        free(url);
-
         remote_dbs = japml_list_next(remote_dbs);
     }
 
@@ -208,7 +205,7 @@ japml_package_t* japml_db_remote_get_package(japml_handle_t* handle, char* packa
 int japml_db_local_add_package(japml_handle_t* handle, japml_package_t* package)
 {
     japml_log(handle, Debug, "Adding single package to local db");
-    char* remove = japml_list_to_string(handle, package->remove);
+    char* remove = japml_list_to_string(package->remove);
     char *sql = malloc(sizeof(char) * (
         strlen("INSERT INTO packages (name, description, version, remove) VALUES ();") + 
         

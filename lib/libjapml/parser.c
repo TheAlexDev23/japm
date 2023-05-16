@@ -8,7 +8,7 @@
 #include "list.h"
 #include "file.h"
 
-void japml_print_program_usage(int argc, char** argv)
+void japml_print_program_usage(char** argv)
 {
     printf("Usage: %s [options] <action> {packages} \n", argv[0]);
     printf("\nPackage management aka actions: \n");
@@ -84,7 +84,7 @@ japml_parse_parameters_t* japml_parse_input(int argc, char** argv)
     // Shortcut if we want to print usage
     if (argc == 2 && strcmp(argv[1], JAPML_HELP_ARG) == 0)
     {
-        japml_print_program_usage(argc, argv);
+        japml_print_program_usage(argv);
         return NULL;
     }
 
@@ -165,7 +165,7 @@ int japml_parse_arg(int count, int argc, char** argv, japml_parse_parameters_t* 
 
         char* param = (char*)(char_params->data);
 
-        japml_log_level_t log_level;
+        japml_log_level_t log_level = Information;
         if (strcmp(param, "Debug") == 0)
         {
             log_level = Debug;
@@ -217,7 +217,7 @@ japml_list_t* japml_get_param_list(int count, int argc, char** argv)
     {
         char* param = malloc(sizeof(char) * (strlen(argv[count + 1]) + 1));
         strcpy(param, argv[count + 1]);
-        japml_list_add(NULL, &list, param);
+        japml_list_add(&list, param);
         count++;
         if (count >= argc - 1)
         {

@@ -21,7 +21,7 @@ void japml_list_free(japml_list_t* list);
 void japml_list_free_data(japml_list_t* list);
 
 /* Adds a new node to the list. */
-void japml_list_add(japml_handle_t* handle, japml_list_t** list, void* data);
+int japml_list_add(japml_list_t **list, void* data);
 
 /* Returns the amount of items in list */
 int japml_list_length(japml_list_t* list);
@@ -47,9 +47,9 @@ japml_list_t* japml_list_get_element(japml_list_t *list, int n);
 #define MAX_CHAR_LIST_LENGTH 5000
 
 /* string_list is converted into a jaml list */
-japml_list_t* japml_string_to_list(japml_handle_t* handle, char* string_list);
+japml_list_t* japml_string_to_list(char* string_list);
 /* Retuns a string with all items of a list each sepparated by a semicolon */
-char* japml_list_to_string(japml_handle_t* handle, japml_list_t* list);
+char* japml_list_to_string(japml_list_t* list);
 /* Frees list and calls cb every item */
 void japml_list_free_recursive(japml_list_t* list, void (*cb)(void*));
 

@@ -22,7 +22,7 @@ int japml_remove_packages(japml_handle_t* handle, japml_list_t* packages)
         if (japml_remove_single_package(handle, pkg))
         {
             japml_throw_error(handle, install_error, "Error removing package");
-            return 1;
+            return -1;
         }
 
         japml_ncurses_pl_add(handle, pkg, japml_package_remove);
@@ -30,6 +30,8 @@ int japml_remove_packages(japml_handle_t* handle, japml_list_t* packages)
 
         it = japml_list_next(it);
     }
+
+    return 0;
 }
 
 int japml_remove_single_package(japml_handle_t* handle, japml_package_t* package)
@@ -49,10 +51,12 @@ int japml_remove_single_package(japml_handle_t* handle, japml_package_t* package
 
     japml_log(handle, Information, "Updating local db...");
     japml_db_local_remove_package(handle, package);
-    japml_package_remove_depender(handle, package);
+    japml_package_remove_depender(package);
 
     japml_delete_dir_rf(pkg_dir);
     free(pkg_dir);
 
     japml_log(handle, Information, "Done");
+
+    return 0;
 }

@@ -32,7 +32,7 @@ japml_list_t* japml_create_file_list(japml_list_t* files)
             continue;
         }
 
-        japml_list_add(NULL, &list, f);
+        japml_list_add(&list, f);
         files = japml_list_next(files);
     }
 
@@ -66,7 +66,7 @@ void japml_file_copy(char* source, char* dest)
     FILE *f = fopen(dest, "w");
     FILE *tmp = fopen(source, "r");
 
-    if(!(f && tmp))
+    if (f == NULL || tmp == NULL)
     {
         return;
     }

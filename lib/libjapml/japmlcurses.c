@@ -45,7 +45,7 @@ void japml_ncurses_log(japml_handle_t* handle, japml_log_level_t log_level, char
     message_struct->log_level = log_level;
     message_struct->message = msg;
 
-    japml_list_add(handle, &handle->ncurses_lb, message_struct);
+    japml_list_add(&handle->ncurses_lb, message_struct);
 
     handle->ncurses_lb_count++;
 
@@ -162,10 +162,8 @@ void japml_ncurses_pb_refresh(japml_handle_t* handle)
     }
 
     float percentage = (float)handle->ncurses_pb_progress / (float)handle->ncurses_pb_lim;
-    int x, y;
-    getmaxyx(handle->progress_window, y, x);
 
-    japml_ncurses_draw_pb(handle, percentage * (float)(x - 2));
+    japml_ncurses_draw_pb(handle, percentage * (float)(getmaxx(handle->progress_window) - 2));
 }
 
 void japml_ncurses_draw_pb(japml_handle_t* handle, int amnt)
@@ -203,19 +201,19 @@ void japml_ncurses_pl_add(japml_handle_t* handle, japml_package_t* package, japm
     {
         char* msg = malloc(strlen(package->name) + strlen(" => installed") + 1);
         sprintf(msg, "%s => installed", package->name);
-        japml_list_add(handle, &handle->ncurses_pl_buffer, msg);
+        japml_list_add(&handle->ncurses_pl_buffer, msg);
     }
     else if (action == japml_package_remove)
     {
         char* msg = malloc(strlen(package->name) + strlen(" => removed") + 1);
         sprintf(msg, "%s => removed", package->name);
-        japml_list_add(handle, &handle->ncurses_pl_buffer, msg);
+        japml_list_add(&handle->ncurses_pl_buffer, msg);
     }
     else if (action == japml_package_search)
     {
         char* msg = malloc(strlen(package->name) + strlen(" => searched") + 1);
         sprintf(msg, "%s => searched", package->name);
-        japml_list_add(handle, &handle->ncurses_pl_buffer, msg);
+        japml_list_add(&handle->ncurses_pl_buffer, msg);
     }
 
     handle->ncurses_pl_count++;
@@ -256,7 +254,7 @@ bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
     sprintf(handle->log_message, "%s [Y/n] ", message);
     japml_log(handle, Information, handle->log_message);
 
-    char ch;
+    char ch = '\0';
     if (handle->use_ncurses)
     {
         ch = getch();
@@ -269,11 +267,11 @@ bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
         }
     }
     
-    if (tolower(ch) == 'y' || ch == '\n')
+    if (tolower((unsigned char)ch) == 'y' || ch == '\n')
     {
         return true;
     }
-    else if (tolower(ch) == 'n')
+    else if (tolower((unsigned char)ch) == 'n')
     {
         return false;
     }
@@ -294,7 +292,7 @@ bool japml_ncurses_yN_dialogue(japml_handle_t* handle, char* message)
     sprintf(handle->log_message, "%s [y/N] ", message);
     japml_log(handle, Information, handle->log_message);
 
-    char ch;
+    char ch = '\0';
     if (handle->use_ncurses)
     {
         ch = getch();
@@ -307,11 +305,11 @@ bool japml_ncurses_yN_dialogue(japml_handle_t* handle, char* message)
         }
     }
     
-    if (tolower(ch) == 'n' || ch == '\n')
+    if (tolower((unsigned char)ch) == 'n' || ch == '\n')
     {
         return false;
     }
-    else if (tolower(ch) == 'y')
+    else if (tolower((unsigned char)ch) == 'y')
     {
         return true;
     }
@@ -325,7 +323,7 @@ bool japml_ncurses_yn_dialogue(japml_handle_t* handle, char* message)
 {
     yN_dialogue_start_again:
     sprintf(handle->log_message, "%s [y/n] ", message);
-    char ch;
+    char ch = '\0';
     if (handle->use_ncurses)
     {
         ch = getch();
@@ -339,11 +337,11 @@ bool japml_ncurses_yn_dialogue(japml_handle_t* handle, char* message)
     }
     
     
-    if (tolower(ch) == 'y')
+    if (tolower((unsigned char)ch) == 'y')
     {
         return true;
     }
-    else if (tolower(ch) == 'n')
+    else if (tolower((unsigned char)ch) == 'n')
     {
         return false;
     }

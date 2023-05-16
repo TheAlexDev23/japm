@@ -77,7 +77,7 @@ void japml_action_check_type_remove_recursive(japml_handle_t* handle)
         japml_list_t* depending_packages = pkg->depending_packages;
         while(depending_packages != NULL)
         {
-            japml_package_add_to_list_no_rep(handle, &(handle->action->targets), (japml_package_t*)(depending_packages->data));
+            japml_package_add_to_list_no_rep(&(handle->action->targets), (japml_package_t*)(depending_packages->data));
 
             depending_packages = japml_list_next(depending_packages);
         }
@@ -106,8 +106,7 @@ void japml_action_check_type_install(japml_handle_t* handle)
             japml_package_t* dependency = japml_db_remote_get_package(handle, (char*)(dependencies->data));
 
             // If package is not in list it's dependencies will still be checked in the next iteration
-            if (japml_package_add_to_list_no_rep(handle, 
-                &(handle->action->targets), dependency))
+            if (japml_package_add_to_list_no_rep(&(handle->action->targets), dependency))
             {
                 japml_package_free(dependency);
             }
@@ -118,8 +117,7 @@ void japml_action_check_type_install(japml_handle_t* handle)
         while (build_deps)
         {
             japml_package_t* build_dep = japml_db_remote_get_package(handle, (char*)(build_deps->data));
-            if (japml_package_add_to_list_no_rep(handle, 
-                &(handle->action->targets), build_dep))
+            if (japml_package_add_to_list_no_rep(&(handle->action->targets), build_dep))
             {
                 japml_package_free(build_dep);
             }

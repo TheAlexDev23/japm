@@ -92,7 +92,7 @@ void japml_package_append_depender(japml_handle_t* handle, char* pkg, char* depe
     fclose(f);
 }
 
-void japml_package_remove_depender(japml_handle_t* handle, japml_package_t* depender)
+void japml_package_remove_depender(japml_package_t* depender)
 {
     japml_list_t* it = depender->deps;
 
@@ -151,14 +151,14 @@ void japml_package_get_depending(japml_handle_t* handle, japml_package_t* packag
     while(fgets(chunk, sizeof(chunk), f) != NULL) {
         chunk[strlen(chunk) - 1] = '\0';
         japml_package_t* pkg = japml_db_local_get_package(handle, chunk);
-        japml_list_add(handle, &package->depending_packages, pkg);
+        japml_list_add(&package->depending_packages, pkg);
     }
 
     fclose(f);
     free(file);
 }
 
-int japml_package_add_to_list_no_rep(japml_handle_t* handle, japml_list_t** list, japml_package_t* package)
+int japml_package_add_to_list_no_rep(japml_list_t** list, japml_package_t* package)
 {
     japml_list_t* it = *list;
     while (it)
@@ -171,7 +171,7 @@ int japml_package_add_to_list_no_rep(japml_handle_t* handle, japml_list_t** list
         it = japml_list_next(it);
     }
 
-    japml_list_add(handle, list, package);
+    japml_list_add(list, package);
     return 0;
 }
 

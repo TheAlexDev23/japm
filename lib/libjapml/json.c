@@ -18,24 +18,24 @@ char* japml_json_obj_to_string(json_object* obj)
     return string;
 }
 
-japml_list_t *japml_json_to_list(japml_handle_t *handle, json_object *obj)
+japml_list_t *japml_json_to_list(json_object *obj)
 {
     japml_list_t *list = NULL;
 
-    for (int i = 0; i < json_object_array_length(obj); i++)
+    for (size_t i = 0; i < json_object_array_length(obj); i++)
     {
         json_object *item = json_object_array_get_idx(obj, i);
-        japml_list_add(handle, &list, japml_json_obj_to_string(item));
+        japml_list_add(&list, japml_json_obj_to_string(item));
     }
 
     return list;
 }
 
-japml_list_t* japml_json_to_pkg_file(japml_handle_t* handle, json_object *obj)
+japml_list_t* japml_json_to_pkg_file(json_object *obj)
 {
     japml_list_t* files = NULL;
     
-    for (int i = 0; i < json_object_array_length(obj); i++)
+    for (size_t i = 0; i < json_object_array_length(obj); i++)
     {
         json_object *item = json_object_array_get_idx(obj, i);
         japml_package_file_t* pkg_file = malloc(sizeof(japml_package_file_t));
@@ -46,7 +46,7 @@ japml_list_t* japml_json_to_pkg_file(japml_handle_t* handle, json_object *obj)
         pkg_file->url = (char*)json_object_get_string(url_obj);
         pkg_file->rel_file_loc = (char*)json_object_get_string(file_loc_obj);
 
-        japml_list_add(handle, &files, pkg_file);
+        japml_list_add(&files, pkg_file);
     }
 
     return files;
@@ -67,6 +67,7 @@ japml_package_t* japml_json_parse_file(japml_handle_t *handle, char *file_locati
     struct stat st;
     if (stat(file_location, &st))
     {
+        fclose(fp);
         japml_throw_error(handle, custom_error_error, "Cannot read json file stat");
         return NULL;
     }
@@ -97,8 +98,6 @@ japml_package_t* japml_json_parse_file(japml_handle_t *handle, char *file_locati
 
     json_object *remove;
 
-    json_bool filebool;
-
     if (!(
             json_object_object_get_ex(json_obj, "name", &name) &&
 
@@ -120,6 +119,8 @@ japml_package_t* japml_json_parse_file(japml_handle_t *handle, char *file_locati
         japml_throw_error(handle, package_corrupted_error, handle->log_message);
 
         free(buffer);
+
+        return NULL;
     }
 
     free(buffer);
@@ -130,16 +131,16 @@ japml_package_t* japml_json_parse_file(japml_handle_t *handle, char *file_locati
     pkg->version = japml_json_obj_to_string(version);
     pkg->description = japml_json_obj_to_string(description);
 
-    pkg->deps = japml_json_to_list(handle, dependencies);
-    pkg->build_deps = japml_json_to_list(handle, build_dependencies);
+    pkg->deps = japml_json_to_list(dependencies);
+    pkg->build_deps = japml_json_to_list(build_dependencies);
 
-    pkg->files = japml_json_to_pkg_file(handle, files);
+    pkg->files = japml_json_to_pkg_file(files);
 
-    pkg->pre_install = japml_json_to_list(handle, pre_install);
-    pkg->install = japml_json_to_list(handle, install);
-    pkg->post_install = japml_json_to_list(handle, post_install);
+    pkg->pre_install = japml_json_to_list(pre_install);
+    pkg->install = japml_json_to_list(install);
+    pkg->post_install = japml_json_to_list(post_install);
 
-    pkg->remove = japml_json_to_list(handle, remove);
+    pkg->remove = japml_json_to_list(remove);
 
     return pkg;
 }
