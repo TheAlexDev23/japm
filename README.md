@@ -9,6 +9,10 @@
   <br/>
   <div>
     <a href="https://www.codefactor.io/repository/github/thealexdev23/japm"><img src="https://www.codefactor.io/repository/github/thealexdev23/japm/badge" alt="CodeFactor" /></a>
+    <img src="https://img.shields.io/github/issues-raw/thealexdev23/japm"/>
+    <img src="https://img.shields.io/github/v/release/thealexdev23/japm"/>
+    <img src="https://img.shields.io/github/license/thealexdev23/japm" />
+    <img src="https://img.shields.io/github/actions/workflow/status/thealexdev23/japm/cmake.yml"/>
   </div>
 </div>
 </br>
