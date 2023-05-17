@@ -8,8 +8,7 @@
   </div>
   <br/>
   <div>
-    <img src="https://www.codefactor.io/repository/github/thealexdev23/japm/badge"/>
-    <img src="https://tokei.rs/b1/github/thealexdev23/japm"/>
+    <a href="https://www.codefactor.io/repository/github/thealexdev23/japm"><img src="https://www.codefactor.io/repository/github/thealexdev23/japm/badge" alt="CodeFactor" /></a>
   </div>
 </div>
 </br>
