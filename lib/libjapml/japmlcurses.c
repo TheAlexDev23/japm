@@ -243,16 +243,9 @@ void japml_ncurses_pl_refresh(japml_handle_t* handle)
     wrefresh(handle->package_list_window);
 }
 
-bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
+char japml_ncurses_dialogue_base(japml_handle_t* handle, char* message)
 {
-    if (handle->default_to_all)
-    {
-        return true;
-    }
-
-    Yn_dialogue_start_again:
-    sprintf(handle->log_message, "%s [Y/n] ", message);
-    japml_log(handle, Information, handle->log_message);
+    japml_log(handle, Information, message);
 
     char ch = '\0';
     if (handle->use_ncurses)
@@ -266,6 +259,21 @@ bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
             sscanf(line, "%c", &ch);
         }
     }
+
+    return ch;
+}
+
+bool japml_ncurses_Yn_dialogue(japml_handle_t* handle, char* message)
+{
+    if (handle->default_to_all)
+    {
+        return true;
+    }
+
+    Yn_dialogue_start_again:
+    sprintf(handle->log_message, "%s [Y/n] ", message);
+
+    char ch = japml_ncurses_dialogue_base(handle, handle->log_message);
     
     if (tolower((unsigned char)ch) == 'y' || ch == '\n')
     {
@@ -290,21 +298,8 @@ bool japml_ncurses_yN_dialogue(japml_handle_t* handle, char* message)
 
     yN_dialogue_start_again:
     sprintf(handle->log_message, "%s [y/N] ", message);
-    japml_log(handle, Information, handle->log_message);
+    char ch = japml_ncurses_dialogue_base(handle, handle->log_message);
 
-    char ch = '\0';
-    if (handle->use_ncurses)
-    {
-        ch = getch();
-    }
-    else
-    {
-        char line[2];
-        if (fgets(line, sizeof(line), stdin)) {
-            sscanf(line, "%c", &ch);
-        }
-    }
-    
     if (tolower((unsigned char)ch) == 'n' || ch == '\n')
     {
         return false;
@@ -323,19 +318,7 @@ bool japml_ncurses_yn_dialogue(japml_handle_t* handle, char* message)
 {
     yN_dialogue_start_again:
     sprintf(handle->log_message, "%s [y/n] ", message);
-    char ch = '\0';
-    if (handle->use_ncurses)
-    {
-        ch = getch();
-    }
-    else
-    {
-        char line[2];
-        if (fgets(line, sizeof(line), stdin)) {
-            sscanf(line, "%c", &ch);
-        }
-    }
-    
+    char ch = japml_ncurses_dialogue_base(handle, handle->log_message);
     
     if (tolower((unsigned char)ch) == 'y')
     {
